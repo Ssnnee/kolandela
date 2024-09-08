@@ -3,7 +3,7 @@
     "name": "kolandela",
     "slug": "kolandela",
     "version": "1.0.0",
-    
+
       "scheme": "kolandela",
       "web": {
         "bundler": "metro",
@@ -12,28 +12,28 @@
       },
       "plugins": [
       "expo-router"
-      
-      
+
+
         ,[
         "expo-dev-launcher",
         {
           "launchMode": "most-recent"
         }
       ]
-      
+
     ],
       "experiments": {
         "typedRoutes": true
-        
+
           ,"tsconfigPaths": true
-        
+
       },
-    
+
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    
+
      "userInterfaceStyle": "light",
-    
+
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
