@@ -19,14 +19,16 @@ export default function Home() {
               Suivez, planifiez et analysez vos finances {"\n"} pour une gestion
               simplifiée de vos {"\n"} dépenses et revenus.
             </Text>
-            <Pressable className='bg-orange h-14 px-28 flex justify-center rounded-full'>
-              <Link
-                href=''
-                className='text-white text-center'
+            <Link
+              href='/(tabs)'
+              asChild
+            >
+              <Pressable
+                className='bg-orange h-14 px-28 flex justify-center rounded-full'
               >
-                <Text className=''>Se connecter</Text>
-              </Link>
-            </Pressable>
+                  <Text className='text-white'>Se connecter</Text>
+              </Pressable>
+            </Link>
           </View>
         </View>
       </ImageBackground>
