@@ -47,7 +47,7 @@ export default function TabLayout() {
         <Tabs.Screen
         name='index'
         options={{
-          title: 'Start',
+          title: '',
           headerShown: true,
           tabBarIcon : ({focused}) => (
             <View className="" >
@@ -68,7 +68,7 @@ export default function TabLayout() {
         <Tabs.Screen
         name='budget/index'
         options={{
-          title: 'nen',
+          title: '',
           headerShown: true,
           tabBarIcon : ({focused}) => (
             <View className="" >
@@ -90,6 +90,7 @@ export default function TabLayout() {
         name="plus"
         options={{
           title: '',
+          headerShown: true,
           tabBarIcon: () => (
             <View className="items-center p-2 bottom-3  rounded-full bg-background">
               <View className="items-center p-6 bottom-1  rounded-full bg-orange">
@@ -111,7 +112,8 @@ export default function TabLayout() {
         <Tabs.Screen
         name='calendar/index'
         options={{
-          title: 'tureeeee',
+          title: '',
+          headerShown: true,
           tabBarIcon : ({focused}) => (
             <View className="" >
               <Image
@@ -131,7 +133,8 @@ export default function TabLayout() {
         <Tabs.Screen
         name='income/index'
         options={{
-          title: 'Yo',
+          title: '',
+          headerShown: true,
           tabBarIcon : ({focused}) => (
             <View className="" >
               <Image
