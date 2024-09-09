@@ -1,13 +1,10 @@
 import { Stack } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { ScreenContent } from '~/components/ScreenContent';
-
 export default function Home() {
   return (
     <>
-      <Stack.Screen options={{ title: 'Tab One' }} />
-      <View className='bg-pink'>
+      <View className='bg-background w-full h-full'>
         <Text className='text-white'> Hellooo world! </Text>
       </View>
     </>
