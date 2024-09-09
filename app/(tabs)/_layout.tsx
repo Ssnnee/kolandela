@@ -1,7 +1,7 @@
 import { Link, Tabs } from "expo-router";
 import { TabBarIcon } from '../../components/TabBarIcon';
 import { BlurView } from 'expo-blur';
-import { Image, StyleSheet, View } from 'react-native'
+import { Image, StyleSheet, Text, View } from 'react-native'
 import homeIcon from '../../assets/icons/Home.png'
 import budgetIcon from '../../assets/icons/Budgets.png'
 import calendarIcon from '../../assets/icons/Calendar.png'
@@ -26,6 +26,12 @@ export default function TabLayout() {
           borderTopColor: 'transparent',
         },
 
+        headerStyle: {
+          backgroundColor: '#4E4E61',
+          elevation: 0,
+        },
+
+
         tabBarBackground: () => (
           <BlurView
             intensity={80}
@@ -42,6 +48,7 @@ export default function TabLayout() {
         name='index'
         options={{
           title: 'Start',
+          headerShown: true,
           tabBarIcon : ({focused}) => (
             <View className="" >
               <Image
@@ -61,7 +68,8 @@ export default function TabLayout() {
         <Tabs.Screen
         name='budget/index'
         options={{
-          title: 'Start',
+          title: 'nen',
+          headerShown: true,
           tabBarIcon : ({focused}) => (
             <View className="" >
               <Image
@@ -79,17 +87,31 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="two"
+        name="plus"
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: '',
+          tabBarIcon: () => (
+            <View className="items-center p-2 bottom-3  rounded-full bg-background">
+              <View className="items-center p-6 bottom-1  rounded-full bg-orange">
+                <Image
+                  source={require('../../assets/icons/plus.png')}
+                  resizeMode="contain"
+                  style={{
+                    width: 18,
+                    height: 18,
+                    tintColor: 'white',
+                  }}
+                />
+              </View>
+            </View>
+          ),
         }}
       />
 
         <Tabs.Screen
         name='calendar/index'
         options={{
-          title: 'Start',
+          title: 'tureeeee',
           tabBarIcon : ({focused}) => (
             <View className="" >
               <Image
@@ -109,7 +131,7 @@ export default function TabLayout() {
         <Tabs.Screen
         name='income/index'
         options={{
-          title: 'Start',
+          title: 'Yo',
           tabBarIcon : ({focused}) => (
             <View className="" >
               <Image

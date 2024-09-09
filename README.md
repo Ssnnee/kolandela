@@ -23,3 +23,7 @@ we need to have the necessary data.
 ## Technologies
 
 
+### Todos
+
+[ ] Fix pixalated png
+

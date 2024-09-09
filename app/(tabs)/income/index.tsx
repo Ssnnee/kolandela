@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { ScreenContent } from '~/components/ScreenContent';
 
@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <>
       <View style={styles.container}>
-        <ScreenContent path="app/(tabs)/two.tsx" title="Tab Two" />
+        <Text> Message from Income </Text>
       </View>
     </>
   );
