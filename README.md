@@ -22,6 +22,11 @@ we need to have the necessary data.
 
 ## Technologies
 
+- [React Native](https://reactnative.dev/)
+- [Expo](https://expo.dev/)
+- [React Native Chart Kit](https://github.com/indiespirit/react-native-chart-kit)
+
+
 
 ### Todos
 
