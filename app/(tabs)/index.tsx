@@ -40,25 +40,30 @@ export default function Home() {
         <Text className='text-white text-xl'>{percentage}%</Text>
       </View>
 
-      <View className='flex-row items-center justify-center '>
+      <View className='flex-row items-center justify-center gap-4 '>
 
-        <View className='bg-white  rounded-3xl '>
-          <Text className='text-black text-center '>Revenus</Text>
-          <Text className='text-black text-center '>100 000</Text>
+        <View className='bg-[#4E4E61] rounded-3xl p-5 border-2 border-foreground'>
+          <Text className='text-grey-40 font-bold text-center '>
+            Revenus
+          </Text>
+          <Text className='text-white text-center text-sm'>100 000</Text>
         </View>
 
-        <View className='bg-white  rounded-3xl '>
-          <Text className='text-black text-2xl text-center'>Dépenses</Text>
-          <Text className='text-black text-2xl text-center'>100</Text>
+        <View className='bg-[#4E4E61] rounded-3xl p-5 border-2 border-foreground'>
+          <Text className='text-grey-40 font-bold text-center '>
+            Dépenses
+          </Text>
+          <Text className='text-white text-center text-sm  '>100</Text>
         </View>
 
-        <View className='bg-white  rounded-3xl '>
-          <Text className='text-black text-2xl text-center'>Économies</Text>
-          <Text className='text-black text-2xl text-center'>99 900</Text>
+        <View className='bg-[#4E4E61] rounded-3xl p-5 border-2 border-foreground'>
+          <Text className='text-grey-40 font-bold text-center '>
+            Économies
+          </Text>
+          <Text className='text-white text-center text-sm'> 1 978 998 900</Text>
         </View>
 
       </View>
-
 
     </View>
   );
