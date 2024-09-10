@@ -1,21 +1,12 @@
 import { Stack } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { ScreenContent } from '~/components/ScreenContent';
-
 export default function Home() {
   return (
     <>
-      <View style={styles.container}>
+      <View className='bg-background'>
         <Text> Message from Income </Text>
       </View>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
-  },
-});
