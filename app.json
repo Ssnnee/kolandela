@@ -3,37 +3,29 @@
     "name": "kolandela",
     "slug": "kolandela",
     "version": "1.0.0",
-
-      "scheme": "kolandela",
-      "web": {
-        "bundler": "metro",
-        "output": "static",
-        "favicon": "./assets/favicon.png"
-      },
-      "plugins": [
-      "expo-router"
-
-
-        ,[
+    "scheme": "kolandela",
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
         "expo-dev-launcher",
         {
           "launchMode": "most-recent"
         }
-      ]
-
+      ],
+      "expo-font"
     ],
-      "experiments": {
-        "typedRoutes": true
-
-          ,"tsconfigPaths": true
-
-      },
-
+    "experiments": {
+      "typedRoutes": true,
+      "tsconfigPaths": true
+    },
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-
-     "userInterfaceStyle": "light",
-
+    "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
