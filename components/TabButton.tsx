@@ -47,10 +47,10 @@ export default function TabButton(
   return (
     <View
       accessibilityRole='switch'
-      className='bg-dark rounded-ss-md justify-center '
+      className='bg-dark rounded-3xl justify-center p-3 mx-5 mt-3 '
     >
         <Animated.View
-        className='absolute bg-foreground rounded-ss-md mx-4 '
+        className='absolute bg-foreground rounded-full mx-3 border-2 border-[#4E4E61]'
         style={[animatedStyles, {
           height: dimensions.height - 8,
           width: buttonWidth - 8,
@@ -66,7 +66,7 @@ export default function TabButton(
                 key={index}
                 className='flex-1 py-4'
               >
-                  <Text className={`text-white self-center ${color}`}> {button.title} </Text>
+                  <Text className={`self-center font-bold ${color}`}> {button.title} </Text>
                 </Pressable>
             )
           })}
