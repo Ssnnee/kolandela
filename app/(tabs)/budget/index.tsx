@@ -1,14 +1,15 @@
 import { Stack } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 import { ScreenContent } from '~/components/ScreenContent';
+import TabScreen from '~/components/TabScreen';
 
 export default function Home() {
   return (
     <>
-      <View className='bg-background h-full  '>
-        <Text> Message from Budget </Text>
-      </View>
+        <SafeAreaView className='h-full'>
+          <TabScreen />
+        </SafeAreaView>
     </>
   );
 }

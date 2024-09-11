@@ -10,7 +10,7 @@ export default function Home() {
         resizeMode='cover'
         className='flex-1'
       >
-        <View className='h-full py-14 px-4 flex items-center justify-between '>
+        <View className='h-full py-16 px-4 flex items-center justify-between '>
           <Text className='py-6 text-white text-3xl font-semibold'>
             { "Kolandela".toUpperCase() }
           </Text>
