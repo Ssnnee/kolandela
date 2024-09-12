@@ -14,6 +14,7 @@ export enum Tab {
 export default function TabScreen() {
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Expense);
   const [checked, setChecked] = useState(false);
+  const [checkedOne, setCheckedOne] = useState(false);
   const buttons: TabButtonType[] = [
     { title: 'Transactions' },
     { title: 'Planifications' },
@@ -44,7 +45,7 @@ export default function TabScreen() {
 
                 <View className='flex-row gap-4 items-center'>
                   <Text className='text-green text-3xl font-bold'>+</Text>
-                  <Text className='text-white font-bold'>2000000 </Text>
+                  <Text className='text-white font-bold'>890 </Text>
                 </View>
 
               </View>
@@ -147,7 +148,10 @@ export default function TabScreen() {
 
                 <View className='flex-row gap-4 items-center'>
                     <Text className='text-white font-bold'>2000000 </Text>
-                  <Text className='text-green text-3xl font-bold'>+</Text>
+                    <Checkbox
+          checked={checkedOne}
+          onChange={setCheckedOne}
+        />
                 </View>
 
               </View>
@@ -168,7 +172,10 @@ export default function TabScreen() {
 
                 <View className='flex-row gap-4 items-center'>
                       <Text className='text-white font-bold'>78 </Text>
-                  <Text className='text-red text-3xl font-bold'>-</Text>
+                    <Checkbox
+          checked={checkedOne}
+          onChange={setCheckedOne}
+        />
                 </View>
               </View>
 
@@ -189,10 +196,8 @@ export default function TabScreen() {
                 <View className='flex-row gap-4 items-center'>
                       <Text className='text-white font-bold'>78 </Text>
                     <Checkbox
-          checked={checked}
-          onChange={setChecked}
-                      buttonStyle={styles.checkboxBase}
-          activeButtonStyle={styles.checkboxChecked}
+          checked={checkedOne}
+          onChange={setCheckedOne}
         />
                 </View>
 
