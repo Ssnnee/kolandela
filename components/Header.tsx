@@ -1,20 +1,21 @@
-import { Text, Image, View } from 'react-native';
+import { Text, Image, View, TouchableOpacity } from 'react-native';
 
 type HeaderProps = {
   bgColor?: string;
   textColor?: string;
   title?: string;
+  onPress?: () => void;
 };
 
 export default function  Header(
-  { bgColor, textColor,  title }: HeaderProps
+  { bgColor, textColor,  title, onPress }: HeaderProps
 ) {
 
   return (
     <View
       className={`
         w-full bg-${bgColor ? bgColor: 'green'}
-        flex-row items-center justify-between pt-14 px-6
+        flex-row items-center justify-between pt-14 px-6 p-5
       `}>
       <View>
         <TouchableOpacity

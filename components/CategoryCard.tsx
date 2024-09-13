@@ -17,7 +17,12 @@ export default function CategoryCard({ title, total, percentage, color }: Catogo
             <Text className='text-white text-sm font-bold'> { total }  </Text>
           </View>
           <View className='w-full h-1 bg-foreground rounded-full'>
-            <View className={ `h-full bg-[${color}] w-[${percentage +'%'}] rounded-full` }></View>
+            <View
+              style={{
+                width: `${percentage}%`,
+                borderRadius: 100,
+              }}
+              className={ `h-full bg-${color} rounded-full` }></View>
           </View>
         </TouchableOpacity>
     </>

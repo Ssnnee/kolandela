@@ -1,7 +1,11 @@
+import { Stack } from 'expo-router';
 import React from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { Dimensions } from "react-native";
 import { ProgressChart } from "react-native-chart-kit";
+import BottomSheet from '~/components/BottomSheet';
+import { ButtonCard } from '~/components/ButtonCard';
+import Header from '~/components/Header';
 import TabScreen from '~/components/TabScreen';
 
 const screenWidth = Dimensions.get("window").width;
@@ -25,9 +29,21 @@ export default function Home() {
   };
 
   const [isScrolling, setIsScrolling] = React.useState(false);
+  const bottomSheetRef = React.useRef();
 
   return (
     <>
+      <Stack.Screen  options={{ title: '', header() {
+        return (
+          <Header
+              title="Écran d'ajout"
+              bgColor='background'
+              textColor='white'
+              onPress={() => bottomSheetRef.current.open()}
+          />
+        );
+      },}}
+      />
       <ScrollView
       >
         <View className='bg-background pb-8 items-center'>
@@ -76,6 +92,14 @@ export default function Home() {
 
         <TabScreen />
       </ScrollView>
+        <BottomSheet bottomSheetRef={bottomSheetRef}>
+        <View className='h-full gap-5 justify-center items-center'>
+          <ButtonCard title='Ajouter une entrée' />
+          <ButtonCard title='Ajouter une dépenses ' />
+          <ButtonCard title='Plannifier une dépenses' />
+          <ButtonCard title='Ajouter une catégorie' />
+        </View>
+        </BottomSheet>
     </>
   );
 }

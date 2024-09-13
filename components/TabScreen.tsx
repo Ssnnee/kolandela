@@ -29,7 +29,7 @@ export default function TabScreen() {
         <ScrollView>
           { selectedTab === Tab.Expense ? (
             <View className='items-center m-5 gap-4'>
-              <View className='w-full flex-row items-center justify-between p-5 rounded-xl border-foreground border-2'>
+              <View className='w-full flex-row items-center justify-between p-5 rounded-3xl border-foreground border-2'>
                 <View className=''>
                   <Text className='text-white font-bold'>Freelance</Text>
                   <Text
@@ -50,7 +50,7 @@ export default function TabScreen() {
 
               </View>
 
-              <View className='w-full flex-row items-center justify-between p-5 mx-5 rounded-xl border-foreground border-2'>
+              <View className='w-full flex-row items-center justify-between p-5 rounded-3xl border-foreground border-2'>
                 <View className=''>
                   <Text className='text-white font-bold'>Restaurant</Text>
                   <Text
@@ -70,7 +70,7 @@ export default function TabScreen() {
                 </View>
               </View>
 
-              <View className='w-full flex-row items-center justify-between p-5 mx-5 rounded-xl border-foreground border-2'>
+              <View className='w-full flex-row items-center justify-between p-5 rounded-3xl border-foreground border-2'>
                 <View className=''>
                   <Text className='text-white font-bold'>Restaurant</Text>
                   <Text
@@ -90,7 +90,7 @@ export default function TabScreen() {
                 </View>
 
               </View>
-              <View className='w-full flex-row items-center justify-between p-5 mx-5 rounded-xl border-foreground border-2'>
+              <View className='w-full flex-row items-center justify-between p-5 rounded-3xl border-foreground border-2'>
                 <View className=''>
                   <Text className='text-white font-bold'>Restaurant</Text>
                   <Text
@@ -109,7 +109,7 @@ export default function TabScreen() {
                   <Text className='text-white font-bold'>78 </Text>
                 </View>
               </View>
-              <View className='w-full flex-row items-center justify-between p-5 mx-5 rounded-xl border-foreground border-2'>
+              <View className='w-full flex-row items-center justify-between p-5 rounded-3xl border-foreground border-2'>
                 <View className=''>
                   <Text className='text-white font-bold'>Restaurant</Text>
                   <Text
@@ -132,7 +132,7 @@ export default function TabScreen() {
               </View>
           ) : (
             <View className='items-center m-5 gap-4'>
-              <View className='w-full flex-row items-center justify-between p-5 rounded-xl border-foreground border-2'>
+              <View className='w-full flex-row items-center justify-between p-5 rounded-3xl border-foreground border-2'>
                 <View className=''>
                   <Text className='text-white font-bold'>Freelance</Text>
                   <Text
@@ -156,7 +156,7 @@ export default function TabScreen() {
 
               </View>
 
-              <View className='w-full flex-row items-center justify-between p-5 mx-5 rounded-xl border-foreground border-2'>
+              <View className='w-full flex-row items-center justify-between p-5 rounded-3xl border-foreground border-2'>
                 <View className=''>
                   <Text className='text-white font-bold'>Restaurant</Text>
                   <Text
@@ -179,7 +179,7 @@ export default function TabScreen() {
                 </View>
               </View>
 
-              <View className='w-full flex-row items-center justify-between p-5 mx-5 rounded-xl border-foreground border-2'>
+              <View className='w-full flex-row items-center justify-between p-5 rounded-3xl border-foreground border-2'>
                 <View className=''>
                   <Text className='text-white font-bold'>Restaurant</Text>
                   <Text

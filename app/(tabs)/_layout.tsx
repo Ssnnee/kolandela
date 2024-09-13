@@ -20,10 +20,10 @@ export default function TabLayout() {
           left: 20,
           right: 20,
           elevation: 0,
-          backgroundColor: '#4E4E61',
+          backgroundColor: '#0E0E12',
           borderRadius: 15,
           height: 60,
-          borderTopColor: 'transparent',
+          borderColor: 'transparent',
         },
 
         headerStyle: {
@@ -31,17 +31,6 @@ export default function TabLayout() {
           elevation: 0,
         },
 
-
-        tabBarBackground: () => (
-          <BlurView
-            intensity={80}
-            style={{
-              ...StyleSheet.absoluteFillObject,
-              overflow: 'hidden',
-              borderRadius: 15,
-            }}
-          />
-        ),
       }}
     >
         <Tabs.Screen
@@ -82,29 +71,6 @@ export default function TabLayout() {
               }}
             />
               </View>
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="plus"
-        options={{
-          title: '',
-          headerShown: true,
-          tabBarIcon: () => (
-            <View className="items-center p-2 bottom-3  rounded-full bg-background">
-              <View className="items-center p-6 bottom-1  rounded-full bg-orange">
-                <Image
-                  source={require('../../assets/icons/plus.png')}
-                  resizeMode="contain"
-                  style={{
-                    width: 18,
-                    height: 18,
-                    tintColor: 'white',
-                  }}
-                />
-              </View>
-            </View>
           ),
         }}
       />

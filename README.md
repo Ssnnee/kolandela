@@ -20,11 +20,14 @@ ave the necessary data.
 - View expenses
 - View income
 - View categories
-- View statistics## Technologies
+- View statistics
+
+## Technologies and Librairies
 
 - [React Native](https://reactnative.dev/)
 - [Expo](https://expo.dev/)
 - [React Native Chart Kit](https://github.com/indiespirit/react-native-chart-kit)
+- [React Native Raw bottom Sheet](https://github.com/nysamnang/react-native-raw-bottom-sheet)
 
 
 
