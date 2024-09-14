@@ -16,7 +16,7 @@ export default function  Checkbox(
         `h-6 w-6 rounded-full bg-transparent border-2 border-foreground ${checked && 'border-green'}`
       }
       onPress={() => onChange(!checked)}>
-      {checked && <Ionicons name='checkmark' size={15} color='#00FAD9' className='left-1'/>}
+      {checked && <Ionicons name='checkmark' size={16} color='#00FAD9' className=''/>}
     </Pressable>
   );
 }
