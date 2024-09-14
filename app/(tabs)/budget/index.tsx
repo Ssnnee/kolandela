@@ -56,7 +56,7 @@ const chartConfig = {
 //   color: (opacity = 1) => `rgba(255, 121, 102, ${opacity})`,
 // };
 
-export default function Home() {
+export default function CategoryPage() {
   const screenWidth = Dimensions.get("window").width;
   const income = 100000;
   const expenses = 100;

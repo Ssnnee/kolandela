@@ -1,7 +1,5 @@
-import { Link, Tabs } from "expo-router";
-import { TabBarIcon } from '../../components/TabBarIcon';
-import { BlurView } from 'expo-blur';
-import { Image, StyleSheet, Text, View } from 'react-native'
+import {  Tabs } from "expo-router";
+import { Image,  View } from 'react-native'
 import homeIcon from '../../assets/icons/Home.png'
 import budgetIcon from '../../assets/icons/Budgets.png'
 import calendarIcon from '../../assets/icons/Calendar.png'
@@ -14,6 +12,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
           position: 'absolute',
           bottom: 20,

@@ -12,8 +12,22 @@ export enum ChartType {
 }
 
 export default function ChartSwitcher() {
+const screenWidth = Dimensions.get("window").width;
   const dataLinear = {
-    labels: ["January", "February", "March", "April", "May", "June"],
+    labels: [
+    'Janvier',
+    'Février',
+    'Mars',
+    'Avril',
+    'Mai',
+    'Juin',
+    'Juillet',
+    'Août',
+    'Septembre',
+    'Octobre',
+    'Novembre',
+    'Décembre'
+  ],
     datasets: [
       {
         data: [20, 45, 28, 80, 99, 43],
@@ -21,7 +35,6 @@ export default function ChartSwitcher() {
         strokeWidth: 2 // optional
       }
     ],
-    legend: ["Rainy Days"] // optional
   };
 
   const dataBar = {
@@ -34,23 +47,26 @@ export default function ChartSwitcher() {
   };
   const [selectedTab, setSelectedTab] = useState<ChartType>(ChartType.BezierLine);
   const buttons: TabButtonType[] = [
-    { title: 'Diagramme Linéaire' },
-    { title: 'Diagramme en batôn' },
+    { title: 'Linéaire' },
+    { title: 'Batôn' },
   ];
 
   return (
-    <View className='bg-background h-full'>
+    <View className='bg-background h-1/2'>
       <TabButton
       buttons={buttons}
       selectedTab={selectedTab}
       setSelectedTab={setSelectedTab}
     />
-        <ScrollView>
+        <ScrollView
+          horizontal
+          className='py-5'
+        >
           { selectedTab === ChartType.BezierLine ? (
             <LineChart
               data={dataLinear}
-              width={Dimensions.get("window").width - 10}
-              height={256}
+              width={Dimensions.get("window").width}
+              height={250}
               verticalLabelRotation={30}
               chartConfig={chartConfig}
               bezier
@@ -59,7 +75,7 @@ export default function ChartSwitcher() {
               <BarChart
                 data={dataBar}
                 width={Dimensions.get("window").width - 10}
-                height={220}
+                height={250}
                 yAxisLabel='€'
                 verticalLabelRotation={30}
                 chartConfig={chartConfig}
@@ -74,7 +90,7 @@ export default function ChartSwitcher() {
 const chartConfig = {
   backgroundGradientFrom: "#0E0E12",
   backgroundGradientFromOpacity: 0,
-  backgroundGradientTo: "#08130D",
+  backgroundGradientTo: "#0E0E12",
   backgroundGradientToOpacity: 0.5,
   color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
   strokeWidth: 2, // optional, default 3

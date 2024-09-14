@@ -33,7 +33,7 @@ export default function TabButton(
   };
 
   const onTabPress = (index: number) => {
-    tabPositionX.value = withTiming(buttonWidth * index, {}, () => {
+    tabPositionX.value = withTiming(buttonWidth * index, { duration: 250}, () => {
       runOnJS(handleTabPress)(index);
     });
   };
