@@ -104,5 +104,5 @@ export default function Home() {
   );
 }
 
-const mStyles = 'bg-[#4E4E61] rounded-3xl p-5 border-2 border-foreground'
+const mStyles = 'bg-background-variant rounded-3xl p-5 border-2 border-foreground'
 const tStyles = 'text-white text-center text-sm'

@@ -12,7 +12,7 @@ export enum ChartType {
 }
 
 export default function ChartSwitcher() {
-const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
   const dataLinear = {
     labels: [
     'Janvier',
@@ -52,7 +52,7 @@ const screenWidth = Dimensions.get("window").width;
   ];
 
   return (
-    <View className='bg-background h-1/2'>
+    <View className='bg-background h-[400px]' >
       <TabButton
       buttons={buttons}
       selectedTab={selectedTab}
@@ -66,7 +66,7 @@ const screenWidth = Dimensions.get("window").width;
             <LineChart
               data={dataLinear}
               width={Dimensions.get("window").width}
-              height={250}
+              height={280}
               verticalLabelRotation={30}
               chartConfig={chartConfig}
               bezier
@@ -75,7 +75,7 @@ const screenWidth = Dimensions.get("window").width;
               <BarChart
                 data={dataBar}
                 width={Dimensions.get("window").width - 10}
-                height={250}
+                height={280}
                 yAxisLabel='€'
                 verticalLabelRotation={30}
                 chartConfig={chartConfig}

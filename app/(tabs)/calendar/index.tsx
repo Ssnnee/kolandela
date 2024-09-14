@@ -4,47 +4,10 @@ import { Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacit
 import BottomSheet from '~/components/BottomSheet';
 import { ButtonCard } from '~/components/ButtonCard';
 import Header from '~/components/Header';
-import { useTheme } from '@react-navigation/native';
-import CategoryCard from '~/components/CategoryCard';
 import ChartSwitcher from '~/components/ChartSwitcher';
 import YearCard from '~/components/YearCard';
 
-const chartConfig = {
-  backgroundGradientFrom: "#0E0E12",
-  backgroundGradientFromOpacity: 0,
-  backgroundGradientTo: "#08130D",
-  backgroundGradientToOpacity: 0.5,
-  color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-  strokeWidth: 2, // optional, default 3
-  barPercentage: 0.5,
-  useShadowColorFromDataset: false // optional
-};
-
-
-// const chartConfig = {
-//   useShadowColorFromDataset: false,
-//   backgroundGradientFrom: "#0E0E12",
-//   backgroundGradientTo: "#0E0E11",
-//   color: (opacity = 1) => `rgba(255, 121, 102, ${opacity})`,
-// };
-
 export default function CalendarPage() {
-  const screenWidth = Dimensions.get("window").width;
-  const income = 100000;
-  const expenses = 100;
-  const percentage = (expenses / income) * 100;
-
-  const data = {
-    labels: ["Transport", "Divertissement", "Securité"], // optional
-    data: [0.4, 0.6, 0.8],
-    colors: [
-      "red",
-      "green",
-      "#AD7BFF",
-      "rgba(60, 179, 113,0.2)",
-      "rgba(255, 172, 71 , 0.3)",
-    ],
-  };
   const bottomSheetRef = useRef();
   return (
     <>
@@ -59,7 +22,8 @@ export default function CalendarPage() {
         );
       },}}
     />
-        <View className='flex-1 bg-background p-5 items-center'>
+      <ScrollView className='bg-background' >
+        <View className='flex-1 p-5 items-center'>
           <Text className='text-white text-center text-xl font-bold'>
           Représentation graphique des dépenses de l'année en cours
         </Text>
@@ -76,37 +40,12 @@ export default function CalendarPage() {
             <YearCard date={ new Date(2017, 1, 11) } />
             <YearCard date={ new Date(2017, 1, 11) } />
             <YearCard date={ new Date(2017, 1, 11) } />
-            <YearCard date={ new Date(2017, 1, 11) } />
-            <YearCard date={ new Date(2017, 1, 11) } />
-            <YearCard date={ new Date(2017, 1, 11) } />
-            <YearCard date={ new Date(2017, 1, 11) } />
-            <YearCard date={ new Date(2017, 1, 11) } />
-            <YearCard date={ new Date(2017, 1, 11) } />
             <YearCard date={ new Date(2018, 1, 11) } />
+            <YearCard date={ new Date(2019, 7, 11) } />
             <YearCard date={ new Date(2019, 1, 11) } />
             <YearCard date={ new Date(2019, 1, 11) } />
             <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
+            <YearCard date={ new Date(2029, 8, 8) } />
           </View>
           </ScrollView>
           <BottomSheet bottomSheetRef={bottomSheetRef}>
@@ -116,6 +55,7 @@ export default function CalendarPage() {
             </View>
           </BottomSheet>
         </View>
+      </ScrollView >
       </>
   );
 }

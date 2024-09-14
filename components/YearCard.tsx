@@ -9,7 +9,7 @@ export default function YearCard({ date }: YearCardProps) {
   return (
     <>
         <TouchableOpacity
-          className='bg-[#4E4E61] rounded-3xl p-5 border-2 border-foreground'>
+          className='bg-background-variant rounded-3xl p-5 border-2 border-foreground'>
             <Text className='text-white'>
               { format(new Date(date), 'yyyy') as string }
             </Text>
