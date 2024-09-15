@@ -28,6 +28,8 @@ ave the necessary data.
 - [Expo](https://expo.dev/)
 - [React Native Chart Kit](https://github.com/indiespirit/react-native-chart-kit)
 - [React Native Raw bottom Sheet](https://github.com/nysamnang/react-native-raw-bottom-sheet)
+- [React Hook form](https://react-hook-form.com/)
+- [Zod](https://zod.dev/)
 
 
 
