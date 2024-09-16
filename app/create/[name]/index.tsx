@@ -1,4 +1,4 @@
-import { Text, View, TextInput, Button, Alert } from "react-native";
+import { Text, View, TextInput, Button } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -54,7 +54,7 @@ export default function CreationPage() {
           name='description'
         />
         {form.formState.errors.name && (
-          <Text className='text-red-500'>{form.formState.errors.name.message}</Text>
+          <Text className='text-orange'>{form.formState.errors.name.message}</Text>
         )}
         {form.formState.errors.description && (
           <Text className='text-red-500'>{form.formState.errors.description.message}</Text>

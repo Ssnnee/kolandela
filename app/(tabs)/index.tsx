@@ -4,7 +4,7 @@ import { View, Text, ScrollView } from 'react-native';
 import { Dimensions } from "react-native";
 import { ProgressChart } from "react-native-chart-kit";
 import BottomSheet from '~/components/BottomSheet';
-import { ButtonCard } from '~/components/ButtonCard';
+import { ButtonCard, LinkType } from '~/components/ButtonCard';
 import Header from '~/components/Header';
 import TabScreen from '~/components/TabScreen';
 
@@ -36,7 +36,7 @@ export default function Home() {
       <Stack.Screen  options={{ title: '', header() {
         return (
           <Header
-              title="Écran d'ajout"
+              title="Accueil"
               bgColor='background'
               textColor='white'
               onPress={() => bottomSheetRef.current.open()}
@@ -92,12 +92,23 @@ export default function Home() {
 
         <TabScreen />
       </ScrollView>
-        <BottomSheet bottomSheetRef={bottomSheetRef}>
-        <View className='h-full gap-5 justify-center items-center'>
-          <ButtonCard title='Ajouter une entrée' />
-          <ButtonCard title='Ajouter une dépenses ' />
-          <ButtonCard title='Plannifier une dépenses' />
-          <ButtonCard title='Ajouter une catégorie' />
+        <BottomSheet height={300} bottomSheetRef={bottomSheetRef}>
+        <View className='w-full h-full gap-5 justify-center items-center'>
+          <ButtonCard
+            title='Ajouter une entrée'
+            onPress={() => bottomSheetRef.current.close()}
+            href={ LinkType.income  }
+          />
+          <ButtonCard
+            title='Ajouter une dépenses '
+            onPress={() => bottomSheetRef.current.close()}
+            href={ LinkType.expenses  }
+          />
+          <ButtonCard
+            title='Plannifier une dépenses'
+            onPress={() => bottomSheetRef.current.close()}
+            href={ LinkType.plan  }
+          />
         </View>
         </BottomSheet>
     </>

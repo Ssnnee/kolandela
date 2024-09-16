@@ -28,7 +28,6 @@ export default function  BottomSheet(
           backgroundColor: "#000",
         },
       }}
-
     >
       <View className='bg-background p-5'>
         {children}
