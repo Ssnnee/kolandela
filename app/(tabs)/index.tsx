@@ -31,6 +31,7 @@ export default function Home() {
   const [isScrolling, setIsScrolling] = React.useState(false);
   const bottomSheetRef = React.useRef();
 
+
   return (
     <>
       <Stack.Screen  options={{ title: '', header() {
@@ -60,7 +61,7 @@ export default function Home() {
           }}
         />
           <View className='flex items-center justify-center top-20 absolute'>
-            <Text className='text-white text-xl'>Dépenses</Text>
+            <Text className='text-green text-xl'>Bétsia</Text>
             <Text className='text-white text-xl'>{percentage}%</Text>
           </View>
 
