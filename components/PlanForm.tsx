@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod";
 
 export const transactionSchema = z.object({
+  user_id: z.number(),
   description: z.string()
   .min(3, { message: "Name must be at least 3 characters long" })
   .max(50, { message: "Name must be at most 50 characters long" }),
@@ -21,6 +22,7 @@ export default function ExpenseForm() {
   const form = useForm<z.infer<typeof transactionSchema>>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
+      user_id: 1,
       description: "",
       date: new Date(),
       amount: 0,

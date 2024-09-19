@@ -31,6 +31,7 @@ ave the necessary data.
 - [React Hook form](https://react-hook-form.com/)
 - [Zod](https://zod.dev/)
 - [Reac Native Calendars](https://github.com/wix/react-native-calendars)
+- [JSON server](https://github.com/typicode/json-server)
 
 
 

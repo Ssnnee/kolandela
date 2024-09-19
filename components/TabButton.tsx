@@ -50,7 +50,7 @@ export default function TabButton(
       className='bg-dark rounded-3xl justify-center p-3 mx-5 mt-3 '
     >
         <Animated.View
-        className='absolute bg-background-variant rounded-full mx-4 border-2 border-[#4E4E61]'
+        className='absolute bg-background-variant rounded-full mx-4'
         style={[animatedStyles, {
           height: dimensions.height - 8,
           width: buttonWidth - 8,

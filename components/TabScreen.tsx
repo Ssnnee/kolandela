@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, ScrollView } from 'react-native';
 import TabButton, { TabButtonType } from './TabButton';
-import { format } from "date-fns";
-import { fr } from 'date-fns/locale';
-import { capitalizeFirstLetters } from '~/lib/utils';
-import Checkbox from './CheckBox';
+import ExpenseCard from './ExpenseCard';
+import PlannedExpenseCard from './PlannedExpenseCard';
+import { fetchTransactions, fetchPlannedTransactions, updatePlannedTransaction } from '~/api/transactions';
+import { Transaction, PlannedTransaction } from '~/types';  // Make sure the path is correct
 
 export enum Tab {
   Expense,
@@ -13,280 +13,80 @@ export enum Tab {
 
 export default function TabScreen() {
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Expense);
-  const [checked, setChecked] = useState(false);
-  const [checkedOne, setCheckedOne] = useState(false);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [plannedTransactions, setPlannedTransactions] = useState<PlannedTransaction[]>([]);
+
   const buttons: TabButtonType[] = [
     { title: 'Transactions' },
     { title: 'Planifications' },
   ];
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      const transactionsData: Transaction[] = await fetchTransactions();
+      const plannedTransactionsData: PlannedTransaction[] = await fetchPlannedTransactions();
+      setTransactions(transactionsData);
+      setPlannedTransactions(plannedTransactionsData);
+    } catch (error) {
+      console.error('Error loading data:', error);
+    }
+  };
+
+  const handlePlannedTransactionCheckboxChange = async (id: string, value: boolean) => {
+    try {
+      await updatePlannedTransaction(id, { isExecuted: value });
+      setPlannedTransactions(prevState =>
+        prevState.map(transaction =>
+          transaction.id === id ? { ...transaction, isExecuted: value } : transaction
+        )
+      );
+    } catch (error) {
+      console.error('Error updating planned transaction:', error);
+    }
+  };
+
   return (
     <View className='bg-background h-full'>
       <TabButton
-      buttons={buttons}
-      selectedTab={selectedTab}
-      setSelectedTab={setSelectedTab}
-    />
-        <ScrollView>
-          { selectedTab === Tab.Expense ? (
-            <View className='items-center m-5 gap-4'>
-              <View className='w-full flex-row items-center justify-between p-5 rounded-3xl border-foreground border-2'>
-                <View className=''>
-                  <Text className='text-white font-bold'>Freelance</Text>
-                  <Text
-                    className='text-violate'>
-                    {
-                      capitalizeFirstLetters(
-                        format(
-                          new Date(), 'EEE, dd  MMM yyy, HH:mm', { locale: fr }
-                        )).replace(/\./g, '')
-                    }
-                  </Text>
-                </View>
-
-                <View className='flex-row gap-4 items-center'>
-                  <Text className='text-green text-3xl font-bold'>+</Text>
-                  <Text className='text-white font-bold'>890 </Text>
-                </View>
-
-              </View>
-
-              <View className='w-full flex-row items-center justify-between p-5 rounded-3xl border-foreground border-2'>
-                <View className=''>
-                  <Text className='text-white font-bold'>Restaurant</Text>
-                  <Text
-                    className='text-violate'>
-                    {
-                      capitalizeFirstLetters(
-                        format(
-                          new Date(), 'EEE, dd  MMM yyy, HH:mm', { locale: fr }
-                        )).replace(/\./g, '')
-                    }
-                  </Text>
-                </View>
-
-                <View className='flex-row gap-4 items-center'>
-                  <Text className='text-red text-3xl font-bold'>-</Text>
-                  <Text className='text-white font-bold'>78 </Text>
-                </View>
-              </View>
-
-              <View className='w-full flex-row items-center justify-between p-5 rounded-3xl border-foreground border-2'>
-                <View className=''>
-                  <Text className='text-white font-bold'>Restaurant</Text>
-                  <Text
-                    className='text-violate'>
-                    {
-                      capitalizeFirstLetters(
-                        format(
-                          new Date(), 'EEE, dd  MMM yyy, HH:mm', { locale: fr }
-                        )).replace(/\./g, '')
-                    }
-                  </Text>
-                </View>
-
-                <View className='flex-row gap-4 items-center'>
-                  <Text className='text-red text-3xl font-bold'>-</Text>
-                  <Text className='text-white font-bold'>78 </Text>
-                </View>
-
-              </View>
-              <View className='w-full flex-row items-center justify-between p-5 rounded-3xl border-foreground border-2'>
-                <View className=''>
-                  <Text className='text-white font-bold'>Restaurant</Text>
-                  <Text
-                    className='text-violate'>
-                    {
-                      capitalizeFirstLetters(
-                        format(
-                          new Date(), 'EEE, dd  MMM yyy, HH:mm', { locale: fr }
-                        )).replace(/\./g, '')
-                    }
-                  </Text>
-                </View>
-
-                <View className='flex-row gap-4 items-center'>
-                  <Text className='text-red text-3xl font-bold'>-</Text>
-                  <Text className='text-white font-bold'>78 </Text>
-                </View>
-              </View>
-              <View className='w-full flex-row items-center justify-between p-5 rounded-3xl border-foreground border-2'>
-                <View className=''>
-                  <Text className='text-white font-bold'>Restaurant</Text>
-                  <Text
-                    className='text-violate'>
-                    {
-                      capitalizeFirstLetters(
-                        format(
-                          new Date(), 'EEE, dd  MMM yyy, HH:mm', { locale: fr }
-                        )).replace(/\./g, '')
-                    }
-                  </Text>
-                </View>
-
-                <View className='flex-row gap-4 items-center'>
-                  <Text className='text-red text-3xl font-bold'>-</Text>
-                  <Text className='text-white font-bold'>78 </Text>
-                </View>
-              </View>
-
-              </View>
-          ) : (
-            <View className='items-center m-5 gap-4'>
-              <View className='w-full flex-row items-center justify-between p-5 rounded-3xl border-foreground border-2'>
-                <View className=''>
-                  <Text className='text-white font-bold'>Freelance</Text>
-                  <Text
-                    className='text-violate'>
-                    {
-                      capitalizeFirstLetters(
-                        format(
-                          new Date(), 'EEE, dd  MMM yyy, HH:mm', { locale: fr }
-                        )).replace(/\./g, '')
-                    }
-                  </Text>
-                </View>
-
-                <View className='flex-row gap-4 items-center'>
-                    <Text className='text-white font-bold'>2000000 </Text>
-                    <Checkbox
-          checked={checkedOne}
-          onChange={setCheckedOne}
-        />
-                </View>
-
-              </View>
-
-              <View className='w-full flex-row items-center justify-between p-5 rounded-3xl border-foreground border-2'>
-                <View className=''>
-                  <Text className='text-white font-bold'>Restaurant</Text>
-                  <Text
-                    className='text-violate'>
-                    {
-                      capitalizeFirstLetters(
-                        format(
-                          new Date(), 'EEE, dd  MMM yyy, HH:mm', { locale: fr }
-                        )).replace(/\./g, '')
-                    }
-                  </Text>
-                </View>
-
-                <View className='flex-row gap-4 items-center'>
-                      <Text className='text-white font-bold'>78 </Text>
-                    <Checkbox
-          checked={checkedOne}
-          onChange={setCheckedOne}
-        />
-                </View>
-              </View>
-
-              <View className='w-full flex-row items-center justify-between p-5 rounded-3xl border-foreground border-2'>
-                <View className=''>
-                  <Text className='text-white font-bold'>Restaurant</Text>
-                  <Text
-                    className='text-violate'>
-                    {
-                      capitalizeFirstLetters(
-                        format(
-                          new Date(), 'EEE, dd  MMM yyy, HH:mm', { locale: fr }
-                        )).replace(/\./g, '')
-                    }
-                  </Text>
-                </View>
-
-                <View className='flex-row gap-4 items-center'>
-                      <Text className='text-white font-bold'>78 </Text>
-                    <Checkbox
-          checked={checkedOne}
-          onChange={setCheckedOne}
-        />
-                </View>
-
-              </View>
-              <View className='w-full flex-row items-center justify-between p-5 mx-5 rounded-xl border-foreground border-2'>
-                <View className=''>
-                  <Text className='text-white font-bold'>Restaurant</Text>
-                  <Text
-                    className='text-violate'>
-                    {
-                      capitalizeFirstLetters(
-                        format(
-                          new Date(), 'EEE, dd  MMM yyy, HH:mm', { locale: fr }
-                        )).replace(/\./g, '')
-                    }
-                  </Text>
-                </View>
-
-                <View className='flex-row gap-4 items-center'>
-                  <Text className='text-white font-bold'>78 </Text>
-                      <Checkbox
-                      checked={checked}
-                      onChange={setChecked}
-                    />
-                </View>
-              </View>
-              <View className='w-full flex-row items-center justify-between p-5 mx-5 rounded-xl border-foreground border-2'>
-                <View className=''>
-                  <Text className='text-white font-bold'>Restaurant</Text>
-                  <Text
-                    className='text-violate'>
-                    {
-                      capitalizeFirstLetters(
-                        format(
-                          new Date(), 'EEE, dd  MMM yyy, HH:mm', { locale: fr }
-                        )).replace(/\./g, '')
-                    }
-                  </Text>
-                </View>
-
-                <View className='flex-row gap-4 items-center'>
-                  <Text className='text-white font-bold'>78 </Text>
-                    <Checkbox
-          checked={checked}
-          onChange={setChecked}
-        />
-                </View>
-              </View>
-
-              </View>
-            )}
-        </ScrollView>
-
-      </View>
+        buttons={buttons}
+        selectedTab={selectedTab}
+        setSelectedTab={setSelectedTab}
+      />
+      <ScrollView>
+        {selectedTab === Tab.Expense ? (
+          <View className='items-center m-5 gap-4'>
+            {transactions.map(transaction => (
+              <ExpenseCard
+                key={transaction.id}
+                id={transaction.id}
+                description={transaction.description}
+                date={new Date(transaction.date)}
+                amount={transaction.amount}
+                type={transaction.type}
+              />
+            ))}
+          </View>
+        ) : (
+          <View className='items-center m-5 gap-4'>
+            {plannedTransactions.map(transaction => (
+              <PlannedExpenseCard
+                key={transaction.id}
+                id={transaction.id}
+                description={transaction.description}
+                date={new Date(transaction.date)}
+                amount={transaction.amount}
+                isExecuted={transaction.isExecuted}
+                onCheckboxChange={handlePlannedTransactionCheckboxChange}
+              />
+            ))}
+          </View>
+        )}
+      </ScrollView>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  checkboxBase: {
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 4,
-    borderWidth: 2,
-    borderColor: 'coral',
-    backgroundColor: 'transparent',
-  },
-  checkboxChecked: {
-    backgroundColor: 'coral',
-  },
-  appContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  appTitle: {
-    marginVertical: 16,
-    fontWeight: 'bold',
-    fontSize: 24,
-  },
-  checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  checkboxLabel: {
-    marginLeft: 8,
-    fontWeight: '500',
-    fontSize: 18,
-  },
-});
 
