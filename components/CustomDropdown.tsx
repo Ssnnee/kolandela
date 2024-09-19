@@ -27,12 +27,13 @@ export function CustomDropdown(
         selectedTextStyle={{ color: '#FFFFFF' }}
         search
         searchPlaceholder={`Search ${label.toLowerCase()}`}
-        inputSearchStyle={{ color: '#FFFFFF' }}
+        inputSearchStyle={{ color: '#FFFFFF', borderRadius: 8 }}
+        itemContainerStyle={ { borderRadius: 8 } }
         itemTextStyle={{ color: '#FFFFFF' }}
-        activeColor="#FF7966"
+        activeColor="#666680"
         containerStyle={dropdownStyles}
       />
-      {error && <Text className="text-orange">{error}</Text>}
+      {error && <Text className="text-red">{error}</Text>}
     </View>
   );
 }
@@ -41,7 +42,7 @@ const dropdownStyles = {
   backgroundColor: '#26262F',
   borderColor: '#666680',
   borderWidth: 2,
-  borderRadius: 10,
+  borderRadius: 8,
   padding: 10,
 };
 

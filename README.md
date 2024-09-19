@@ -30,6 +30,7 @@ ave the necessary data.
 - [React Native Raw bottom Sheet](https://github.com/nysamnang/react-native-raw-bottom-sheet)
 - [React Hook form](https://react-hook-form.com/)
 - [Zod](https://zod.dev/)
+- [Reac Native Calendars](https://github.com/wix/react-native-calendars)
 
 
 
