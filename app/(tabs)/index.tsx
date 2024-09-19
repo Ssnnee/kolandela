@@ -61,7 +61,7 @@ export default function Home() {
           }}
         />
           <View className='flex items-center justify-center top-20 absolute'>
-            <Text className='text-green text-xl'>Bétsia</Text>
+            <Text className='text-white text-xl'>Expenses</Text>
             <Text className='text-white text-xl'>{percentage}%</Text>
           </View>
 
@@ -93,22 +93,17 @@ export default function Home() {
 
         <TabScreen />
       </ScrollView>
-        <BottomSheet height={300} bottomSheetRef={bottomSheetRef}>
+        <BottomSheet height={200} bottomSheetRef={bottomSheetRef}>
         <View className='w-full h-full gap-5 justify-center items-center'>
           <ButtonCard
-            title='Ajouter une entrée'
-            onPress={() => bottomSheetRef.current.close()}
-            href={ LinkType.income  }
+            title='Add a transaction'
+            onPress={() => bottomSheetRef.current?.close()}
+            href={ LinkType.transaction }
           />
           <ButtonCard
-            title='Ajouter une dépenses '
-            onPress={() => bottomSheetRef.current.close()}
-            href={ LinkType.expenses  }
-          />
-          <ButtonCard
-            title='Plannifier une dépenses'
-            onPress={() => bottomSheetRef.current.close()}
-            href={ LinkType.plan  }
+            title='Plan a transaction'
+            onPress={() => bottomSheetRef.current?.close()}
+            href={ LinkType.plannedtransaction }
           />
         </View>
         </BottomSheet>
@@ -116,5 +111,5 @@ export default function Home() {
   );
 }
 
-const mStyles = 'bg-background-variant rounded-3xl p-5 border-2 border-foreground'
+const mStyles = 'bg-background-variant rounded-3xl p-5'
 const tStyles = 'text-white text-center text-sm'

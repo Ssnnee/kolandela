@@ -1,11 +1,9 @@
 import { Link } from 'expo-router';
-import { forwardRef } from 'react';
 import { View, Text, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 export enum LinkType {
-  expenses = 'expenses',
-  income = 'income',
-  plan = 'plan',
+  transaction = 'transaction',
+  plannedtransaction = 'plannedtransaction',
 }
 
 type ButtonProps = {

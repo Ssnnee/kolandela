@@ -7,11 +7,12 @@ interface CustomDropdownProps {
   value: string;
   onChange: (value: string) => void;
   error?: string;
+  search?: boolean;
 }
 
 export function CustomDropdown(
   {
-    label, data, value, onChange, error }: CustomDropdownProps
+    label, data, value, onChange, search, error }: CustomDropdownProps
 ) {
   return (
     <View className="mb-5">
@@ -25,7 +26,7 @@ export function CustomDropdown(
         style={dropdownStyles}
         placeholderStyle={{ color: '#666680' }}
         selectedTextStyle={{ color: '#FFFFFF' }}
-        search
+        search={search}
         searchPlaceholder={`Search ${label.toLowerCase()}`}
         inputSearchStyle={{ color: '#FFFFFF', borderRadius: 8 }}
         itemContainerStyle={ { borderRadius: 8 } }
@@ -40,7 +41,6 @@ export function CustomDropdown(
 
 const dropdownStyles = {
   backgroundColor: '#26262F',
-  borderColor: '#666680',
   borderWidth: 2,
   borderRadius: 8,
   padding: 10,

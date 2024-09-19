@@ -1,64 +1,63 @@
+import React, { useRef, useState } from "react";
 import { Text, View, TextInput, TouchableOpacity } from "react-native";
 import { Calendar } from 'react-native-calendars';
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import BottomSheet from "./BottomSheet";
-import { useRef, useState } from "react";
 import { CustomDropdown } from "./CustomDropdown";
 import Button from "./Button";
+import Checkbox from "./CheckBox";
 import { Stack } from "expo-router";
 
-export const transactionSchema = z.object({
+const RecurringFrequency = z.enum(["DAILY", "WEEKLY", "MONTHLY", "YEARLY"]);
+
+const plannedTransitionSchema = z.object({
   id: z.string(),
-  description: z.string()
-    .min(3, { message: "Name must be at least 3 characters long" })
-    .max(20, { message: "Name must be at most 50 characters long" }),
+  user_id: z.number(),
   date: z.date(),
-  amount: z.number().positive({ message: "Amount must be a positive number" }),
-  category: z.string()
-    .min(3, { message: "Category must be at least 3 characters long" })
-    .max(20, { message: "Category must be at most 50 characters long" }),
-  type: z.enum(["INCOME", "EXPENSE"]),
-  paymentMethod: z.enum(["CASH", "CARD"]).optional(),
+  category: z.string().min(3).max(20),
+  description: z.string().min(3).max(50),
+  amount: z.number().positive(),
+  isRecurring: z.boolean(),
+  frequency: RecurringFrequency.optional(),
+  isExecuted: z.boolean(),
+  lastExecutionDate: z.date().optional(),
 });
 
 const categories = [
   { label: "Food", value: "FOOD" },
   { label: "Rent", value: "RENT" },
-  { label: "Salary", value: "SALARY" },
   { label: "Transport", value: "TRANSPORT" },
   { label: "Utilities", value: "UTILITIES" },
   { label: "Other", value: "OTHER" },
 ];
 
-const paymentMethods = [
-  { label: "Cash", value: "CASH" },
-  { label: "Card", value: "CARD" },
+const frequencyOptions = [
+  { label: "Daily", value: "DAILY" },
+  { label: "Weekly", value: "WEEKLY" },
+  { label: "Monthly", value: "MONTHLY" },
+  { label: "Yearly", value: "YEARLY" },
 ];
 
-const types = [
-  { label: "Income", value: "INCOME" },
-  { label: "Expense", value: "EXPENSE" },
-];
-
-export default function TransactionForm() {
+export default function PlannedTransactionForm() {
   const bottomSheetRef = useRef();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const form = useForm<z.infer<typeof transactionSchema>>({
-    resolver: zodResolver(transactionSchema),
+  const form = useForm<z.infer<typeof plannedTransitionSchema>>({
+    resolver: zodResolver(plannedTransitionSchema),
     defaultValues: {
       id: Math.random().toString(36).substring(7),
-      description: "",
+      user_id: 1,
       date: new Date(),
-      amount: 0,
       category: "",
-      type: "EXPENSE",
-      paymentMethod: "CASH",
+      description: "",
+      amount: 0,
+      isRecurring: false,
+      isExecuted: false,
     },
   });
 
-  function onSubmit(values: z.infer<typeof transactionSchema>) {
+  function onSubmit(values: z.infer<typeof plannedTransitionSchema>) {
     console.log(values);
   }
 
@@ -73,7 +72,7 @@ export default function TransactionForm() {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-          title: 'New Transaction',
+          title: 'Plan Expense',
         }}
       />
       <View className='bg-background h-full'>
@@ -89,10 +88,10 @@ export default function TransactionForm() {
                   value={value}
                   placeholder='Description'
                   placeholderTextColor="#666680"
-                  maxLength={20}
+                  maxLength={50}
                 />
                 <Text className='text-foreground text-xs text-right mt-1'>
-                  {value.length}/20
+                  {value.length}/50
                 </Text>
               </View>
             )}
@@ -136,34 +135,6 @@ export default function TransactionForm() {
               />
             )}
             name='category'
-          />
-
-          <Controller
-            control={form.control}
-            render={({ field: { onChange, value } }) => (
-              <CustomDropdown
-                label="Type"
-                data={types}
-                value={value}
-                onChange={onChange}
-                error={form.formState.errors.type?.message}
-              />
-            )}
-            name='type'
-          />
-
-          <Controller
-            control={form.control}
-            render={({ field: { onChange, value } }) => (
-              <CustomDropdown
-                label="Payment Method"
-                data={paymentMethods}
-                value={value ?? "CASH"}
-                onChange={onChange}
-                error={form.formState.errors.paymentMethod?.message}
-              />
-            )}
-            name='paymentMethod'
           />
 
           <Controller
@@ -217,8 +188,46 @@ export default function TransactionForm() {
             <Text className='text-red'>{form.formState.errors.date.message}</Text>
           )}
 
+          <Controller
+            control={form.control}
+            render={({ field: { onChange, value } }) => (
+              <View className="bg-background-variant p-3 rounded flex-row items-center justify-between">
+                <Text className="text-white">Is Recurring</Text>
+                <Checkbox checked={value} onChange={onChange} />
+              </View>
+            )}
+            name='isRecurring'
+          />
+
+          {form.watch('isRecurring') && (
+            <Controller
+              control={form.control}
+              render={({ field: { onChange, value } }) => (
+                <CustomDropdown
+                  label="Frequency"
+                  data={frequencyOptions}
+                  value={value ?? ""}
+                  onChange={onChange}
+                  error={form.formState.errors.frequency?.message}
+                />
+              )}
+              name='frequency'
+            />
+          )}
+
+          <Controller
+            control={form.control}
+            render={({ field: { onChange, value } }) => (
+              <View className="bg-background-variant p-3 rounded flex-row items-center justify-between">
+                <Text className="text-white">Is Executed</Text>
+                <Checkbox checked={value} onChange={onChange} />
+              </View>
+            )}
+            name='isExecuted'
+          />
+
           <Button
-            title="Submit"
+            title="Save Planned Expense"
             onPress={form.handleSubmit(onSubmit)}
           />
         </View>
