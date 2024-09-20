@@ -1,59 +1,44 @@
 import { Stack } from 'expo-router';
-import { useRef } from 'react';
-import { Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import BottomSheet from '~/components/BottomSheet';
-import { ButtonCard } from '~/components/ButtonCard';
-import Header from '~/components/Header';
+import { ScrollView, Text, View } from 'react-native';
 import ChartSwitcher from '~/components/ChartSwitcher';
 import YearCard from '~/components/YearCard';
 
 export default function CalendarPage() {
-  const bottomSheetRef = useRef();
+  const years = [
+    { date: new Date(2023, 0, 1), total: 5000 },
+    { date: new Date(2022, 0, 1), total: -1500 },
+    { date: new Date(2021, 0, 1), total: 3000 },
+  ];
   return (
     <>
-      <Stack.Screen  options={{ title: '', header() {
-        return (
-          <Header
-            title="Écran d'ajout"
-            bgColor='background'
-            textColor='foreground'
-            onPress={() => bottomSheetRef.current.open()}
-          />
-        );
-      },}}
-    />
+      <Stack.Screen
+        options={{
+          headerStyle: {
+            backgroundColor: '#0E0E12',
+          },
+          headerTintColor: '#ffffff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          title: 'Overview',
+        }}
+      />
       <ScrollView className='bg-background' >
         <View className='flex-1 p-5 items-center'>
           <Text className='text-white text-center text-xl font-bold'>
-          Représentation graphique des dépenses de l'année en cours
+            Graphical Overview
         </Text>
           <ChartSwitcher />
           <View className='justify-between pb-5 items-center'>
-            <Text className='text-white font-bold'>Annéé précédente </Text>
+            <Text className='text-white font-bold'> Passed years </Text>
           </View>
           <ScrollView>
           <View className='flex-row flex-wrap gap-2 py-5 justify-center items-center' >
-            <YearCard date={ new Date(2014, 1, 11) } />
-            <YearCard date={ new Date(2015, 1, 11) } />
-            <YearCard date={ new Date(2016, 1, 11) } />
-            <YearCard date={ new Date(2017, 1, 11) } />
-            <YearCard date={ new Date(2017, 1, 11) } />
-            <YearCard date={ new Date(2017, 1, 11) } />
-            <YearCard date={ new Date(2017, 1, 11) } />
-            <YearCard date={ new Date(2018, 1, 11) } />
-            <YearCard date={ new Date(2019, 7, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2019, 1, 11) } />
-            <YearCard date={ new Date(2029, 8, 8) } />
+            {years.map((year, index) => (
+              <YearCard key={index} date={year.date} total={year.total} />
+            ))}
           </View>
           </ScrollView>
-          <BottomSheet bottomSheetRef={bottomSheetRef}>
-            <View className='h-full gap-5 justify-center items-center'>
-              <Text className='text-white'>Remplissez les champs suivants</Text>
-              <ButtonCard title='Ajouter une catégorie' />
-            </View>
-          </BottomSheet>
         </View>
       </ScrollView >
       </>

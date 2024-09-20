@@ -1,99 +1,147 @@
+import React, { useState, useEffect } from 'react';
 import { Stack } from 'expo-router';
-import { useRef } from 'react';
-import { Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import BottomSheet from '~/components/BottomSheet';
-import { ButtonCard } from '~/components/ButtonCard';
-import Header from '~/components/Header';
-import {
-  ProgressChart,
-} from "react-native-chart-kit";
+import { Dimensions, ScrollView, Text, View } from 'react-native';
+import { ProgressChart } from "react-native-chart-kit";
 import CategoryCard from '~/components/CategoryCard';
+import { fetchTransactions } from '~/api/transactions';
+import { Transaction } from '~/types';  // Make sure this path is correct
+
+type ChartData = {
+  labels: string[];
+  data: number[];
+  colors: string[];
+};
+
+type CategoryData = ChartData & {
+  categoryCards: {
+    title: string;
+    total: number;
+    percentage: number;
+    color: string;
+  }[];
+};
 
 export default function CategoryPage() {
-  const income = 100000;
-  const expenses = 100;
-  const percentage = (expenses / income) * 100;
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const data = {
-    labels: ["Transport", "Divertissement", "Securité"], // optional
-    data: [0.4, 0.6, 0.8],
-    colors: [
-      "red",
-      "green",
-      "#AD7BFF",
-      "rgba(60, 179, 113,0.2)",
-      "rgba(255, 172, 71 , 0.3)",
-    ],
+  useEffect(() => {
+    const loadTransactions = async () => {
+      try {
+        const data = await fetchTransactions();
+        setTransactions(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
+        setLoading(false);
+      }
+    };
+
+    loadTransactions();
+  }, []);
+
+  const calculateCategoryData = (): CategoryData => {
+    const categoryTotals = transactions.reduce<Record<string, number>>((acc, transaction) => {
+      if (transaction.type === 'EXPENSE') {
+        acc[transaction.category] = (acc[transaction.category] || 0) + transaction.amount;
+      }
+      return acc;
+    }, {});
+
+    const totalExpenses = Object.values(categoryTotals).reduce((sum, amount) => sum + amount, 0);
+
+    const sortedCategories = Object.entries(categoryTotals)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 3);
+
+    const colors = ["#FF7966", "#00FAD9", "#AD7BFF"];
+
+    return {
+      labels: sortedCategories.map(([category]) => category),
+      data: sortedCategories.map(([, amount]) => amount / totalExpenses),
+      colors,
+      categoryCards: sortedCategories.map(([category, amount], index) => ({
+        title: category,
+        total: amount,
+        percentage: Math.round((amount / totalExpenses) * 100),
+        color: colors[index],
+      })),
+    };
   };
-  const bottomSheetRef = useRef();
+
+  const { labels, data, colors, categoryCards } = calculateCategoryData();
+
+  const totalIncome = transactions
+    .filter(t => t.type === 'INCOME')
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const totalExpenses = transactions
+    .filter(t => t.type === 'EXPENSE')
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const percentage = totalIncome > 0 ? (totalExpenses / totalIncome) * 100 : 0;
+
+  if (loading) return <View><Text>Loading...</Text></View>;
+  if (error) return <View><Text>Error: {error}</Text></View>;
+
+  const chartData: ChartData = {
+    labels,
+    data,
+    colors,
+  };
+
   return (
     <>
-      <Stack.Screen  options={{ title: '', header() {
-        return (
-          <Header
-            title="Écran d'ajout"
-            bgColor='background'
-            textColor='foreground'
-            onPress={() => bottomSheetRef.current.open()}
-          />
-        );
-      },}}
-    />
-        <View className='flex-1 bg-background p-5 items-center'>
-          <ProgressChart
-          data={data}
-          width={Dimensions.get("window").width - 10}
+      <Stack.Screen
+        options={{
+          headerStyle: {
+            backgroundColor: '#0E0E12',
+          },
+          headerTintColor: '#ffffff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          title: 'Category',
+        }}
+      />
+      <View style={{ flex: 1, backgroundColor: '#0E0E12', padding: 20, alignItems: 'center' }}>
+        <ProgressChart
+          data={chartData}
+          width={Dimensions.get("window").width - 40}
           height={170}
           strokeWidth={8}
-          hideLegend={true}
-          withCustomBarColorFromData={true}
           radius={35}
           chartConfig={{
-            useShadowColorFromDataset: false,
             backgroundGradientFrom: "#0E0E12",
             backgroundGradientTo: "#0E0E11",
             color: (opacity = 1) => `rgba(255, 121, 102, ${opacity})`,
           }}
+          hideLegend={true}
+          withCustomBarColorFromData={true}
           style={{ marginVertical: 8, borderRadius: 10 }}
         />
-        <View className='w-full bg-background items-center p-5 rounded-3xl border-2 border-foreground'>
-            <Text className='text-white'>
-              { (percentage > 90) ?
-                'Vous êtes en danger' :
-                (percentage > 50) ?
-                'Vous dépensez beaucoup' :
-                'Vous êtes dans la moyenne'
-              }
-            </Text>
+        <View className='w-full my-2 items-center border-2 rounded-3xl border-foreground p-5'>
+          <Text style={{ color: '#ffffff' }}>
+            {percentage > 90
+              ? 'You are spending too much'
+              : percentage > 50
+              ? 'You are above average'
+              : 'You are doing great'}
+          </Text>
         </View>
-          <ScrollView>
-          <CategoryCard
-            title='Transport'
-            total={10088}
-            percentage={40}
-            color='#FF7966'
-          />
-          <CategoryCard
-            title='Divertissement'
-            total={79898}
-            percentage={80}
-            color='#00FAD9'
-          />
-          <CategoryCard
-            title='Securité'
-            total={79898}
-            percentage={60}
-            color='#AD7BFF'
-          />
-          </ScrollView>
-        <BottomSheet bottomSheetRef={bottomSheetRef}>
-          <View className='h-full gap-5 justify-center items-center'>
-            <Text className='text-white'>Remplissez les champs suivants</Text>
-            <ButtonCard title='Ajouter une catégorie' />
-          </View>
-        </BottomSheet>
-        </View>
-      </>
+        <ScrollView>
+          {categoryCards.map((card, index) => (
+            <CategoryCard
+              key={index}
+              title={card.title}
+              total={card.total}
+              percentage={card.percentage}
+              color={card.color}
+            />
+          ))}
+        </ScrollView>
+      </View>
+    </>
   );
 }
-

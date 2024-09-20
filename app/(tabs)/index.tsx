@@ -1,15 +1,16 @@
 import { Stack } from 'expo-router';
-import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
-import { Dimensions } from "react-native";
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
 import { ProgressChart } from "react-native-chart-kit";
 import BottomSheet from '~/components/BottomSheet';
 import { ButtonCard, LinkType } from '~/components/ButtonCard';
 import Header from '~/components/Header';
 import TabScreen from '~/components/TabScreen';
+import HomeCardInfo from '~/components/HomeCardInfo';
+import { fetchTransactions } from '~/api/transactions';
+import { Transaction } from '~/types';
 
 const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
 
 const chartConfig = {
   useShadowColorFromDataset: false,
@@ -19,97 +20,115 @@ const chartConfig = {
 };
 
 export default function Home() {
-  const income = 100000;
-  const expenses = 100;
-  const percentage = (expenses / income) * 100;
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [income, setIncome] = useState(0);
+  const [expenses, setExpenses] = useState(0);
+  const [savings, setSavings] = useState(0);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      const transactionsData: Transaction[] = await fetchTransactions();
+      setTransactions(transactionsData);
+
+      // Calculate income, expenses, and savings
+      const totalIncome = transactionsData
+        .filter(transaction => transaction.type === 'INCOME')
+        .reduce((sum, transaction) => sum + transaction.amount, 0);
+
+      const totalExpenses = transactionsData
+        .filter(transaction => transaction.type === 'EXPENSE')
+        .reduce((sum, transaction) => sum + transaction.amount, 0);
+
+      const totalSavings = totalIncome - totalExpenses;
+
+      setIncome(totalIncome);
+      setExpenses(totalExpenses);
+      setSavings(totalSavings);
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+    }
+  };
+
+  const percentage = income > 0 ? (expenses / income) * 100 : 0;
 
   const data = {
     labels: ["Expenses"],
     data: [(percentage / 100)],
   };
 
-  const [isScrolling, setIsScrolling] = React.useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
   const bottomSheetRef = React.useRef();
-
 
   return (
     <>
-      <Stack.Screen  options={{ title: '', header() {
-        return (
-          <Header
-              title="Accueil"
-              bgColor='background'
-              textColor='white'
+      <Stack.Screen
+        options={{
+          headerStyle: {
+            backgroundColor: '#0E0E12',
+          },
+          headerTintColor: '#ffffff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          title: 'Home',
+          headerRight: () => (
+            <TouchableOpacity
               onPress={() => bottomSheetRef.current.open()}
-          />
-        );
-      },}}
+              className='h-8 w-8 right-5 items-center justify-center rounded-full bg-transparent border-2 border-foreground '
+            >
+              <Text className='text-foreground font-bold'>+</Text>
+            </TouchableOpacity>
+          ),
+        }}
       />
-      <ScrollView
-      >
-        <View className='bg-background pb-8 items-center'>
-
+      <ScrollView>
+        <View className="bg-background pb-8 items-center">
+          {/* Chart */}
           <ProgressChart
-          data={data}
-          width={screenWidth}
-          height={200}
-          strokeWidth={8}
-          radius={80}
-          chartConfig={chartConfig}
-          hideLegend={true}
-          style={{
-          }}
-        />
-          <View className='flex items-center justify-center top-20 absolute'>
-            <Text className='text-white text-xl'>Expenses</Text>
-            <Text className='text-white text-xl'>{percentage}%</Text>
+            data={data}
+            width={screenWidth}
+            height={200}
+            strokeWidth={8}
+            radius={80}
+            chartConfig={chartConfig}
+            hideLegend={true}
+            style={{}}
+          />
+          <View className="flex items-center justify-center top-20 absolute">
+            <Text className="text-white text-xl">Expenses</Text>
+            <Text className="text-white text-xl">{percentage.toFixed(2)}%</Text>
           </View>
 
-          <View className='flex-row items-center justify-center gap-4 '>
-
-            <View className={mStyles}>
-              <Text className='text-grey-40 font-bold text-center '>
-              Revenus
-            </Text>
-              <Text className={tStyles}>100 000</Text>
-            </View>
-
-            <View className={mStyles}>
-              <Text className='text-grey-40 font-bold text-center '>
-              Dépenses
-            </Text>
-              <Text className={tStyles}>100</Text>
-            </View>
-
-            <View className={mStyles}>
-              <Text className='text-grey-40 font-bold text-center '>
-              Économies
-            </Text>
-              <Text className={tStyles}> 1 978 998 900</Text>
-            </View>
-
+          <View className="flex-row items-center justify-center gap-4 ">
+            <HomeCardInfo title="Incomes" total={income} />
+            <HomeCardInfo title="Expenses" total={expenses} />
+            <HomeCardInfo title="Savings" total={savings} />
           </View>
         </View>
 
         <TabScreen />
+
       </ScrollView>
-        <BottomSheet height={200} bottomSheetRef={bottomSheetRef}>
-        <View className='w-full h-full gap-5 justify-center items-center'>
+
+      <BottomSheet height={200} bottomSheetRef={bottomSheetRef}>
+        <View className="w-full h-full gap-5 justify-center items-center">
           <ButtonCard
-            title='Add a transaction'
+            title="Add a transaction"
             onPress={() => bottomSheetRef.current?.close()}
-            href={ LinkType.transaction }
+            href={LinkType.transaction}
           />
           <ButtonCard
-            title='Plan a transaction'
+            title="Plan a transaction"
             onPress={() => bottomSheetRef.current?.close()}
-            href={ LinkType.plannedtransaction }
+            href={LinkType.plannedtransaction}
           />
         </View>
-        </BottomSheet>
+      </BottomSheet>
     </>
   );
 }
 
-const mStyles = 'bg-background-variant rounded-3xl p-5'
-const tStyles = 'text-white text-center text-sm'

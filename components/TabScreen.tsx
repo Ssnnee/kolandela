@@ -18,7 +18,7 @@ export default function TabScreen() {
 
   const buttons: TabButtonType[] = [
     { title: 'Transactions' },
-    { title: 'Planifications' },
+    { title: 'Plan' },
   ];
 
   useEffect(() => {

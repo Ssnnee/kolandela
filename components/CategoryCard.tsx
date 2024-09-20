@@ -10,7 +10,7 @@ type CategoryCardProps = {
 export default function CategoryCard({ title, total, percentage, color }: CategoryCardProps) {
   return (
     <TouchableOpacity
-      className='w-full bg-background-variant gap-5 items-center my-5 p-5 rounded-3xl border-2 border-foreground'
+      className='w-full bg-background-variant gap-5 items-center my-2 p-5 rounded-3xl'
     >
       <View className='flex-row items-center justify-between w-full'>
         <Text className='text-white font-bold text-xl'>{title}</Text>

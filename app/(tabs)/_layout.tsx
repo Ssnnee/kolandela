@@ -3,7 +3,6 @@ import { Image,  View } from 'react-native'
 import homeIcon from '../../assets/icons/Home.png'
 import budgetIcon from '../../assets/icons/Budgets.png'
 import calendarIcon from '../../assets/icons/Calendar.png'
-import creditCardIcon from '../../assets/icons/CreditCards.png'
 
 
 
@@ -14,15 +13,10 @@ export default function TabLayout() {
         headerShown: false,
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
-          position: 'absolute',
-          bottom: 20,
-          left: 20,
-          right: 20,
           elevation: 0,
           backgroundColor: '#0E0E12',
-          borderRadius: 15,
           height: 60,
-          borderColor: 'transparent',
+          borderColor: '#666680',
         },
 
         headerStyle: {
@@ -37,6 +31,9 @@ export default function TabLayout() {
         options={{
           title: '',
           headerShown: true,
+          tabBarLabel() {
+            return <View></View>
+          },
           tabBarIcon : ({focused}) => (
             <View className="" >
               <Image
@@ -58,6 +55,9 @@ export default function TabLayout() {
         options={{
           title: '',
           headerShown: true,
+          tabBarLabel() {
+            return <View></View>
+          },
           tabBarIcon : ({focused}) => (
             <View className="" >
               <Image
@@ -79,6 +79,9 @@ export default function TabLayout() {
         options={{
           title: '',
           headerShown: true,
+          tabBarLabel() {
+            return <View></View>
+          },
           tabBarIcon : ({focused}) => (
             <View className="" >
               <Image

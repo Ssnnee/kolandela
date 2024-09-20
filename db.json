@@ -70,7 +70,7 @@
       "amount": 1200,
       "isRecurring": true,
       "frequency": "MONTHLY",
-      "isExecuted": true
+      "isExecuted": false
     },
     {
       "id": "pt2",
@@ -81,7 +81,7 @@
       "amount": 15.99,
       "isRecurring": true,
       "frequency": "MONTHLY",
-      "isExecuted": false,
+      "isExecuted": true,
       "lastExecutionDate": "2024-08-25T00:00:00Z"
     },
     {
@@ -102,7 +102,7 @@
       "description": "Grocery shopping",
       "amount": 75.5,
       "isRecurring": false,
-      "isExecuted": false
+      "isExecuted": true
     },
     {
       "id": "pt5",

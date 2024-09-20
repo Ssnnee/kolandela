@@ -27,7 +27,7 @@ const PlannedExpenseCard: React.FC<PlannedExpenseCardProps> = ({
 
   return (
     <TouchableOpacity onPress={handlePress}>
-      <View className='w-full flex-row items-center justify-between p-5 rounded-3xl border-foreground border-2 mb-4'>
+      <View className='w-full flex-row items-center justify-between p-5 rounded-3xl border-foreground border-2 mb-2'>
         <View>
           <Text className='text-white font-bold'>{description}</Text>
           <Text className='text-violate'>
