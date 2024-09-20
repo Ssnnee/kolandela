@@ -2,28 +2,13 @@ import React, { useRef, useState } from "react";
 import { Text, View, TextInput, TouchableOpacity } from "react-native";
 import { Calendar } from 'react-native-calendars';
 import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import BottomSheet from "./BottomSheet";
 import { CustomDropdown } from "./CustomDropdown";
 import Button from "./Button";
 import Checkbox from "./CheckBox";
 import { Stack } from "expo-router";
-
-const RecurringFrequency = z.enum(["DAILY", "WEEKLY", "MONTHLY", "YEARLY"]);
-
-const plannedTransitionSchema = z.object({
-  id: z.string(),
-  user_id: z.number(),
-  date: z.date(),
-  category: z.string().min(3).max(20),
-  description: z.string().min(3).max(50),
-  amount: z.number().positive(),
-  isRecurring: z.boolean(),
-  frequency: RecurringFrequency.optional(),
-  isExecuted: z.boolean(),
-  lastExecutionDate: z.date().optional(),
-});
+import { createPlannedTransaction } from "~/api/transactions";
+import { PlannedTransaction } from "~/types";
 
 const categories = [
   { label: "Food", value: "FOOD" },
@@ -43,8 +28,7 @@ const frequencyOptions = [
 export default function PlannedTransactionForm() {
   const bottomSheetRef = useRef();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const form = useForm<z.infer<typeof plannedTransitionSchema>>({
-    resolver: zodResolver(plannedTransitionSchema),
+  const form = useForm<PlannedTransaction>({
     defaultValues: {
       id: Math.random().toString(36).substring(7),
       user_id: 1,
@@ -57,8 +41,13 @@ export default function PlannedTransactionForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof plannedTransitionSchema>) {
+  function onSubmit(values: PlannedTransaction) {
     console.log(values);
+    try {
+      createPlannedTransaction(values);
+    } catch (error) {
+      console.error("Error creating planned transaction:", error);
+    }
   }
 
   return (
@@ -76,7 +65,7 @@ export default function PlannedTransactionForm() {
         }}
       />
       <View className='bg-background h-full'>
-        <View className='w-full p-5 gap-2'>
+        <View className='w-full gap-5'>
           <Controller
             control={form.control}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -229,6 +218,7 @@ export default function PlannedTransactionForm() {
           <Button
             title="Save Planned Expense"
             onPress={form.handleSubmit(onSubmit)}
+            className="mt-4"
           />
         </View>
       </View>

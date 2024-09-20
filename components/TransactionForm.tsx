@@ -1,27 +1,13 @@
 import { Text, View, TextInput, TouchableOpacity } from "react-native";
 import { Calendar } from 'react-native-calendars';
 import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import BottomSheet from "./BottomSheet";
 import { useRef, useState } from "react";
 import { CustomDropdown } from "./CustomDropdown";
 import Button from "./Button";
 import { Stack } from "expo-router";
-
-export const transactionSchema = z.object({
-  id: z.string(),
-  description: z.string()
-    .min(3, { message: "Name must be at least 3 characters long" })
-    .max(20, { message: "Name must be at most 50 characters long" }),
-  date: z.date(),
-  amount: z.number().positive({ message: "Amount must be a positive number" }),
-  category: z.string()
-    .min(3, { message: "Category must be at least 3 characters long" })
-    .max(20, { message: "Category must be at most 50 characters long" }),
-  type: z.enum(["INCOME", "EXPENSE"]),
-  paymentMethod: z.enum(["CASH", "CARD"]).optional(),
-});
+import { createTransaction } from "~/api/transactions";
+import { Transaction } from "~/types";
 
 const categories = [
   { label: "Food", value: "FOOD" },
@@ -45,8 +31,7 @@ const types = [
 export default function TransactionForm() {
   const bottomSheetRef = useRef();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const form = useForm<z.infer<typeof transactionSchema>>({
-    resolver: zodResolver(transactionSchema),
+  const form = useForm<Transaction>({
     defaultValues: {
       id: Math.random().toString(36).substring(7),
       description: "",
@@ -58,51 +43,57 @@ export default function TransactionForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof transactionSchema>) {
+  function onSubmit(values: Transaction) {
     console.log(values);
+    try {
+      createTransaction(values);
+      form.reset();
+    } catch (error) {
+      console.error('Error creating transaction:', error);
+    }
   }
 
   return (
     <>
       <Stack.Screen
-        options={{
-          headerStyle: {
-            backgroundColor: '#0E0E12',
-          },
-          headerTintColor: '#ffffff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-          title: 'New Transaction',
-        }}
-      />
-      <View className='bg-background h-full'>
-        <View className='w-full p-5 gap-2'>
-          <Controller
+      options={{
+        headerStyle: {
+          backgroundColor: '#0E0E12',
+        },
+        headerTintColor: '#ffffff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+        title: 'New Transaction',
+      }}
+    />
+        <View className='bg-background h-full'>
+          <View className='w-full gap-2'>
+            <Controller
             control={form.control}
             render={({ field: { onChange, onBlur, value } }) => (
               <View>
                 <TextInput
-                  className='w-full p-3 bg-background-variant rounded-lg text-white'
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  placeholder='Description'
-                  placeholderTextColor="#666680"
-                  maxLength={20}
-                />
-                <Text className='text-foreground text-xs text-right mt-1'>
-                  {value.length}/20
+                className='w-full p-3 bg-background-variant rounded-lg text-white'
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                placeholder='Description'
+                placeholderTextColor="#666680"
+                maxLength={20}
+              />
+                  <Text className='text-foreground text-xs text-right mt-1'>
+                    {value.length}/20
                 </Text>
-              </View>
+                </View>
             )}
             name='description'
           />
-          {form.formState.errors.description && (
-            <Text className='text-red'>{form.formState.errors.description.message}</Text>
-          )}
+            {form.formState.errors.description && (
+              <Text className='text-red'>{form.formState.errors.description.message}</Text>
+            )}
 
-          <Controller
+            <Controller
             control={form.control}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
@@ -120,11 +111,11 @@ export default function TransactionForm() {
             )}
             name='amount'
           />
-          {form.formState.errors.amount && (
-            <Text className='text-red'>{form.formState.errors.amount.message}</Text>
-          )}
+            {form.formState.errors.amount && (
+              <Text className='text-red'>{form.formState.errors.amount.message}</Text>
+            )}
 
-          <Controller
+            <Controller
             control={form.control}
             render={({ field: { onChange, value } }) => (
               <CustomDropdown
@@ -138,7 +129,7 @@ export default function TransactionForm() {
             name='category'
           />
 
-          <Controller
+            <Controller
             control={form.control}
             render={({ field: { onChange, value } }) => (
               <CustomDropdown
@@ -152,7 +143,7 @@ export default function TransactionForm() {
             name='type'
           />
 
-          <Controller
+            <Controller
             control={form.control}
             render={({ field: { onChange, value } }) => (
               <CustomDropdown
@@ -166,20 +157,20 @@ export default function TransactionForm() {
             name='paymentMethod'
           />
 
-          <Controller
+            <Controller
             control={form.control}
             render={({ field: { onChange, value } }) => (
               <TouchableOpacity
                 className="bg-background-variant rounded-lg p-3"
                 onPress={() => bottomSheetRef.current?.open()}
               >
-                <Text className='text-white mb-1'>
-                  {value instanceof Date
-                    ? value.toLocaleDateString()
-                    : 'Select Date'}
-                </Text>
-                <BottomSheet bottomSheetRef={bottomSheetRef}>
-                  <Calendar
+                  <Text className='text-white mb-1'>
+                    {value instanceof Date
+                      ? value.toLocaleDateString()
+                      : 'Select Date'}
+                  </Text>
+                  <BottomSheet bottomSheetRef={bottomSheetRef}>
+                    <Calendar
                     current={selectedDate.toISOString().split('T')[0]}
                     onDayPress={(day) => {
                       const newDate = new Date(day.dateString);
@@ -208,21 +199,22 @@ export default function TransactionForm() {
                       todayBackgroundColor: 'transparent',
                     }}
                   />
-                </BottomSheet>
-              </TouchableOpacity>
+                  </BottomSheet>
+                </TouchableOpacity>
             )}
             name='date'
           />
-          {form.formState.errors.date && (
-            <Text className='text-red'>{form.formState.errors.date.message}</Text>
-          )}
+            {form.formState.errors.date && (
+              <Text className='text-red'>{form.formState.errors.date.message}</Text>
+            )}
 
-          <Button
+            <Button
             title="Submit"
             onPress={form.handleSubmit(onSubmit)}
+            className="mt-4"
           />
+          </View>
         </View>
-      </View>
-    </>
+      </>
   );
 }
