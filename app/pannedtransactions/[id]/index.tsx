@@ -8,7 +8,7 @@ export default function TransactionPage() {
   return (
     <View className='bg-background h-full p-4'>
       <Text className='text-white text-base text-left text-gray-600 mb-4'>
-        Transaction ID: {id}
+        Here you can update or delete the transaction the selected transaction.
       </Text>
       <PlannedTransactionUpdateDelete id={id} />
     </View>

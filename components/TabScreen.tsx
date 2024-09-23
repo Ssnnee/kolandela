@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, ScrollView } from 'react-native';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import TabButton, { TabButtonType } from './TabButton';
 import ExpenseCard from './ExpenseCard';
 import PlannedExpenseCard from './PlannedExpenseCard';
@@ -13,40 +14,33 @@ export enum Tab {
 
 export default function TabScreen() {
   const [selectedTab, setSelectedTab] = useState<Tab>(Tab.Expense);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [plannedTransactions, setPlannedTransactions] = useState<PlannedTransaction[]>([]);
+  const queryClient = useQueryClient();
 
   const buttons: TabButtonType[] = [
     { title: 'Transactions' },
     { title: 'Plan' },
   ];
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  const { data: transactions = [] } = useQuery<Transaction[]>({
+    queryKey: ['transactions'],
+    queryFn: fetchTransactions,
+  });
 
-  const loadData = async () => {
-    try {
-      const transactionsData: Transaction[] = await fetchTransactions();
-      const plannedTransactionsData: PlannedTransaction[] = await fetchPlannedTransactions();
-      setTransactions(transactionsData);
-      setPlannedTransactions(plannedTransactionsData);
-    } catch (error) {
-      console.error('Error loading data:', error);
-    }
-  };
+  const { data: plannedTransactions = [] } = useQuery<PlannedTransaction[]>({
+    queryKey: ['plannedTransactions'],
+    queryFn: fetchPlannedTransactions,
+  });
 
-  const handlePlannedTransactionCheckboxChange = async (id: string, value: boolean) => {
-    try {
-      await updatePlannedTransaction(id, { isExecuted: value });
-      setPlannedTransactions(prevState =>
-        prevState.map(transaction =>
-          transaction.id === id ? { ...transaction, isExecuted: value } : transaction
-        )
-      );
-    } catch (error) {
-      console.error('Error updating planned transaction:', error);
-    }
+  const updatePlannedTransactionMutation = useMutation({
+    mutationFn: ({ id, isExecuted }: { id: string; isExecuted: boolean }) =>
+      updatePlannedTransaction(id, { isExecuted }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['plannedTransactions'] });
+    },
+  });
+
+  const handlePlannedTransactionCheckboxChange = (id: string, value: boolean) => {
+    updatePlannedTransactionMutation.mutate({ id, isExecuted: value });
   };
 
   return (
@@ -89,4 +83,3 @@ export default function TabScreen() {
     </View>
   );
 }
-

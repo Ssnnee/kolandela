@@ -6,35 +6,25 @@
       "description": "Grocery shopping",
       "date": "2024-09-19T10:00:00Z",
       "amount": 75.5,
-      "category": "Food",
+      "category": "UTILITIES",
       "type": "EXPENSE",
       "paymentMethod": "CARD"
     },
     {
       "id": "2",
       "user_id": 1,
-      "description": "Salary deposit",
+      "description": "Salary deposit ",
       "date": "2024-09-15T09:00:00Z",
       "amount": 3000,
       "category": "Income",
       "type": "INCOME"
     },
     {
-      "id": "3",
-      "user_id": 1,
-      "description": "Restaurant dinner",
-      "date": "2024-09-18T19:30:00Z",
-      "amount": 45.75,
-      "category": "Entertainment",
-      "type": "EXPENSE",
-      "paymentMethod": "CASH"
-    },
-    {
       "id": "4",
       "user_id": 1,
       "description": "Monthly rent payment",
       "date": "2024-09-01T00:00:00Z",
-      "amount": 1200,
+      "amount": 120,
       "category": "Bills",
       "type": "EXPENSE",
       "paymentMethod": "BANK_TRANSFER"
@@ -50,14 +40,13 @@
       "paymentMethod": "CARD"
     },
     {
-      "id": "6",
-      "user_id": 1,
-      "description": "Christmas shopping",
-      "date": "2024-12-25T00:00:00Z",
-      "amount": 300,
-      "category": "Gifts",
+      "id": "pbqqoe",
+      "description": "Salade 🥗 ",
+      "date": "2024-09-20T00:00:00.000Z",
+      "amount": 1666,
+      "category": "FOOD",
       "type": "EXPENSE",
-      "paymentMethod": "CARD"
+      "paymentMethod": "CASH"
     }
   ],
   "plannedTransactions": [
@@ -65,7 +54,7 @@
       "id": "pt1",
       "user_id": 1,
       "date": "2024-10-01T00:00:00Z",
-      "category": "Bills",
+      "category": "FOOD",
       "description": "Monthly rent payment",
       "amount": 1200,
       "isRecurring": true,
@@ -90,7 +79,7 @@
       "date": "2024-12-25T00:00:00Z",
       "category": "Gifts",
       "description": "Christmas shopping",
-      "amount": 300,
+      "amount": 30,
       "isRecurring": false,
       "isExecuted": false
     },
@@ -110,7 +99,7 @@
       "date": "2024-09-18T19:30:00Z",
       "category": "Entertainment",
       "description": "Restaurant dinner",
-      "amount": 45.75,
+      "amount": 466,
       "isRecurring": false,
       "isExecuted": true
     }

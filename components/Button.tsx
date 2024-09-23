@@ -44,7 +44,7 @@ const Button: React.FC<ButtonProps> = ({
         onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        className={`h-14 mb-2 flex justify-center items-center rounded-full ${className}`}
+        className={`h-14  flex justify-center items-center rounded-full ${className}`}
         style={{ backgroundColor }}
         {...props}
       >

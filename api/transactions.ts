@@ -1,3 +1,4 @@
+import { string } from 'zod';
 import { Transaction, PlannedTransaction } from '../types';
 
 const API_BASE_URL = 'http://192.168.100.11:3000';
@@ -82,7 +83,7 @@ export async function createTransaction(data: Transaction) {
   }
 }
 
-export async function updatePlannedTransaction(id: string, data: Partial<PlannedTransaction>) {
+export async function updatePlannedTransaction(id: string | string[] , data: Partial<PlannedTransaction>) {
   try {
     const response = await fetch(`${API_BASE_URL}/plannedTransactions/${id}`, {
       method: 'PATCH',
@@ -105,7 +106,7 @@ export async function updatePlannedTransaction(id: string, data: Partial<Planned
   }
 }
 
-export async function updateTransaction(id: string, data: Partial<Transaction>) {
+export async function updateTransaction(id: string | string[], data: Partial<Transaction>) {
   try {
     const response = await fetch(`${API_BASE_URL}/transactions/${id}`, {
       method: 'PATCH',
@@ -128,7 +129,7 @@ export async function updateTransaction(id: string, data: Partial<Transaction>) 
   }
 }
 
-export async function deletePlannedTransaction(id: string) {
+export async function deletePlannedTransaction(id: string | string[]) {
   try {
     const response = await fetch(`${API_BASE_URL}/plannedTransactions/${id}`, {
       method: 'DELETE',
@@ -147,7 +148,7 @@ export async function deletePlannedTransaction(id: string) {
   }
 }
 
-export async function deleteTransaction(id: string) {
+export async function deleteTransaction(id: string | string[]) {
   try {
     const response = await fetch(`${API_BASE_URL}/transactions/${id}`, {
       method: 'DELETE',
@@ -162,6 +163,40 @@ export async function deleteTransaction(id: string) {
 
   } catch (error) {
     console.error('Error deleting transaction:', error);
+    throw error;
+  }
+}
+
+export async function getTransactionById(id: string | string[]) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/transactions/${id}`);
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    return data;
+
+  } catch (error) {
+    console.error('Error fetching transaction:', error);
+    throw error;
+  }
+}
+
+export async function getPlannedTransactionById(id: string | string[]) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/plannedTransactions/${id}`);
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    return data;
+
+  } catch (error) {
+    console.error('Error fetching planned transaction:', error);
     throw error;
   }
 }

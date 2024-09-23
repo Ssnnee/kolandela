@@ -26,7 +26,7 @@ const PlannedExpenseCard: React.FC<PlannedExpenseCardProps> = ({
   return (
     <Link
       href={{
-        pathname: "/transactions/[id]",
+        pathname: "/pannedtransactions/[id]",
         params: { id }
       }}
       asChild
@@ -36,7 +36,7 @@ const PlannedExpenseCard: React.FC<PlannedExpenseCardProps> = ({
           <View>
             <Text className='text-white font-bold'>{description}</Text>
             <Text className='text-violate'>
-              {capitalizeFirstLetters(format(date, 'EEE, dd MMM yyyy, HH:mm', { locale: fr })).replace(/\./g, '')}
+              {capitalizeFirstLetters(format(date, 'EEE, dd MMM yyyy', { locale: fr })).replace(/\./g, '')}
             </Text>
           </View>
           <View className='flex-row gap-4 items-center'>
