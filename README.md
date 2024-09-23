@@ -30,7 +30,7 @@ The json-server will start on port 3000. And you can speicfy the port with the `
 
 ```bash
 pn dlx json-server  db.json --port 3001
-``
+```
 
 Once the expo server is started, you can run the application on your device or on the web.
 
