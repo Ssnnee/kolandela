@@ -4,7 +4,15 @@ import { Dimensions, ScrollView, Text, View } from 'react-native';
 import { ProgressChart } from "react-native-chart-kit";
 import CategoryCard from '~/components/CategoryCard';
 import { fetchTransactions } from '~/api/transactions';
-import { Transaction } from '~/types';  // Make sure this path is correct
+import { Transaction } from '~/types';
+
+const categories = [
+  { label: "Food", value: "FOOD" },
+  { label: "Rent", value: "RENT" },
+  { label: "Transport", value: "TRANSPORT" },
+  { label: "Utilities", value: "UTILITIES" },
+  { label: "Other", value: "OTHER" },
+];
 
 type ChartData = {
   labels: string[];
@@ -51,22 +59,26 @@ export default function CategoryPage() {
 
     const totalExpenses = Object.values(categoryTotals).reduce((sum, amount) => sum + amount, 0);
 
-    const sortedCategories = Object.entries(categoryTotals)
-      .sort(([, a], [, b]) => b - a)
-      .slice(0, 3);
+    const colors = ["#FF7966", "#00FAD9", "#AD7BFF", "#F5A623", "#50E3C2"];
 
-    const colors = ["#FF7966", "#00FAD9", "#AD7BFF"];
+    const allCategories = categories.map((category, index) => {
+      const amount = categoryTotals[category.value] || 0;
+      return {
+        title: category.label,
+        total: amount,
+        percentage: totalExpenses > 0 ? (amount / totalExpenses) * 100 : 0,
+        color: colors[index % colors.length],
+      };
+    });
+
+    const labels = allCategories.map(cat => cat.title);
+    const data = allCategories.map(cat => cat.percentage / 100);
 
     return {
-      labels: sortedCategories.map(([category]) => category),
-      data: sortedCategories.map(([, amount]) => amount / totalExpenses),
+      labels,
+      data,
       colors,
-      categoryCards: sortedCategories.map(([category, amount], index) => ({
-        title: category,
-        total: amount,
-        percentage: Math.round((amount / totalExpenses) * 100),
-        color: colors[index],
-      })),
+      categoryCards: allCategories,
     };
   };
 
@@ -145,3 +157,4 @@ export default function CategoryPage() {
     </>
   );
 }
+
