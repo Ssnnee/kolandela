@@ -1,3 +1,5 @@
+![Illustration](./assets/illustration.png)
+
 # Kolandéla
 
 Kolandéla is an application for managing and planning expenses.
@@ -58,4 +60,5 @@ Once the expo server is started, you can run the application on your device or o
 - [Zod](https://zod.dev/)
 - [Reac Native Calendars](https://github.com/wix/react-native-calendars)
 - [JSON server](https://github.com/typicode/json-server)
+
 
