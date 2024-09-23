@@ -1,8 +1,6 @@
 import {  Tabs } from "expo-router";
-import { Image,  View } from 'react-native'
-import homeIcon from '../../assets/icons/Home.png'
-import budgetIcon from '../../assets/icons/Budgets.png'
-import calendarIcon from '../../assets/icons/Calendar.png'
+import { ChartNoAxesColumn, Home, Layers3 } from "lucide-react-native";
+import { View } from 'react-native'
 
 
 
@@ -35,17 +33,7 @@ export default function TabLayout() {
             return <View></View>
           },
           tabBarIcon : ({focused}) => (
-            <View className="" >
-              <Image
-              source={homeIcon}
-              resizeMode="contain"
-              style={{
-                width: 18,
-                height: 18,
-                tintColor: focused ? 'white' : '#A2A2B5',
-              }}
-            />
-              </View>
+            <Home color={focused ? 'white' : '#A2A2B5'} size={24} />
           ),
         }}
       />
@@ -59,17 +47,7 @@ export default function TabLayout() {
             return <View></View>
           },
           tabBarIcon : ({focused}) => (
-            <View className="" >
-              <Image
-              source={budgetIcon}
-              resizeMode="contain"
-              style={{
-                width: 18,
-                height: 18,
-                tintColor: focused ? 'white' : '#A2A2B5',
-              }}
-            />
-              </View>
+            <Layers3 color={focused ? 'white' : '#A2A2B5'} size={24} />
           ),
         }}
       />
@@ -83,17 +61,7 @@ export default function TabLayout() {
             return <View></View>
           },
           tabBarIcon : ({focused}) => (
-            <View className="" >
-              <Image
-              source={calendarIcon}
-              resizeMode="contain"
-              style={{
-                width: 18,
-                height: 18,
-                tintColor: focused ? 'white' : '#A2A2B5',
-              }}
-            />
-              </View>
+            <ChartNoAxesColumn color={focused ? 'white' : '#A2A2B5'} size={24} />
           ),
         }}
       />
@@ -101,4 +69,3 @@ export default function TabLayout() {
       </Tabs>
   );
 }
-
