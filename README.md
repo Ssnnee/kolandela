@@ -28,14 +28,14 @@ To start the application, you need to start the json server and the expo server.
 Please make sure to add your own ip address in the `api/transactions.ts` file.
 
 ```bash
-pn dlx json-server  db.json
+pn json-server  db.json
 pnpm start
 ```
 
 The json-server will start on port 3000. And you can speicfy the port with the `--port` option.
 
 ```bash
-pn dlx json-server  db.json --port 3001
+pn json-server  db.json --port 3001
 ```
 
 Once the expo server is started, you can run the application on your device or on the web.
@@ -62,6 +62,8 @@ Once the expo server is started, you can run the application on your device or o
 - [Zod](https://zod.dev/)
 - [Reac Native Calendars](https://github.com/wix/react-native-calendars)
 - [JSON server](https://github.com/typicode/json-server)
+- [Sqlite](https://www.sqlite.org/index.html)
+- [Drizzle](https://orm.drizzle.team/docs/get-started/expo-new#step-4---create-a-table)
 
 
 ## Contributing
@@ -75,9 +77,7 @@ But I plan to write a Go backend [here](https://github.com/Ssnnee/kolandela_back
 
 ## Next Steps
 
-- [ ] Write the Go backend
 - [ ] Use react-query for data fetching everywhere
 - [ ] Add a search features
 - [ ] Add authentication or simply provide a way to back up data (such as a QR code, csv export etc.)
 - [ ] Add settings (such as light theme, currency, language)
-
