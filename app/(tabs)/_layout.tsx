@@ -1,71 +1,45 @@
-import {  Tabs } from "expo-router";
-import { ChartNoAxesColumn, Home, Layers3 } from "lucide-react-native";
-import { View } from 'react-native'
+import { Tabs } from 'expo-router';
+import React from 'react';
+import { Platform } from 'react-native';
 
-
+import { HapticTab } from '@/components/HapticTab';
+import { IconSymbol } from '@/components/ui/IconSymbol';
+import TabBarBackground from '@/components/ui/TabBarBackground';
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
+  const colorScheme = useColorScheme();
+
   return (
     <Tabs
       screenOptions={{
+        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarHideOnKeyboard: true,
-        tabBarStyle: {
-          elevation: 0,
-          backgroundColor: '#0E0E12',
-          height: 60,
-          borderColor: '#666680',
-        },
-
-        headerStyle: {
-          backgroundColor: '#4E4E61',
-          elevation: 0,
-        },
-
-      }}
-    >
-        <Tabs.Screen
-        name='index'
-        options={{
-          title: '',
-          headerShown: true,
-          tabBarLabel() {
-            return <View></View>
+        tabBarButton: HapticTab,
+        tabBarBackground: TabBarBackground,
+        tabBarStyle: Platform.select({
+          ios: {
+            // Use a transparent background on iOS to show the blur effect
+            position: 'absolute',
           },
-          tabBarIcon : ({focused}) => (
-            <Home color={focused ? 'white' : '#A2A2B5'} size={24} />
-          ),
+          default: {},
+        }),
+      }}>
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
         }}
       />
-
-        <Tabs.Screen
-        name='budget/index'
+      <Tabs.Screen
+        name="explore"
         options={{
-          title: '',
-          headerShown: true,
-          tabBarLabel() {
-            return <View></View>
-          },
-          tabBarIcon : ({focused}) => (
-            <Layers3 color={focused ? 'white' : '#A2A2B5'} size={24} />
-          ),
+          title: 'Explore',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
       />
-
-        <Tabs.Screen
-        name='calendar/index'
-        options={{
-          title: '',
-          headerShown: true,
-          tabBarLabel() {
-            return <View></View>
-          },
-          tabBarIcon : ({focused}) => (
-            <ChartNoAxesColumn color={focused ? 'white' : '#A2A2B5'} size={24} />
-          ),
-        }}
-      />
-
-      </Tabs>
+    </Tabs>
   );
 }

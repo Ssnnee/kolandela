@@ -1,134 +1,74 @@
-import { Stack } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
-import { ProgressChart } from "react-native-chart-kit";
-import BottomSheet from '~/components/BottomSheet';
-import { ButtonCard, LinkType } from '~/components/ButtonCard';
-import Header from '~/components/Header';
-import TabScreen from '~/components/TabScreen';
-import HomeCardInfo from '~/components/HomeCardInfo';
-import { fetchTransactions } from '~/api/transactions';
-import { Transaction } from '~/types';
+import { Image, StyleSheet, Platform } from 'react-native';
 
-const screenWidth = Dimensions.get("window").width;
+import { HelloWave } from '@/components/HelloWave';
+import ParallaxScrollView from '@/components/ParallaxScrollView';
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 
-const chartConfig = {
-  useShadowColorFromDataset: false,
-  backgroundGradientFrom: "#0E0E12",
-  backgroundGradientTo: "#0E0E11",
-  color: (opacity = 1) => `rgba(255, 121, 102, ${opacity})`,
-};
-
-export default function Home() {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [income, setIncome] = useState(0);
-  const [expenses, setExpenses] = useState(0);
-  const [savings, setSavings] = useState(0);
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    try {
-      const transactionsData: Transaction[] = await fetchTransactions();
-      setTransactions(transactionsData);
-
-      // Calculate income, expenses, and savings
-      const totalIncome = transactionsData
-        .filter(transaction => transaction.type === 'INCOME')
-        .reduce((sum, transaction) => sum + transaction.amount, 0);
-
-      const totalExpenses = transactionsData
-        .filter(transaction => transaction.type === 'EXPENSE')
-        .reduce((sum, transaction) => sum + transaction.amount, 0);
-
-      const totalSavings = totalIncome - totalExpenses;
-
-      setIncome(totalIncome);
-      setExpenses(totalExpenses);
-      setSavings(totalSavings);
-    } catch (error) {
-      console.error('Error fetching transactions:', error);
-    }
-  };
-
-  const percentage = income > 0 ? (expenses / income) * 100 : 0;
-
-  const data = {
-    labels: ["Expenses"],
-    data: [(percentage / 100)],
-  };
-
-  const [isScrolling, setIsScrolling] = useState(false);
-  const bottomSheetRef = React.useRef();
-
+export default function HomeScreen() {
   return (
-    <>
-      <Stack.Screen
-        options={{
-          headerStyle: {
-            backgroundColor: '#0E0E12',
-          },
-          headerTintColor: '#ffffff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-          title: 'Home',
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => bottomSheetRef.current.open()}
-              className='h-8 w-8 right-5 items-center justify-center rounded-full bg-transparent border-2 border-foreground '
-            >
-              <Text className='text-foreground font-bold'>+</Text>
-            </TouchableOpacity>
-          ),
-        }}
-      />
-      <ScrollView>
-        <View className="bg-background pb-8 items-center">
-          {/* Chart */}
-          <ProgressChart
-            data={data}
-            width={screenWidth}
-            height={200}
-            strokeWidth={8}
-            radius={80}
-            chartConfig={chartConfig}
-            hideLegend={true}
-            style={{}}
-          />
-          <View className="flex items-center justify-center top-20 absolute">
-            <Text className="text-white text-xl">Expenses</Text>
-            <Text className="text-white text-xl">{percentage.toFixed(2)}%</Text>
-          </View>
-
-          <View className="flex-row items-center justify-center gap-4 ">
-            <HomeCardInfo title="Incomes" total={income} />
-            <HomeCardInfo title="Expenses" total={expenses} />
-            <HomeCardInfo title="Savings" total={savings} />
-          </View>
-        </View>
-
-        <TabScreen />
-
-      </ScrollView>
-
-      <BottomSheet height={200} bottomSheetRef={bottomSheetRef}>
-        <View className="w-full h-full gap-5 justify-center items-center">
-          <ButtonCard
-            title="Add a transaction"
-            onPress={() => bottomSheetRef.current?.close()}
-            href={LinkType.transaction}
-          />
-          <ButtonCard
-            title="Plan a transaction"
-            onPress={() => bottomSheetRef.current?.close()}
-            href={LinkType.plannedtransaction}
-          />
-        </View>
-      </BottomSheet>
-    </>
+    <ParallaxScrollView
+      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
+      headerImage={
+        <Image
+          source={require('@/assets/images/partial-react-logo.png')}
+          style={styles.reactLogo}
+        />
+      }>
+      <ThemedView style={styles.titleContainer}>
+        <ThemedText type="title">Yo  !</ThemedText>
+        <HelloWave />
+      </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
+        <ThemedText>
+          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
+          Press{' '}
+          <ThemedText type="defaultSemiBold">
+            {Platform.select({
+              ios: 'cmd + d',
+              android: 'cmd + m',
+              web: 'F12'
+            })}
+          </ThemedText>{' '}
+          to open developer tools.
+        </ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
+        <ThemedText>
+          Tap the Explore tab to learn more about what's included in this starter app.
+        </ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
+        <ThemedText>
+          When you're ready, run{' '}
+          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
+          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
+          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
+          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
+        </ThemedText>
+      </ThemedView>
+    </ParallaxScrollView>
   );
 }
 
+const styles = StyleSheet.create({
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  stepContainer: {
+    gap: 8,
+    marginBottom: 8,
+  },
+  reactLogo: {
+    height: 178,
+    width: 290,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+  },
+});

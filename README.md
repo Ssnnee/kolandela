@@ -1,83 +1,50 @@
-# Kolandéla
+# Welcome to your Expo app 👋
 
-Kolandéla is an application for managing and planning expenses.
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-The name Kolandéla comes from the Lingala word which means tracking.
+## Get started
 
-The idea came from a personal need to track my expenses.
-I think it is important to know how to evaluate in order to improve ;
-and to evaluate, we need to have the necessary data.
+1. Install dependencies
 
+   ```bash
+   npm install
+   ```
 
-![Illustration of the look of Kolandéla](./assets/illustration.png)
+2. Start the app
 
-## Installation
+   ```bash
+    npx expo start
+   ```
 
-The project use pnpm as package manager but the others one should work.
-You can install it by running the following command:
+In the output, you'll find options to open the app in a
 
-```bash
-git clone https://github.com/ssnnee/kolandela.git
-cd kolandela
-pnpm install
-```
+- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
-## Usage
+You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-To start the application, you need to start the json server and the expo server.
-Please make sure to add your own ip address in the `api/transactions.ts` file.
+## Get a fresh project
 
-```bash
-pn json-server  db.json
-pnpm start
-```
-
-The json-server will start on port 3000. And you can speicfy the port with the `--port` option.
+When you're ready, run:
 
 ```bash
-pn json-server  db.json --port 3001
+npm run reset-project
 ```
 
-Once the expo server is started, you can run the application on your device or on the web.
+This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
-## Features
+## Learn more
 
-- Add expenses
-- Add income
-- Add categories
-- Plan expenses
-- Plan income
-- View expenses
-- View income
-- View categories
-- View statistics
+To learn more about developing your project with Expo, look at the following resources:
 
-## Technologies and Librairies
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
-- [React Native](https://reactnative.dev/)
-- [Expo](https://expo.dev/)
-- [React Native Chart Kit](https://github.com/indiespirit/react-native-chart-kit)
-- [React Native Raw bottom Sheet](https://github.com/nysamnang/react-native-raw-bottom-sheet)
-- [React Hook form](https://react-hook-form.com/)
-- [Zod](https://zod.dev/)
-- [Reac Native Calendars](https://github.com/wix/react-native-calendars)
-- [JSON server](https://github.com/typicode/json-server)
-- [Sqlite](https://www.sqlite.org/index.html)
-- [Drizzle](https://orm.drizzle.team/docs/get-started/expo-new#step-4---create-a-table)
+## Join the community
 
+Join our community of developers creating universal apps.
 
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
-
-## Backend
-For now the application use a json file as a database.
-But I plan to write a Go backend [here](https://github.com/Ssnnee/kolandela_backend).
-
-## Next Steps
-
-- [ ] Use react-query for data fetching everywhere
-- [ ] Add a search features
-- [ ] Add authentication or simply provide a way to back up data (such as a QR code, csv export etc.)
-- [ ] Add settings (such as light theme, currency, language)
+- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
+- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
