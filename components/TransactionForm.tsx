@@ -2,12 +2,16 @@ import { Text, View, TextInput, TouchableOpacity } from "react-native";
 import { Calendar } from 'react-native-calendars';
 import { useForm, Controller } from "react-hook-form";
 import BottomSheet from "./BottomSheet";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CustomDropdown } from "./CustomDropdown";
 import Button from "./Button";
 import { Stack } from "expo-router";
-import { createTransaction } from "~/api/transactions";
 import { Transaction } from "~/types";
+import * as SQLite from 'expo-sqlite';
+import { drizzle } from 'drizzle-orm/expo-sqlite';
+import { transaction, plannedTransaction } from "~/db/schema";
+import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
+import migrations from "~/drizzle/migrations";
 
 const categories = [
   { label: "Food", value: "FOOD" },
@@ -28,28 +32,47 @@ const types = [
   { label: "Expense", value: "EXPENSE" },
 ];
 
+const expo = SQLite.openDatabaseSync('Kolandela.db');
+const db = drizzle(expo);
+
 export default function TransactionForm() {
   const bottomSheetRef = useRef();
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const { success, error } = useMigrations(db, migrations);
+  const [items, setItems] = useState<typeof transaction.$inferSelect[] | null>(null);
+
+  useEffect(() => {
+    if (!success) console.error(error);
+    (async () => {
+      const items = await db.select().from(transaction).execute();
+      setItems(items);
+      console.log("From for", items);
+    })();
+
+  } , [success]);
   const form = useForm<Transaction>({
     defaultValues: {
-      id: Math.random().toString(36).substring(7),
       description: "",
-      date: new Date(),
-      amount: 0,
+      amount: '0',
       category: "",
       type: "EXPENSE",
       paymentMethod: "CASH",
     },
   });
 
-  function onSubmit(values: Transaction) {
-    console.log(values);
-    try {
-      createTransaction(values);
-      form.reset();
-    } catch (error) {
-      console.error('Error creating transaction:', error);
+  async function onSubmit(values: Transaction) {
+    if (!success) {
+      console.error(error);
+    } else {
+    await db.insert(transaction).values([{
+      paymentMethod: values.paymentMethod,
+      type: values.type,
+      amount: values.amount,
+      category: values.category,
+      description: values.description,
+      createdAt: values.createAt,
+    }]).execute();
+      console.log(values);
     }
   }
 
@@ -99,10 +122,7 @@ export default function TransactionForm() {
               <TextInput
                 className='w-full p-3 bg-background-variant rounded-lg text-white'
                 onBlur={onBlur}
-                onChangeText={(text) => {
-                  const parsedValue = parseFloat(text);
-                  onChange(isNaN(parsedValue) ? 0 : parsedValue);
-                }}
+                onChangeText={onChange}
                 value={value ? String(value) : ''}
                 keyboardType="numeric"
                 placeholder='Amount'
@@ -165,8 +185,7 @@ export default function TransactionForm() {
                 onPress={() => bottomSheetRef.current?.open()}
               >
                   <Text className='text-white mb-1'>
-                    {value instanceof Date
-                      ? value.toLocaleDateString()
+                    {value ? value
                       : 'Select Date'}
                   </Text>
                   <BottomSheet bottomSheetRef={bottomSheetRef}>
@@ -202,10 +221,10 @@ export default function TransactionForm() {
                   </BottomSheet>
                 </TouchableOpacity>
             )}
-            name='date'
+            name='createAt'
           />
-            {form.formState.errors.date && (
-              <Text className='text-red'>{form.formState.errors.date.message}</Text>
+            {form.formState.errors.createAt && (
+              <Text className='text-red'>{form.formState.errors.createAt.message}</Text>
             )}
 
             <Button

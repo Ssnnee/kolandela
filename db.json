@@ -3,10 +3,10 @@
     {
       "id": "1",
       "user_id": 1,
-      "description": "Grocery shopping",
+      "description": "Grocery shopping 🛍 ",
       "date": "2024-09-19T10:00:00Z",
       "amount": 75.5,
-      "category": "UTILITIES",
+      "category": "OTHER",
       "type": "EXPENSE",
       "paymentMethod": "CARD"
     },
@@ -25,7 +25,7 @@
       "description": "Monthly rent payment",
       "date": "2024-09-01T00:00:00Z",
       "amount": 120,
-      "category": "Bills",
+      "category": "RENT",
       "type": "EXPENSE",
       "paymentMethod": "BANK_TRANSFER"
     },
@@ -47,6 +47,24 @@
       "category": "FOOD",
       "type": "EXPENSE",
       "paymentMethod": "CASH"
+    },
+    {
+      "id": "egwyvh",
+      "description": "Bus ",
+      "date": "2024-09-23T13:04:05.365Z",
+      "amount": 65,
+      "category": "FOOD",
+      "type": "EXPENSE",
+      "paymentMethod": "CASH"
+    },
+    {
+      "id": "v75",
+      "description": "Bus",
+      "date": "2024-09-23T13:17:33.487Z",
+      "amount": 26,
+      "category": "TRANSPORT",
+      "type": "EXPENSE",
+      "paymentMethod": "CASH"
     }
   ],
   "plannedTransactions": [
@@ -59,14 +77,14 @@
       "amount": 1200,
       "isRecurring": true,
       "frequency": "MONTHLY",
-      "isExecuted": false
+      "isExecuted": true
     },
     {
       "id": "pt2",
       "user_id": 1,
       "date": "2024-09-25T00:00:00Z",
       "category": "Subscriptions",
-      "description": "Netflix subscription",
+      "description": "Netflix 🌐",
       "amount": 15.99,
       "isRecurring": true,
       "frequency": "MONTHLY",
@@ -78,7 +96,7 @@
       "user_id": 1,
       "date": "2024-12-25T00:00:00Z",
       "category": "Gifts",
-      "description": "Christmas shopping",
+      "description": "Christmas 🏜",
       "amount": 30,
       "isRecurring": false,
       "isExecuted": false

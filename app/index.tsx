@@ -1,8 +1,32 @@
 import { Link } from 'expo-router';
 import { ImageBackground, Text, TouchableOpacity, View } from 'react-native';
 import welcomeBackground from '~/assets/welcome.png';
+import * as SQLite from 'expo-sqlite';
+import { drizzle } from 'drizzle-orm/expo-sqlite';
+import { useEffect, useState } from 'react';
+import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
+import { transaction } from '~/db/schema';
+import migrations from '~/drizzle/migrations';
+
+const expo = SQLite.openDatabaseSync('kolandela.db');
+
+const db = drizzle(expo);
+
+
 
 export default function Home() {
+  const { success, error } = useMigrations(db, migrations);
+  const [items, setItems] = useState<typeof transaction.$inferSelect[] | null>(null);
+
+  useEffect(() => {
+    if (!success) console.error(error);
+    (async () => {
+      const items = await db.select().from(transaction).execute();
+      setItems(items);
+      console.log("From app/index.tsx :", items);
+    })();
+
+  } , [success]);
   return (
     <>
       <ImageBackground
