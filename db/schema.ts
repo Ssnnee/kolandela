@@ -1,11 +1,10 @@
 import { sql } from 'drizzle-orm';
-import { sqliteTable as table } from "drizzle-orm/sqlite-core";
 import * as t from "drizzle-orm/sqlite-core";
 
-export const plannedTransaction = table("planned_transaction", {
+export const plannedTransaction = t.sqliteTable("planned_transaction", {
   id: t.int( { mode: 'number' } ).primaryKey({ autoIncrement: true }),
   created_at: t.text().default(sql`(current_timestamp)`),
-  date: t.int({ mode: 'timestamp' }),
+  date: t.text().default(sql`(current_timestamp)`),
   category: t.text().notNull(),
   description: t.text().notNull(),
   amount: t.numeric().notNull(),
@@ -15,7 +14,7 @@ export const plannedTransaction = table("planned_transaction", {
   last_execution_date: t.text(),
 });
 
-export const transaction = table("transaction", {
+export const transaction = t.sqliteTable("transaction", {
   id: t.int().primaryKey({ autoIncrement: true }),
   created_at: t.text().notNull().default(sql`(current_timestamp)`),
   category: t.text().notNull(),
