@@ -10,7 +10,7 @@ and to evaluate, we need to have the necessary data.
 
 
 ![Illustration of the look of Kolandéla](./assets/illustration.png)
-![YouTube Demo](https://youtu.be/U54BXnpbRGE?si=qOqukd5ynHre3UkJ)
+[YouTube Demo](https://youtu.be/U54BXnpbRGE?si=qOqukd5ynHre3UkJ)
 
 ## Get started
 
