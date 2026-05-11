@@ -9,13 +9,29 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/vector-icons": "^15.1.1",
+    "date-fns": "^4.1.0",
     "expo": "~54.0.33",
+    "expo-constants": "^55.0.14",
+    "expo-crypto": "^55.0.14",
+    "expo-linking": "^55.0.13",
+    "expo-router": "^55.0.12",
     "expo-status-bar": "~3.0.9",
+    "nativewind": "^4.2.3",
     "react": "19.1.0",
-    "react-native": "0.81.5"
+    "react-native": "0.81.5",
+    "react-native-gesture-handler": "^2.31.1",
+    "react-native-gifted-charts": "^1.4.76",
+    "react-native-linear-gradient": "^2.8.3",
+    "react-native-reanimated": "^4.3.0",
+    "react-native-safe-area-context": "^5.7.0",
+    "react-native-screens": "^4.24.0",
+    "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
     "@types/react": "~19.1.0",
+    "@types/react-native": "^0.73.0",
+    "drizzle-kit": "^0.31.10",
     "typescript": "~5.9.2"
   },
   "private": true
