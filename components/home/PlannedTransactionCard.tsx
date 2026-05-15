@@ -1,0 +1,103 @@
+import { View, Text, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import { eq } from 'drizzle-orm';
+import { db } from '@/db';
+import { transactions, plannedTransactions } from '@/db/schema';
+import { useThemeColors, fmt } from './useThemeColors';
+import type { PlannedTransaction } from '@/db/schema';
+
+const FREQ_LABEL: Record<string, string> = {
+  DAILY: 'Daily', WEEKLY: 'Weekly', MONTHLY: 'Monthly', YEARLY: 'Yearly',
+};
+
+function isOverdue(p: PlannedTransaction): boolean {
+  const nextDate = new Date(p.nextExecutionDate || p.startDate);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return nextDate < today && p.isActive;
+}
+
+export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
+  const { textColor, mutedColor, primaryColor, violetColor, cardBg, borderColor, isDark } =
+    useThemeColors();
+
+  const isExpense = item.type === 'EXPENSE';
+  const overdue = isOverdue(item);
+  const redColor = 'rgb(255,59,48)';
+  const accentColor = overdue ? redColor : isExpense ? violetColor : primaryColor;
+  const accentDim = overdue
+    ? 'rgba(255,59,48,0.12)'
+    : isExpense
+      ? isDark ? 'rgba(173,123,255,0.12)' : 'rgba(140,90,220,0.1)'
+      : isDark ? 'rgba(255,121,102,0.12)' : 'rgba(255,100,80,0.1)';
+
+  const handleExecute = async () => {
+    try {
+      await db.insert(transactions).values({
+        plannedTransactionId: item.id,
+        categoryId: item.categoryId,
+        description: item.description,
+        amount: item.amount,
+        type: item.type,
+        paymentMethod: 'BANK',
+        transactionDate: new Date(),
+      });
+
+      if (item.recurring) {
+        const next = new Date(item.nextExecutionDate || item.startDate);
+        switch (item.frequency) {
+          case 'DAILY': next.setDate(next.getDate() + 1); break;
+          case 'WEEKLY': next.setDate(next.getDate() + 7); break;
+          case 'MONTHLY': next.setMonth(next.getMonth() + 1); break;
+          case 'YEARLY': next.setFullYear(next.getFullYear() + 1); break;
+        }
+        await db.update(plannedTransactions)
+          .set({ nextExecutionDate: next })
+          .where(eq(plannedTransactions.id, item.id));
+      }
+    } catch (e) {
+      console.error('Execute error:', e);
+    }
+  };
+
+  return (
+    <TouchableOpacity
+      onPress={() => router.push(`/planned-transactions/${item.id}`)}
+      activeOpacity={0.75}
+      style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: cardBg, borderRadius: 16, padding: 14, marginBottom: 8, borderWidth: 1, borderColor: overdue ? 'rgba(255,59,48,0.35)' : borderColor }}>
+
+      <View style={{ width: 42, height: 42, borderRadius: 13, alignItems: 'center', justifyContent: 'center', backgroundColor: accentDim, marginRight: 12 }}>
+        <Ionicons name={isExpense ? 'calendar-outline' : 'trending-up-outline'} size={18} color={accentColor} />
+      </View>
+
+      <View style={{ flex: 1 }}>
+        <Text style={{ color: textColor, fontSize: 14, fontWeight: '600' }} numberOfLines={1}>
+          {item.description}
+        </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 3 }}>
+          <View style={{ backgroundColor: accentDim, borderRadius: 100, paddingHorizontal: 8, paddingVertical: 2 }}>
+            <Text style={{ color: accentColor, fontSize: 10, fontWeight: '600' }}>
+              {FREQ_LABEL[item.frequency]}
+            </Text>
+          </View>
+          {item.nextExecutionDate && (
+            <Text style={{ color: overdue ? redColor : mutedColor, fontSize: 11 }}>
+              {new Date(item.nextExecutionDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+            </Text>
+          )}
+        </View>
+      </View>
+
+      <Text style={{ fontSize: 14, fontWeight: '700', color: accentColor, marginRight: 12 }}>
+        {isExpense ? '-' : '+'}{fmt(item.amount)}
+      </Text>
+
+      <TouchableOpacity
+        onPress={(e) => { e.stopPropagation?.(); handleExecute(); }}
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        style={{ width: 24, height: 24, borderRadius: 7, borderWidth: 2, borderColor: accentColor, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent' }}
+      />
+    </TouchableOpacity>
+  );
+}
