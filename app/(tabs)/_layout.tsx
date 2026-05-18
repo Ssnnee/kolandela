@@ -16,7 +16,7 @@ function TabsWithSheet() {
         <Tabs.Screen name="stats" />
         <Tabs.Screen name="settings" />
       </Tabs>
-      <AddActionSheet bottomSheetRef={bottomSheetRef} />
+      <AddActionSheet ref={bottomSheetRef} />
     </>
   );
 }
