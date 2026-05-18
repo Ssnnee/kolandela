@@ -1,25 +1,79 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import '../global.css';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-import '../global.css';
+import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
+import { db } from '@/db';
+import migrations from '@/drizzle/migrations';
+import { useEffect } from 'react';
+import { seedDatabase } from '@/db/seed';
+import ThemeProvider, { useTheme } from './_context/ThemeContext';
+import BottomSheetProvider from './_context/BottomSheetContext';
+import ScrollProvider from './_context/ScrollContext';
+import { View, Text, ActivityIndicator } from 'react-native';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+function MigrationWrapper({ children }: { children: React.ReactNode }) {
+  const { success, error } = useMigrations(db, migrations);
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+  useEffect(() => {
+    if (success) seedDatabase();
+  }, [success]);
+
+  if (error) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
+        <Text style={{ color: 'rgb(255,59,48)', fontSize: 14 }}>Migration error: {error.message}</Text>
+      </View>
+    );
+  }
+
+  if (!success) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
+        <ActivityIndicator color="rgb(255,121,102)" />
+      </View>
+    );
+  }
+
+  return <>{children}</>;
+}
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  return (
+    <ThemeProvider>
+      <BottomSheetProvider>
+        <ScrollProvider>
+          <MigrationWrapper>
+            <RootNavigator />
+          </MigrationWrapper>
+        </ScrollProvider>
+      </BottomSheetProvider>
+    </ThemeProvider>
+  );
+}
+
+function RootNavigator() {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
+    <>
+      <StatusBar style={isDark ? 'light' : 'dark'} />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: {
+            backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)',
+          },
+        }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+        <Stack.Screen name="transactions" options={{ headerShown: false }} />
+        <Stack.Screen name="planned-transactions" options={{ headerShown: false }} />
+        <Stack.Screen name="transactions/add" options={{ headerShown: false, presentation: 'modal' }} />
+        <Stack.Screen name="planned-transactions/add" options={{ headerShown: false, presentation: 'modal' }} />
+        <Stack.Screen name="+not-found" options={{ headerShown: false }} />
       </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    </>
   );
 }
