@@ -68,8 +68,8 @@ function RootNavigator() {
           },
         }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="transactions" options={{ headerShown: false }} />
-        <Stack.Screen name="planned-transactions" options={{ headerShown: false }} />
+        <Stack.Screen name="transactions/index" options={{ headerShown: false }} />
+        <Stack.Screen name="planned-transactions/index" options={{ headerShown: false }} />
         <Stack.Screen name="transactions/add" options={{ headerShown: false, presentation: 'modal' }} />
         <Stack.Screen name="planned-transactions/add" options={{ headerShown: false, presentation: 'modal' }} />
         <Stack.Screen name="+not-found" options={{ headerShown: false }} />
