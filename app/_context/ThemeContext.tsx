@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useColorScheme } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getItemAsync, setItemAsync } from 'expo-secure-store';
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -21,7 +21,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   const [theme, setThemeState] = useState<Theme>('system');
 
   useEffect(() => {
-    AsyncStorage.getItem('theme').then((val) => {
+    getItemAsync('theme').then((val) => {
       if (val === 'light' || val === 'dark' || val === 'system') {
         setThemeState(val);
       }
@@ -30,7 +30,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
 
   const setTheme = (t: Theme) => {
     setThemeState(t);
-    AsyncStorage.setItem('theme', t);
+    setItemAsync('theme', t);
   };
 
   const resolvedTheme: 'light' | 'dark' =

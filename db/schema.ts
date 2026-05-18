@@ -1,8 +1,12 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
 import { sqliteTableCreator } from 'drizzle-orm/sqlite-core';
 import * as t from 'drizzle-orm/sqlite-core';
 
 const table = sqliteTableCreator((name) => name);
+
+const uuid = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+  const r = Math.random() * 16 | 0;
+  return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+});
 
 // ==================== CATEGORIES ====================
 export const categories = table(
@@ -11,10 +15,7 @@ export const categories = table(
     id: t
       .text()
       .primaryKey()
-      .$defaultFn(() => {
-        const { randomUUID } = require('expo-crypto');
-        return randomUUID();
-      }),
+      .$defaultFn(() => uuid()),
     name: t.text().notNull(),
     color: t.text().notNull(),
     icon: t.text(),
@@ -34,10 +35,7 @@ export const transactions = table(
     id: t
       .text()
       .primaryKey()
-      .$defaultFn(() => {
-        const { randomUUID } = require('expo-crypto');
-        return randomUUID();
-      }),
+      .$defaultFn(() => uuid()),
     plannedTransactionId: t.text('planned_transaction_id').references(() => plannedTransactions.id),
     categoryId: t
       .text('category_id')
@@ -72,10 +70,7 @@ export const plannedTransactions = table(
     id: t
       .text()
       .primaryKey()
-      .$defaultFn(() => {
-        const { randomUUID } = require('expo-crypto');
-        return randomUUID();
-      }),
+      .$defaultFn(() => uuid()),
     categoryId: t
       .text('category_id')
       .notNull()
@@ -108,10 +103,7 @@ export const plannedTransactionExecutions = table(
     id: t
       .text()
       .primaryKey()
-      .$defaultFn(() => {
-        const { randomUUID } = require('expo-crypto');
-        return randomUUID();
-      }),
+      .$defaultFn(() => uuid()),
     plannedTransactionId: t
       .text('planned_transaction_id')
       .notNull()
