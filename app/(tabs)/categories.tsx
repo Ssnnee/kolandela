@@ -87,7 +87,7 @@ export default function CategoriesScreen() {
 
   return (
     <ScrollView
-      className="bg-background flex-1"
+      style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingBottom: 120, paddingTop: insets.top }}
       {...scrollHandler}>
