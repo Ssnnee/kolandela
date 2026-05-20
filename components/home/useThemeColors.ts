@@ -1,5 +1,8 @@
 import { useTheme } from "@/app/_context/ThemeContext";
 
+export function rgba(color: string, alpha: number) {
+  return color.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
+}
 
 export function fmt(n: number) {
   return n.toLocaleString('fr-CG', {

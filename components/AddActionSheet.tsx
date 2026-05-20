@@ -3,11 +3,7 @@ import { View, Text, TouchableOpacity, Modal, Pressable, Animated } from 'react-
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useThemeColors } from '@/components/home/useThemeColors';
-
-function rgba(color: string, alpha: number) {
-  return color.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
-}
+import { useThemeColors, rgba } from '@/components/home/useThemeColors';
 
 export const AddActionSheet = forwardRef<any, {}>((_props, ref) => {
   const { cardBg, borderColor, textColor, mutedColor, primaryColor, violetColor, isDark } =
