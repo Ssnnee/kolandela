@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity, Switch, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useThemeColors } from '@/components/home/useThemeColors';
+import { rgba, useThemeColors } from '@/components/home/useThemeColors';
 import { useTheme } from '@/app/_context/ThemeContext';
 import { useScrollHandler } from '@/lib/useScrollHandler';
 import { db } from '@/db';
@@ -54,7 +54,7 @@ function SettingsRow({
       {/* Icon bubble */}
       <View style={{
         width: 34, height: 34, borderRadius: 9,
-        backgroundColor: resolvedIconColor + '18',
+        backgroundColor: rgba(resolvedIconColor, 0.1),
         alignItems: 'center', justifyContent: 'center',
       }}>
         <Ionicons name={icon} size={17} color={danger ? 'rgb(255,59,48)' : resolvedIconColor} />
@@ -182,7 +182,7 @@ export default function SettingsScreen() {
           onPress={cycleTheme}
           right={
             <View style={{
-              backgroundColor: primaryColor + '18', borderRadius: 100,
+              backgroundColor: rgba(primaryColor, 0.1), borderRadius: 100,
               paddingHorizontal: 10, paddingVertical: 4,
             }}>
               <Text style={{ color: primaryColor, fontSize: 12, fontWeight: '600' }}>{themeLabel}</Text>
@@ -240,14 +240,14 @@ export default function SettingsScreen() {
           onPress={() => Linking.openURL(GITHUB_URL)}
         />
         <Divider />
+        {/*
         <SettingsRow
           icon="cafe-outline"
-          iconColor="#FFDD57"
           label="Buy me a coffee"
           sublabel="Support development"
           onPress={() => Linking.openURL(BUY_COFFEE_URL)}
         />
-        <Divider />
+        <Divider />*/}
         <SettingsRow
           icon="information-circle-outline"
           label="Version"
