@@ -6,7 +6,7 @@ import { transactions, categories } from '@/db/schema';
 import { useMemo, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { BarChart, LineChart } from 'react-native-gifted-charts';
-import { useThemeColors, fmt } from '@/components/home/useThemeColors';
+import { useThemeColors, fmt, rgba } from '@/components/home/useThemeColors';
 import { useScrollHandler } from '@/lib/useScrollHandler';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -246,7 +246,7 @@ export default function StatsScreen() {
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
           <View style={{ flex: 1.2 }} />
           <View style={{ flex: 1, alignItems: 'flex-end' }}>
-            <View style={{ backgroundColor: primaryColor + '18', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 }}>
+            <View style={{ backgroundColor: rgba(primaryColor, 0.1), borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 }}>
               <Text style={{ color: primaryColor, fontSize: 11, fontWeight: '700' }}>{MONTHS[currentMonth]}</Text>
             </View>
           </View>
@@ -368,7 +368,7 @@ export default function StatsScreen() {
           {topCategories.map((cat, i) => (
             <View key={cat.name} style={{ marginBottom: i < topCategories.length - 1 ? 14 : 0 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-                <View style={{ width: 28, height: 28, borderRadius: 8, backgroundColor: cat.color + '22', alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
+                <View style={{ width: 28, height: 28, borderRadius: 8, backgroundColor: rgba(cat.color, 0.13), alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
                   <Ionicons name={(cat.icon as any) || 'grid-outline'} size={14} color={cat.color} />
                 </View>
                 <Text style={{ flex: 1, color: textColor, fontSize: 13, fontWeight: '600' }}>{cat.name}</Text>

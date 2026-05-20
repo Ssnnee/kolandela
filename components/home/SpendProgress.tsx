@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native';
-import { useThemeColors, fmt } from './useThemeColors';
+import { useThemeColors, fmt, rgba } from './useThemeColors';
 
 export function SpendProgress({
   income,
@@ -34,7 +34,7 @@ export function SpendProgress({
             {fmt(expenses)}
           </Text>
         </View>
-        <View style={{ backgroundColor: barColor + '22', borderRadius: 100, paddingHorizontal: 10, paddingVertical: 4, marginTop: 2 }}>
+        <View style={{ backgroundColor: rgba(barColor, 0.13), borderRadius: 100, paddingHorizontal: 10, paddingVertical: 4, marginTop: 2 }}>
           <Text style={{ color: barColor, fontSize: 13, fontWeight: '700' }}>{spentPct}%</Text>
         </View>
       </View>
@@ -42,7 +42,7 @@ export function SpendProgress({
       {/* Progress track */}
       <View style={{ height: 8, backgroundColor: isDark ? 'rgb(46, 46, 58)' : 'rgb(220, 220, 232)', borderRadius: 100, overflow: 'hidden', marginBottom: 10 }}>
         {plannedRatio > spentRatio && (
-          <View style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: `${plannedRatio * 100}%`, backgroundColor: violetColor + '40', borderRadius: 100 }} />
+          <View style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: `${plannedRatio * 100}%`, backgroundColor: rgba(violetColor, 0.25), borderRadius: 100 }} />
         )}
         <View style={{ height: '100%', width: `${spentRatio * 100}%`, backgroundColor: barColor, borderRadius: 100 }} />
       </View>
@@ -56,7 +56,7 @@ export function SpendProgress({
           </View>
           {planned > 0 && (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-              <View style={{ width: 7, height: 7, borderRadius: 2, backgroundColor: violetColor + '80' }} />
+              <View style={{ width: 7, height: 7, borderRadius: 2, backgroundColor: rgba(violetColor, 0.5) }} />
               <Text style={{ color: mutedColor, fontSize: 11 }}>+Planned</Text>
             </View>
           )}
