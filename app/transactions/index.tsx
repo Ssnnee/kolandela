@@ -163,6 +163,7 @@ export default function TransactionsScreen() {
           filtered.map((t) => (
             <TransactionCard
               key={t.id}
+              id={t.id}
               description={t.description}
               amount={t.amount}
               type={t.type as 'INCOME' | 'EXPENSE'}

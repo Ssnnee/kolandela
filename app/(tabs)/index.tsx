@@ -178,6 +178,7 @@ export default function Index() {
             recentTrans.map((t) => (
               <TransactionCard
                 key={t.id}
+                id={t.id}
                 description={t.description}
                 amount={t.amount}
                 type={t.type as 'INCOME' | 'EXPENSE'}
