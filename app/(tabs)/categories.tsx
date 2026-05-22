@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors, fmt, rgba } from '@/components/home/useThemeColors';
 import { useScrollHandler } from '@/lib/useScrollHandler';
 import { MonthPicker, buildMonthOptions } from '@/components/home/MonthPicker';
+import { router } from 'expo-router';
 
 const MONTHS = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
@@ -187,7 +188,11 @@ export default function CategoriesScreen() {
         ) : (
           <>
             {categoryBreakdown.map((cat, i) => (
-              <View key={cat.id} style={{ backgroundColor: cardBg, borderRadius: 16, borderWidth: 1, borderColor, padding: 16, marginBottom: 8 }}>
+              <TouchableOpacity
+                key={cat.id}
+                onPress={() => router.push(`/categories/${cat.id}`)}
+                activeOpacity={0.7}
+                style={{ backgroundColor: cardBg, borderRadius: 16, borderWidth: 1, borderColor, padding: 16, marginBottom: 8 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
                   <View style={{ width: 38, height: 38, borderRadius: 11, backgroundColor: rgba(cat.color, 0.13), alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
                     <Ionicons name={(cat.icon as any) || 'grid-outline'} size={18} color={cat.color} />
@@ -206,7 +211,7 @@ export default function CategoriesScreen() {
                 <View style={{ height: 5, backgroundColor: isDark ? 'rgb(46,46,58)' : 'rgb(220,220,232)', borderRadius: 100, overflow: 'hidden' }}>
                   <View style={{ height: '100%', width: `${cat.pct}%`, backgroundColor: cat.color, borderRadius: 100 }} />
                 </View>
-              </View>
+              </TouchableOpacity>
             ))}
 
             {uncategorizedTotal > 0 && (
