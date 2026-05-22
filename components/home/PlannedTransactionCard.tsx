@@ -1,10 +1,11 @@
 import { View, Text, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { eq } from 'drizzle-orm';
 import { db } from '@/db';
 import { transactions, plannedTransactions } from '@/db/schema';
-import { useThemeColors, fmt } from './useThemeColors';
+import { useThemeColors, fmt, rgba } from './useThemeColors';
 import type { PlannedTransaction } from '@/db/schema';
 
 const FREQ_LABEL: Record<string, string> = {
@@ -21,6 +22,7 @@ function isOverdue(p: PlannedTransaction): boolean {
 export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
   const { textColor, mutedColor, primaryColor, violetColor, cardBg, borderColor, isDark } =
     useThemeColors();
+  const [executed, setExecuted] = useState(false);
 
   const isExpense = item.type === 'EXPENSE';
   const overdue = isOverdue(item);
@@ -56,6 +58,8 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
           .set({ nextExecutionDate: next })
           .where(eq(plannedTransactions.id, item.id));
       }
+
+      setExecuted(true);
     } catch (e) {
       console.error('Execute error:', e);
     }
@@ -95,9 +99,35 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
 
       <TouchableOpacity
         onPress={(e) => { e.stopPropagation?.(); handleExecute(); }}
-        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        style={{ width: 24, height: 24, borderRadius: 7, borderWidth: 2, borderColor: accentColor, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent' }}
-      />
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        style={executed ? {
+          width: 32,
+          height: 32,
+          borderRadius: 16,
+          backgroundColor: accentColor,
+          alignItems: 'center',
+          justifyContent: 'center',
+          shadowColor: accentColor,
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.35,
+          shadowRadius: 4,
+          elevation: 4,
+        } : {
+          width: 32,
+          height: 32,
+          borderRadius: 16,
+          borderWidth: 2.5,
+          borderColor: accentColor,
+          backgroundColor: rgba(accentColor, 0.08),
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        {executed ? (
+          <Ionicons name="checkmark" size={18} color="white" />
+        ) : (
+          <Ionicons name="ellipse" size={12} color={accentDim} />
+        )}
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 }
