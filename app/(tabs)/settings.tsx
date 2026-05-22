@@ -8,9 +8,9 @@ import { db } from '@/db';
 import { transactions, plannedTransactions, categories } from '@/db/schema';
 import * as Linking from 'expo-linking';
 
-const APP_VERSION = '1.0.0';
-const GITHUB_URL = 'https://github.com/yourusername/kolandela';
-const BUY_COFFEE_URL = 'https://buymeacoffee.com/yourusername';
+const APP_VERSION = '0.0.1';
+const GITHUB_URL = 'https://github.com/ssnnee/kolandela';
+// const BUY_COFFEE_URL = 'https://buymeacoffee.com/yourusername';
 
 // ── Reusable row components ───────────────────────────────────────────────────
 
