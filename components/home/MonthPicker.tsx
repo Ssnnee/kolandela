@@ -1,4 +1,5 @@
-import { ScrollView, TouchableOpacity, Text } from 'react-native';
+import { useRef, useEffect } from 'react';
+import { ScrollView, TouchableOpacity, Text, Dimensions } from 'react-native';
 import { useThemeColors } from './useThemeColors';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -9,10 +10,14 @@ export interface MonthOption {
   label: string;
 }
 
+const CHIP_WIDTH = 95;
+const CHIP_GAP = 8;
+const PADDING = 24;
+
 export function buildMonthOptions(): MonthOption[] {
   const now = new Date();
   const options: MonthOption[] = [];
-  for (let i = 23; i >= 0; i--) {
+  for (let i = 11; i >= -12; i--) {
     const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
     options.push({
       monthIndex: date.getMonth(),
@@ -35,12 +40,28 @@ export function MonthPicker({
   onSelect: (date: Date) => void;
 }) {
   const { primaryColor, cardBg, borderColor, mutedColor } = useThemeColors();
+  const scrollRef = useRef<ScrollView>(null);
+
+  useEffect(() => {
+    const now = new Date();
+    const idx = options.findIndex(
+      (o) => o.monthIndex === now.getMonth() && o.year === now.getFullYear()
+    );
+    if (idx >= 0) {
+      const screenWidth = Dimensions.get('window').width;
+      const offset = idx * (CHIP_WIDTH + CHIP_GAP) + PADDING - (screenWidth - CHIP_WIDTH) / 2;
+      setTimeout(() => {
+        scrollRef.current?.scrollTo({ x: Math.max(0, offset), animated: false });
+      }, 50);
+    }
+  }, []);
 
   return (
     <ScrollView
+      ref={scrollRef}
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{ paddingHorizontal: 24, gap: 8 }}
+      contentContainerStyle={{ paddingHorizontal: PADDING, gap: CHIP_GAP }}
       style={{ marginBottom: 20 }}>
       {options.map((option) => {
         const isSelected = option.monthIndex === selectedMonth && option.year === selectedYear;
