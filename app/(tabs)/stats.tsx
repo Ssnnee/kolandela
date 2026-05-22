@@ -284,7 +284,7 @@ export default function StatsScreen() {
       </View>
 
       {/* ── Chart ── */}
-      <View style={{ marginHorizontal: 24, marginBottom: 16, backgroundColor: cardBg, borderRadius: 20, borderWidth: 1, borderColor, padding: 20 }}>
+      <View style={{ marginHorizontal: 24, marginBottom: 16, backgroundColor: cardBg, borderRadius: 20, borderWidth: 1, borderColor, padding: 20, overflow: 'hidden' }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
           <Text style={{ color: textColor, fontSize: 15, fontWeight: '700' }}>
             {chartTab === 'bar' ? `${MONTHS[currentMonth]} by week` : '12-month trend'}
