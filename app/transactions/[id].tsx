@@ -1,4 +1,6 @@
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
+import { AlertDialog } from '@/components/AlertDialog';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { db } from '@/db';
@@ -22,10 +24,19 @@ const PAYMENT_ICONS: Record<string, string> = {
   OTHER: 'ellipsis-horizontal-circle-outline',
 };
 
+type DialogState = {
+  title: string;
+  description?: string;
+  confirmLabel?: string;
+  destructive?: boolean;
+  onConfirm?: () => void;
+} | null;
+
 export default function TransactionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { cardBg, borderColor, textColor, mutedColor, primaryColor, violetColor, redColor, isDark } = useThemeColors();
   const insets = useSafeAreaInsets();
+  const [dialog, setDialog] = useState<DialogState>(null);
 
   const { data: results } = useLiveQuery(
     db.select({
@@ -58,27 +69,22 @@ export default function TransactionDetailScreen() {
   const amountPrefix = isIncome ? '+' : '-';
 
   const handleDelete = () => {
-    Alert.alert(
-      'Delete Transaction',
-      'Are you sure you want to delete this transaction?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await db.update(transactions)
-                .set({ isDeleted: true, deletedAt: new Date() })
-                .where(eq(transactions.id, tx.id));
-              router.back();
-            } catch (err) {
-              Alert.alert('Error', 'Could not delete transaction.');
-            }
-          },
-        },
-      ]
-    );
+    setDialog({
+      title: 'Delete Transaction',
+      description: 'Are you sure you want to delete this transaction?',
+      confirmLabel: 'Delete',
+      destructive: true,
+      onConfirm: async () => {
+        try {
+          await db.update(transactions)
+            .set({ isDeleted: true, deletedAt: new Date() })
+            .where(eq(transactions.id, tx.id));
+          router.back();
+        } catch {
+          setDialog({ title: 'Error', description: 'Could not delete transaction.' });
+        }
+      },
+    });
   };
 
   const formattedDate = new Date(tx.transactionDate).toLocaleDateString('en-GB', {
@@ -277,6 +283,16 @@ export default function TransactionDetailScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      <AlertDialog
+        visible={dialog !== null}
+        onOpenChange={() => setDialog(null)}
+        title={dialog?.title ?? ''}
+        description={dialog?.description}
+        confirmLabel={dialog?.confirmLabel}
+        destructive={dialog?.destructive}
+        onConfirm={dialog?.onConfirm}
+      />
     </View>
   );
 }

@@ -1,4 +1,6 @@
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
+import { AlertDialog } from '@/components/AlertDialog';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { db } from '@/db';
@@ -16,10 +18,19 @@ const FREQ_LABEL: Record<string, string> = {
   YEARLY: 'Yearly',
 };
 
+type DialogState = {
+  title: string;
+  description?: string;
+  confirmLabel?: string;
+  destructive?: boolean;
+  onConfirm?: () => void;
+} | null;
+
 export default function PlannedTransactionDetailScreen() {
   const { idx } = useLocalSearchParams<{ idx: string }>();
   const { cardBg, borderColor, textColor, mutedColor, primaryColor, violetColor, redColor, isDark } = useThemeColors();
   const insets = useSafeAreaInsets();
+  const [dialog, setDialog] = useState<DialogState>(null);
 
   const { data: results } = useLiveQuery(
     db.select({
@@ -54,73 +65,63 @@ export default function PlannedTransactionDetailScreen() {
   const amountPrefix = isExpense ? '-' : '+';
 
   const handleDelete = () => {
-    Alert.alert(
-      'Delete Planned Transaction',
-      'Are you sure you want to delete this planned transaction?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await db.update(plannedTransactions)
-                .set({ isDeleted: true, deletedAt: new Date(), isActive: false })
-                .where(eq(plannedTransactions.id, ptx.id));
-              router.back();
-            } catch (err) {
-              Alert.alert('Error', 'Could not delete planned transaction.');
-            }
-          },
-        },
-      ]
-    );
+    setDialog({
+      title: 'Delete Planned Transaction',
+      description: 'Are you sure you want to delete this planned transaction?',
+      confirmLabel: 'Delete',
+      destructive: true,
+      onConfirm: async () => {
+        try {
+          await db.update(plannedTransactions)
+            .set({ isDeleted: true, deletedAt: new Date(), isActive: false })
+            .where(eq(plannedTransactions.id, ptx.id));
+          router.back();
+        } catch {
+          setDialog({ title: 'Error', description: 'Could not delete planned transaction.' });
+        }
+      },
+    });
   };
 
   const handleExecute = async () => {
-    Alert.alert(
-      'Execute Now',
-      'Do you want to record an execution for this planned transaction now?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Execute',
-          onPress: async () => {
-            try {
-              await db.insert(transactions).values({
-                plannedTransactionId: ptx.id,
-                categoryId: ptx.categoryId,
-                description: ptx.description,
-                amount: ptx.amount,
-                type: ptx.type,
-                paymentMethod: 'BANK',
-                transactionDate: new Date(),
-              });
+    setDialog({
+      title: 'Execute Now',
+      description: 'Do you want to record an execution for this planned transaction now?',
+      confirmLabel: 'Execute',
+      onConfirm: async () => {
+        try {
+          await db.insert(transactions).values({
+            plannedTransactionId: ptx.id,
+            categoryId: ptx.categoryId,
+            description: ptx.description,
+            amount: ptx.amount,
+            type: ptx.type,
+            paymentMethod: 'BANK',
+            transactionDate: new Date(),
+          });
 
-              if (ptx.recurring) {
-                const next = new Date(ptx.nextExecutionDate || ptx.startDate);
-                switch (ptx.frequency) {
-                  case 'DAILY': next.setDate(next.getDate() + 1); break;
-                  case 'WEEKLY': next.setDate(next.getDate() + 7); break;
-                  case 'MONTHLY': next.setMonth(next.getMonth() + 1); break;
-                  case 'YEARLY': next.setFullYear(next.getFullYear() + 1); break;
-                }
-                await db.update(plannedTransactions)
-                  .set({ nextExecutionDate: next })
-                  .where(eq(plannedTransactions.id, ptx.id));
-              } else {
-                await db.update(plannedTransactions)
-                  .set({ isActive: false, nextExecutionDate: null })
-                  .where(eq(plannedTransactions.id, ptx.id));
-              }
-              Alert.alert('Success', 'Transaction executed successfully.');
-            } catch (e) {
-              Alert.alert('Error', 'Could not execute transaction.');
+          if (ptx.recurring) {
+            const next = new Date(ptx.nextExecutionDate || ptx.startDate);
+            switch (ptx.frequency) {
+              case 'DAILY': next.setDate(next.getDate() + 1); break;
+              case 'WEEKLY': next.setDate(next.getDate() + 7); break;
+              case 'MONTHLY': next.setMonth(next.getMonth() + 1); break;
+              case 'YEARLY': next.setFullYear(next.getFullYear() + 1); break;
             }
+            await db.update(plannedTransactions)
+              .set({ nextExecutionDate: next })
+              .where(eq(plannedTransactions.id, ptx.id));
+          } else {
+            await db.update(plannedTransactions)
+              .set({ isActive: false, nextExecutionDate: null })
+              .where(eq(plannedTransactions.id, ptx.id));
           }
+          setDialog({ title: 'Success', description: 'Transaction executed successfully.' });
+        } catch {
+          setDialog({ title: 'Error', description: 'Could not execute transaction.' });
         }
-      ]
-    );
+      },
+    });
   };
 
   const handleToggleActive = async () => {
@@ -128,8 +129,8 @@ export default function PlannedTransactionDetailScreen() {
       await db.update(plannedTransactions)
         .set({ isActive: !ptx.isActive })
         .where(eq(plannedTransactions.id, ptx.id));
-    } catch (e) {
-      Alert.alert('Error', 'Could not update status.');
+    } catch {
+      setDialog({ title: 'Error', description: 'Could not update status.' });
     }
   };
 
@@ -385,6 +386,16 @@ export default function PlannedTransactionDetailScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      <AlertDialog
+        visible={dialog !== null}
+        onOpenChange={() => setDialog(null)}
+        title={dialog?.title ?? ''}
+        description={dialog?.description}
+        confirmLabel={dialog?.confirmLabel}
+        destructive={dialog?.destructive}
+        onConfirm={dialog?.onConfirm}
+      />
     </View>
   );
 }

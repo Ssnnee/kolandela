@@ -1,4 +1,5 @@
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { AlertDialog } from '@/components/AlertDialog';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
@@ -24,6 +25,7 @@ export default function AddTransaction() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const insets = useSafeAreaInsets();
   const { textColor, mutedColor, primaryColor, violetColor, cardBg, borderColor, tabBg, isDark } = useThemeColors();
+  const [dialog, setDialog] = useState<{ title: string; description: string } | null>(null);
 
   const { data: cats } = useLiveQuery(db.select().from(categories));
   const { data: txList } = useLiveQuery(
@@ -91,7 +93,7 @@ export default function AddTransaction() {
       }
       router.back();
     } catch (e) {
-      Alert.alert('Error', 'Could not save transaction.');
+      setDialog({ title: 'Error', description: 'Could not save transaction.' });
     } finally {
       setSaving(false);
     }
@@ -173,6 +175,13 @@ export default function AddTransaction() {
           onSelect={setPaymentMethod}
         />
       </ScrollView>
+
+      <AlertDialog
+        visible={dialog !== null}
+        onOpenChange={() => setDialog(null)}
+        title={dialog?.title ?? ''}
+        description={dialog?.description}
+      />
     </View>
   );
 }

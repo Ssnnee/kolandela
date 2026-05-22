@@ -1,8 +1,10 @@
-import { View, Text, ScrollView, TouchableOpacity, Switch, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { rgba, useThemeColors } from '@/components/home/useThemeColors';
+import { AlertDialog } from '@/components/AlertDialog';
 import { useTheme } from '@/app/_context/ThemeContext';
+import { useState } from 'react';
 import { useScrollHandler } from '@/lib/useScrollHandler';
 import { db } from '@/db';
 import { transactions, plannedTransactions, categories } from '@/db/schema';
@@ -103,47 +105,46 @@ function Divider() {
 
 // ── Main Screen ───────────────────────────────────────────────────────────────
 
+type DialogState = {
+  title: string;
+  description?: string;
+  confirmLabel?: string;
+  destructive?: boolean;
+  onConfirm?: () => void;
+} | null;
+
 export default function SettingsScreen() {
   const { textColor, mutedColor, primaryColor, isDark } = useThemeColors();
   const { resolvedTheme, setTheme, theme } = useTheme();
   const insets = useSafeAreaInsets();
   const scrollHandler = useScrollHandler();
+  const [dialog, setDialog] = useState<DialogState>(null);
 
   const handleDeleteAllData = () => {
-    Alert.alert(
-      'Delete all data',
-      'This will permanently delete all your transactions, planned transactions and custom categories. This cannot be undone.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete everything',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await db.delete(transactions);
-              await db.delete(plannedTransactions);
-              await db.delete(categories).where(
-                // only delete non-default categories to preserve seeds
-                // if you want to wipe all: just db.delete(categories)
-              );
-              Alert.alert('Done', 'All data has been deleted.');
-            } catch (e) {
-              Alert.alert('Error', 'Something went wrong while deleting data.');
-            }
-          },
-        },
-      ]
-    );
+    setDialog({
+      title: 'Delete all data',
+      description: 'This will permanently delete all your transactions, planned transactions and custom categories. This cannot be undone.',
+      confirmLabel: 'Delete everything',
+      destructive: true,
+      onConfirm: async () => {
+        try {
+          await db.delete(transactions);
+          await db.delete(plannedTransactions);
+          await db.delete(categories).where();
+          setDialog({ title: 'Done', description: 'All data has been deleted.' });
+        } catch {
+          setDialog({ title: 'Error', description: 'Something went wrong while deleting data.' });
+        }
+      },
+    });
   };
 
   const handleExport = () => {
-    // TODO: implement CSV/JSON export
-    Alert.alert('Coming soon', 'Export will be available in a future update.');
+    setDialog({ title: 'Coming soon', description: 'Export will be available in a future update.' });
   };
 
   const handleImport = () => {
-    // TODO: implement import
-    Alert.alert('Coming soon', 'Import will be available in a future update.');
+    setDialog({ title: 'Coming soon', description: 'Import will be available in a future update.' });
   };
 
   const themeLabel =
@@ -198,14 +199,14 @@ export default function SettingsScreen() {
           icon="language-outline"
           label="Language"
           sublabel="English"
-          onPress={() => Alert.alert('Coming soon', 'More languages will be supported soon.')}
+          onPress={() => setDialog({ title: 'Coming soon', description: 'More languages will be supported soon.' })}
         />
         <Divider />
         <SettingsRow
           icon="cash-outline"
           label="Currency"
           sublabel="XAF — Central African CFA"
-          onPress={() => Alert.alert('Coming soon', 'Currency selection coming soon.')}
+          onPress={() => setDialog({ title: 'Coming soon', description: 'Currency selection coming soon.' })}
         />
       </SettingsGroup>
 
@@ -278,6 +279,17 @@ export default function SettingsScreen() {
         Made with ♥ · Kolandela v{APP_VERSION}
       </Text>
 
+      <AlertDialog
+        visible={dialog !== null}
+        onOpenChange={() => setDialog(null)}
+        title={dialog?.title ?? ''}
+        description={dialog?.description}
+        confirmLabel={dialog?.confirmLabel}
+        destructive={dialog?.destructive}
+        onConfirm={dialog?.onConfirm}
+      />
     </ScrollView>
+
+
   );
 }
