@@ -162,7 +162,7 @@ export default function AddPlannedTransaction() {
         <DatePickerButton
           label="Start date"
           date={startDate}
-          onPress={() => {/* TODO: open date picker */ }}
+          onChange={setStartDate}
         />
 
         <CategoryPicker

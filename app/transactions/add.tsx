@@ -155,7 +155,7 @@ export default function AddTransaction() {
         <DatePickerButton
           label="Date"
           date={date}
-          onPress={() => {/* TODO: open date picker */ }}
+          onChange={setDate}
         />
 
         <CategoryPicker
