@@ -7,7 +7,7 @@ import * as plannedTransactionService from '@/services/plannedTransactions';
 import * as transactionService from '@/services/transactions';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useThemeColors, fmt, rgba } from '@/components/home/useThemeColors';
+import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
 import { TransactionCard } from '@/components/home/TransactionCard';
 
 const FREQ_LABEL: Record<string, string> = {
@@ -28,6 +28,7 @@ type DialogState = {
 export default function PlannedTransactionDetailScreen() {
   const { idx } = useLocalSearchParams<{ idx: string }>();
   const { cardBg, borderColor, textColor, mutedColor, primaryColor, violetColor, redColor, isDark } = useThemeColors();
+  const { format } = useCurrency();
   const insets = useSafeAreaInsets();
   const [dialog, setDialog] = useState<DialogState>(null);
 
@@ -138,7 +139,7 @@ export default function PlannedTransactionDetailScreen() {
         {/* Hero Amount */}
         <View style={{ alignItems: 'center', marginVertical: 32 }}>
           <Text style={{ color: amountColor, fontSize: 44, fontWeight: '800', letterSpacing: -1 }}>
-            {amountPrefix}{fmt(ptx.amount)}
+            {amountPrefix}{format(ptx.amount)}
           </Text>
           <Text style={{ color: mutedColor, fontSize: 13, fontWeight: '500', textTransform: 'uppercase', letterSpacing: 1, marginTop: 4 }}>
             Planned Amount

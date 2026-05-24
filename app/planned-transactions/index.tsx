@@ -6,7 +6,7 @@ import type { PlannedTransaction } from '@/db/schema';
 import { useState, useMemo } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { useThemeColors, fmt } from '@/components/home/useThemeColors';
+import { useThemeColors, useCurrency } from '@/components/home/useThemeColors';
 import { FilterChips } from '@/components/home/FilterChips';
 import { PlannedTransactionCard } from '@/components/home/PlannedTransactionCard';
 
@@ -44,6 +44,7 @@ function isOverdue(p: PlannedTransaction): boolean {
 
 export default function PlannedTransactionsScreen() {
   const { cardBg, borderColor, textColor, mutedColor, primaryColor, violetColor, isDark } = useThemeColors();
+  const { format } = useCurrency();
   const insets = useSafeAreaInsets();
 
   const { data: planned } = useLiveQuery(plannedTransactionService.getAll());
@@ -170,7 +171,7 @@ export default function PlannedTransactionsScreen() {
             ) : (
               <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}
                 style={{ color: item.color, fontSize: 14, fontWeight: '700' }}>
-                {fmt(item.value as number)}
+                {format(item.value as number)}
               </Text>
             )}
           </View>

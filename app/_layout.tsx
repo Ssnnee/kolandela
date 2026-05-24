@@ -7,6 +7,7 @@ import migrations from '@/drizzle/migrations';
 import { useEffect } from 'react';
 import { seedDatabase } from '@/db/seed';
 import ThemeProvider, { useTheme } from './_context/ThemeContext';
+import CurrencyProvider from './_context/CurrencyContext';
 import BottomSheetProvider from './_context/BottomSheetContext';
 import ScrollProvider from './_context/ScrollContext';
 import { View, Text, ActivityIndicator } from 'react-native';
@@ -42,13 +43,15 @@ function MigrationWrapper({ children }: { children: React.ReactNode }) {
 export default function RootLayout() {
   return (
     <ThemeProvider>
-      <BottomSheetProvider>
+      <CurrencyProvider>
+        <BottomSheetProvider>
         <ScrollProvider>
           <MigrationWrapper>
             <RootNavigator />
           </MigrationWrapper>
         </ScrollProvider>
       </BottomSheetProvider>
+      </CurrencyProvider>
     </ThemeProvider>
   );
 }

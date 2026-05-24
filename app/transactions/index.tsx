@@ -6,7 +6,7 @@ import * as categoryService from '@/services/categories';
 import { useState, useMemo } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useThemeColors, fmt } from '@/components/home/useThemeColors';
+import { useThemeColors, useCurrency } from '@/components/home/useThemeColors';
 import { FilterChips } from '@/components/home/FilterChips';
 import { TransactionCard } from '@/components/home/TransactionCard';
 
@@ -30,6 +30,7 @@ const PAYMENT_OPTIONS = [
 export default function TransactionsScreen() {
   const params = useLocalSearchParams<{ month?: string; year?: string }>();
   const { cardBg, borderColor, textColor, mutedColor, primaryColor, violetColor, isDark } = useThemeColors();
+  const { format } = useCurrency();
   const insets = useSafeAreaInsets();
 
   const { data: trans } = useLiveQuery(transactionService.getAll());
@@ -143,7 +144,7 @@ export default function TransactionsScreen() {
             </Text>
             <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}
               style={{ color: item.color, fontSize: 13, fontWeight: '700' }}>
-              {item.label === 'Net' && totalIncome - totalExpenses > 0 ? '+' : ''}{fmt(item.value)}
+              {item.label === 'Net' && totalIncome - totalExpenses > 0 ? '+' : ''}{format(item.value)}
             </Text>
           </View>
         ))}

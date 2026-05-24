@@ -7,7 +7,7 @@ import * as transactionService from '@/services/transactions';
 import * as categoryService from '@/services/categories';
 import { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { useThemeColors } from '@/components/home/useThemeColors';
+import { useThemeColors, useCurrency } from '@/components/home/useThemeColors';
 import { FormInput, FormPicker, CategoryPicker, DatePickerButton } from '@/components/forms';
 
 type TxType = 'INCOME' | 'EXPENSE';
@@ -24,6 +24,7 @@ export default function AddTransaction() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const insets = useSafeAreaInsets();
   const { textColor, mutedColor, primaryColor, violetColor, cardBg, borderColor, tabBg, isDark } = useThemeColors();
+  const { currency } = useCurrency();
   const [dialog, setDialog] = useState<{ title: string; description: string } | null>(null);
 
   const { data: cats } = useLiveQuery(categoryService.getAll());
@@ -144,7 +145,7 @@ export default function AddTransaction() {
         />
 
         <FormInput
-          label="Amount (XAF)"
+          label={`Amount (${currency.symbol})`}
           value={amount}
           onChangeText={setAmount}
           placeholder="0"

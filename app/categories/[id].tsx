@@ -5,12 +5,13 @@ import * as categoryService from '@/services/categories';
 import * as transactionService from '@/services/transactions';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useThemeColors, fmt, rgba } from '@/components/home/useThemeColors';
+import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
 import { TransactionCard } from '@/components/home/TransactionCard';
 
 export default function CategoryDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { cardBg, borderColor, textColor, mutedColor, primaryColor, violetColor, isDark } = useThemeColors();
+  const { format } = useCurrency();
   const insets = useSafeAreaInsets();
 
   const { data: categoryList } = useLiveQuery(
@@ -95,7 +96,7 @@ export default function CategoryDetailScreen() {
               Total Volume
             </Text>
             <Text style={{ color: typeColor, fontSize: 18, fontWeight: '800' }}>
-              {isIncome ? '+' : '-'}{fmt(totalAmount)}
+              {isIncome ? '+' : '-'}{format(totalAmount)}
             </Text>
           </View>
           <View style={{ width: 1, backgroundColor: borderColor }} />
@@ -113,7 +114,7 @@ export default function CategoryDetailScreen() {
               Average Tx
             </Text>
             <Text style={{ color: textColor, fontSize: 18, fontWeight: '800' }}>
-              {fmt(avgAmount)}
+              {format(avgAmount)}
             </Text>
           </View>
         </View>

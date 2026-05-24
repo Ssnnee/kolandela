@@ -7,7 +7,7 @@ import * as transactionService from '@/services/transactions';
 import * as plannedTransactionService from '@/services/plannedTransactions';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useThemeColors, fmt, rgba } from '@/components/home/useThemeColors';
+import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
 
 const PAYMENT_LABELS: Record<string, string> = {
   BANK: 'Bank Transfer',
@@ -34,6 +34,7 @@ type DialogState = {
 export default function TransactionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { cardBg, borderColor, textColor, mutedColor, primaryColor, violetColor, redColor, isDark } = useThemeColors();
+  const { format } = useCurrency();
   const insets = useSafeAreaInsets();
   const [dialog, setDialog] = useState<DialogState>(null);
 
@@ -114,10 +115,10 @@ export default function TransactionDetailScreen() {
         {/* Hero Amount */}
         <View style={{ alignItems: 'center', marginVertical: 32 }}>
           <Text style={{ color: amountColor, fontSize: 44, fontWeight: '800', letterSpacing: -1 }}>
-            {amountPrefix}{fmt(tx.amount)}
+            {amountPrefix}{format(tx.amount)}
           </Text>
           <Text style={{ color: mutedColor, fontSize: 13, fontWeight: '500', textTransform: 'uppercase', letterSpacing: 1, marginTop: 4 }}>
-            Amount (XAF)
+            Amount
           </Text>
         </View>
 

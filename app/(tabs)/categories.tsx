@@ -5,7 +5,7 @@ import * as categoryService from '@/services/categories';
 import * as transactionService from '@/services/transactions';
 import { useState, useMemo } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { useThemeColors, fmt, rgba } from '@/components/home/useThemeColors';
+import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
 import { useScrollHandler } from '@/lib/useScrollHandler';
 import { MonthPicker, buildMonthOptions } from '@/components/home/MonthPicker';
 import { router } from 'expo-router';
@@ -18,6 +18,7 @@ type Tab = 'EXPENSE' | 'INCOME';
 
 export default function CategoriesScreen() {
   const { textColor, mutedColor, primaryColor, cardBg, borderColor, tabBg, isDark } = useThemeColors();
+  const { format } = useCurrency();
   const insets = useSafeAreaInsets();
   const scrollHandler = useScrollHandler();
 
@@ -142,7 +143,7 @@ export default function CategoriesScreen() {
               Total {tab === 'EXPENSE' ? 'spent' : 'received'}
             </Text>
             <Text style={{ color: accentColor, fontSize: 26, fontWeight: '800', letterSpacing: -1 }}>
-              {fmt(totalForTab)}
+              {format(totalForTab)}
             </Text>
           </View>
           {tab === 'EXPENSE' && (
@@ -166,7 +167,7 @@ export default function CategoriesScreen() {
               }} />
             </View>
             <Text style={{ color: mutedColor, fontSize: 11 }}>
-              {spentPct}% of {fmt(totalIncome)} income
+              {spentPct}% of {format(totalIncome)} income
             </Text>
           </>
         )}
@@ -204,7 +205,7 @@ export default function CategoriesScreen() {
                     </Text>
                   </View>
                   <View style={{ alignItems: 'flex-end' }}>
-                    <Text style={{ color: cat.color, fontSize: 15, fontWeight: '700' }}>{fmt(cat.total)}</Text>
+                    <Text style={{ color: cat.color, fontSize: 15, fontWeight: '700' }}>{format(cat.total)}</Text>
                     <Text style={{ color: mutedColor, fontSize: 11, marginTop: 1 }}>{cat.pct.toFixed(1)}%</Text>
                   </View>
                 </View>
@@ -223,7 +224,7 @@ export default function CategoriesScreen() {
                   <View style={{ flex: 1 }}>
                     <Text style={{ color: textColor, fontSize: 14, fontWeight: '600' }}>Uncategorized</Text>
                   </View>
-                  <Text style={{ color: mutedColor, fontSize: 15, fontWeight: '700' }}>{fmt(uncategorizedTotal)}</Text>
+                  <Text style={{ color: mutedColor, fontSize: 15, fontWeight: '700' }}>{format(uncategorizedTotal)}</Text>
                 </View>
                 <View style={{ height: 5, backgroundColor: isDark ? 'rgb(46,46,58)' : 'rgb(220,220,232)', borderRadius: 100, overflow: 'hidden' }}>
                   <View style={{ height: '100%', width: `${totalForTab > 0 ? (uncategorizedTotal / totalForTab) * 100 : 0}%`, backgroundColor: mutedColor, borderRadius: 100 }} />

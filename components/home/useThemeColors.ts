@@ -1,15 +1,19 @@
-import { useTheme } from "@/app/_context/ThemeContext";
+import { useTheme } from '@/app/_context/ThemeContext';
+import { useCurrencyContext } from '@/app/_context/CurrencyContext';
 
 export function rgba(color: string, alpha: number) {
   return color.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
 }
 
-export function fmt(n: number) {
-  return n.toLocaleString('fr-CG', {
-    style: 'currency',
-    currency: 'XAF',
-    maximumFractionDigits: 0,
-  });
+export function useCurrency() {
+  const { currency, setCurrency } = useCurrencyContext();
+  const format = (n: number) =>
+    n.toLocaleString(currency.locale, {
+      style: 'currency',
+      currency: currency.code,
+      maximumFractionDigits: 0,
+    });
+  return { format, currency, setCurrency };
 }
 
 export function useThemeColors() {

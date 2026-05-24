@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native';
-import { useThemeColors, fmt } from './useThemeColors';
+import { useThemeColors, useCurrency } from './useThemeColors';
 
 export function SummaryCards({
   income,
@@ -14,6 +14,7 @@ export function SummaryCards({
 }) {
   const { primaryColor, violetColor, cardBg, borderColor, textColor, mutedColor } =
     useThemeColors();
+  const { format } = useCurrency();
 
   return (
     <View style={{ paddingHorizontal: 24, marginBottom: 20, gap: 12 }}>
@@ -23,7 +24,7 @@ export function SummaryCards({
           Remaining
         </Text>
         <Text style={{ color: 'white', fontSize: 32, fontWeight: '800', letterSpacing: -1 }}>
-          {fmt(remaining)}
+          {format(remaining)}
         </Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8, gap: 6 }}>
           <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 100, paddingHorizontal: 10, paddingVertical: 3 }}>
@@ -47,7 +48,7 @@ export function SummaryCards({
               </Text>
             </View>
             <Text style={{ color: textColor, fontSize: 18, fontWeight: '700', letterSpacing: -0.5 }}>
-              {fmt(item.value)}
+              {format(item.value)}
             </Text>
           </View>
         ))}

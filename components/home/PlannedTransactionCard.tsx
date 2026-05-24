@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as plannedTransactionService from '@/services/plannedTransactions';
 import * as transactionService from '@/services/transactions';
-import { useThemeColors, fmt, rgba } from './useThemeColors';
+import { useThemeColors, useCurrency, rgba } from './useThemeColors';
 import type { PlannedTransaction } from '@/db/schema';
 
 const FREQ_LABEL: Record<string, string> = {
@@ -44,6 +44,7 @@ function isChecked(hasExecuted: boolean, item: PlannedTransaction): boolean {
 export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
   const { textColor, mutedColor, primaryColor, violetColor, cardBg, borderColor, isDark } =
     useThemeColors();
+  const { format } = useCurrency();
 
   const [optimisticChecked, setOptimisticChecked] = useState(false);
 
@@ -105,7 +106,7 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
       </View>
 
       <Text style={{ fontSize: 14, fontWeight: '700', color: accentColor, marginRight: 12 }}>
-        {isExpense ? '-' : '+'}{fmt(item.amount)}
+        {isExpense ? '-' : '+'}{format(item.amount)}
       </Text>
 
       <TouchableOpacity

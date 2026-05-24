@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useThemeColors, fmt } from './useThemeColors';
+import { useThemeColors, useCurrency } from './useThemeColors';
 import { router } from 'expo-router';
 
 export function TransactionCard({
@@ -18,6 +18,7 @@ export function TransactionCard({
 }) {
   const { textColor, mutedColor, primaryColor, violetColor, cardBg, borderColor, isDark } =
     useThemeColors();
+  const { format } = useCurrency();
 
   const isIncome = type === 'INCOME';
   const accentColor = !isIncome ? primaryColor : violetColor;
@@ -44,7 +45,7 @@ export function TransactionCard({
         </Text>
       </View>
       <Text style={{ fontSize: 14, fontWeight: '700', color: accentColor }}>
-        {isIncome ? '+' : '-'}{fmt(amount)}
+        {isIncome ? '+' : '-'}{format(amount)}
       </Text>
     </CardWrapper>
   );

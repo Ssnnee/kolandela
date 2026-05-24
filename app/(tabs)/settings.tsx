@@ -1,7 +1,8 @@
-import { View, Text, ScrollView, TouchableOpacity, Switch } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Switch, Modal, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { rgba, useThemeColors } from '@/components/home/useThemeColors';
+import { rgba, useThemeColors, useCurrency } from '@/components/home/useThemeColors';
+import { CURRENCIES } from '@/constants/currency';
 import { AlertDialog } from '@/components/AlertDialog';
 import { useTheme } from '@/app/_context/ThemeContext';
 import { useState } from 'react';
@@ -115,7 +116,9 @@ type DialogState = {
 } | null;
 
 export default function SettingsScreen() {
-  const { textColor, mutedColor, primaryColor, isDark } = useThemeColors();
+  const { textColor, mutedColor, primaryColor, cardBg, borderColor, isDark } = useThemeColors();
+  const { currency, setCurrency } = useCurrency();
+  const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
   const { resolvedTheme, setTheme, theme } = useTheme();
   const insets = useSafeAreaInsets();
   const scrollHandler = useScrollHandler();
@@ -206,8 +209,8 @@ export default function SettingsScreen() {
         <SettingsRow
           icon="cash-outline"
           label="Currency"
-          sublabel="XAF — Central African CFA"
-          onPress={() => setDialog({ title: 'Coming soon', description: 'Currency selection coming soon.' })}
+          sublabel={`${currency.code} — ${currency.symbol}`}
+          onPress={() => setShowCurrencyPicker(true)}
         />
       </SettingsGroup>
 
@@ -279,6 +282,52 @@ export default function SettingsScreen() {
       }}>
         Made with ♥ · Kolandela v{APP_VERSION}
       </Text>
+
+      <Modal
+        visible={showCurrencyPicker}
+        transparent
+        onRequestClose={() => setShowCurrencyPicker(false)}
+      >
+        <Pressable
+          style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'center', alignItems: 'center' }}
+          onPress={() => setShowCurrencyPicker(false)}
+        >
+          <Pressable
+            style={{
+              width: 280, backgroundColor: cardBg, borderRadius: 20,
+              borderWidth: 1, borderColor, padding: 8,
+            }}
+            onPress={() => {}}
+          >
+            <Text style={{ color: textColor, fontSize: 17, fontWeight: '700', textAlign: 'center', paddingVertical: 12 }}>
+              Select currency
+            </Text>
+            {CURRENCIES.map((c) => (
+              <TouchableOpacity
+                key={c.code}
+                onPress={() => {
+                  setCurrency(c);
+                  setShowCurrencyPicker(false);
+                }}
+                activeOpacity={0.7}
+                style={{
+                  flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+                  paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12,
+                  backgroundColor: c.code === currency.code ? rgba(primaryColor, 0.1) : 'transparent',
+                }}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                  <Text style={{ color: textColor, fontSize: 18 }}>{c.symbol}</Text>
+                  <Text style={{ color: textColor, fontSize: 15, fontWeight: '500' }}>{c.code}</Text>
+                </View>
+                {c.code === currency.code && (
+                  <Ionicons name="checkmark-circle" size={20} color={primaryColor} />
+                )}
+              </TouchableOpacity>
+            ))}
+          </Pressable>
+        </Pressable>
+      </Modal>
 
       <AlertDialog
         visible={dialog !== null}

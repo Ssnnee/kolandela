@@ -6,7 +6,7 @@ import * as categoryService from '@/services/categories';
 import { useMemo, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { BarChart, LineChart } from 'react-native-gifted-charts';
-import { useThemeColors, fmt, rgba } from '@/components/home/useThemeColors';
+import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
 import { useScrollHandler } from '@/lib/useScrollHandler';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -41,6 +41,7 @@ export default function StatsScreen() {
   const scrollHandler = useScrollHandler();
   const { textColor, mutedColor, primaryColor, violetColor, cardBg, borderColor, tabBg, isDark } =
     useThemeColors();
+  const { format } = useCurrency();
 
   const { data: trans } = useLiveQuery(transactionService.getAll());
   const { data: cats } = useLiveQuery(categoryService.getAll());
@@ -204,7 +205,7 @@ export default function StatsScreen() {
             All-time net balance
           </Text>
           <Text style={{ color: allTimeNet >= 0 ? greenColor : redColor, fontSize: 32, fontWeight: '900', letterSpacing: -1.5 }}>
-            {allTimeNet >= 0 ? '+' : ''}{fmt(allTimeNet)}
+            {allTimeNet >= 0 ? '+' : ''}{format(allTimeNet)}
           </Text>
           <Text style={{ color: mutedColor, fontSize: 12, marginTop: 6 }}>
             {savingsRate}% savings rate · {allTrans.length} transactions total
@@ -220,7 +221,7 @@ export default function StatsScreen() {
             </View>
             <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}
               style={{ color: violetColor, fontSize: 16, fontWeight: '700' }}>
-              {fmt(allTimeIncome)}
+              {format(allTimeIncome)}
             </Text>
           </View>
           <View style={{ flex: 1, backgroundColor: cardBg, borderRadius: 16, borderWidth: 1, borderColor, padding: 16 }}>
@@ -230,7 +231,7 @@ export default function StatsScreen() {
             </View>
             <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}
               style={{ color: primaryColor, fontSize: 16, fontWeight: '700' }}>
-              {fmt(allTimeExpenses)}
+              {format(allTimeExpenses)}
             </Text>
           </View>
         </View>
@@ -270,11 +271,11 @@ export default function StatsScreen() {
             <Text style={{ color: mutedColor, fontSize: 13, flex: 1.2 }}>{row.label}</Text>
             <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}
               style={{ flex: 1, color: textColor, fontSize: 13, fontWeight: '700', textAlign: 'right' }}>
-              {fmt(row.current)}
+              {format(row.current)}
             </Text>
             <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}
               style={{ flex: 1, color: mutedColor, fontSize: 12, textAlign: 'right' }}>
-              {fmt(row.prev)}
+              {format(row.prev)}
             </Text>
             <View style={{ width: 56, alignItems: 'flex-end' }}>
               <DeltaBadge change={row.change} isPositiveGood={row.isPositiveGood} />
@@ -372,7 +373,7 @@ export default function StatsScreen() {
                   <Ionicons name={(cat.icon as any) || 'grid-outline'} size={14} color={cat.color} />
                 </View>
                 <Text style={{ flex: 1, color: textColor, fontSize: 13, fontWeight: '600' }}>{cat.name}</Text>
-                <Text style={{ color: cat.color, fontSize: 13, fontWeight: '700' }}>{fmt(cat.total)}</Text>
+                <Text style={{ color: cat.color, fontSize: 13, fontWeight: '700' }}>{format(cat.total)}</Text>
                 <Text style={{ color: mutedColor, fontSize: 11, marginLeft: 8, width: 36, textAlign: 'right' }}>
                   {topCatTotal > 0 ? Math.round((cat.total / topCatTotal) * 100) : 0}%
                 </Text>
@@ -392,8 +393,8 @@ export default function StatsScreen() {
         </Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
           {[
-            { label: 'Avg expense', value: avgExpense > 0 ? fmt(avgExpense) : '—', icon: 'calculator-outline' as const },
-            { label: 'Biggest expense', value: biggestExpense > 0 ? fmt(biggestExpense) : '—', icon: 'arrow-up-circle-outline' as const },
+            { label: 'Avg expense', value: avgExpense > 0 ? format(avgExpense) : '—', icon: 'calculator-outline' as const },
+            { label: 'Biggest expense', value: biggestExpense > 0 ? format(biggestExpense) : '—', icon: 'arrow-up-circle-outline' as const },
             { label: 'Savings rate', value: `${savingsRate}%`, icon: 'wallet-outline' as const },
             { label: 'Most active day', value: mostActiveDay, icon: 'calendar-outline' as const },
           ].map((stat) => (

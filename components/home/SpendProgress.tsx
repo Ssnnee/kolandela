@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native';
-import { useThemeColors, fmt, rgba } from './useThemeColors';
+import { useThemeColors, useCurrency, rgba } from './useThemeColors';
 
 export function SpendProgress({
   income,
@@ -11,6 +11,7 @@ export function SpendProgress({
   planned: number;
 }) {
   const { textColor, mutedColor, violetColor, cardBg, borderColor, isDark } = useThemeColors();
+  const { format } = useCurrency();
 
   const spentRatio = income > 0 ? Math.min(expenses / income, 1) : 0;
   const plannedRatio = income > 0 ? Math.min((expenses + planned) / income, 1) : 0;
@@ -31,7 +32,7 @@ export function SpendProgress({
             Spent this month
           </Text>
           <Text style={{ color: textColor, fontSize: 22, fontWeight: '800', letterSpacing: -0.5 }}>
-            {fmt(expenses)}
+            {format(expenses)}
           </Text>
         </View>
         <View style={{ backgroundColor: rgba(barColor, 0.13), borderRadius: 100, paddingHorizontal: 10, paddingVertical: 4, marginTop: 2 }}>
@@ -61,7 +62,7 @@ export function SpendProgress({
             </View>
           )}
         </View>
-        <Text style={{ color: mutedColor, fontSize: 11 }}>of {fmt(income)}</Text>
+        <Text style={{ color: mutedColor, fontSize: 11 }}>of {format(income)}</Text>
       </View>
     </View>
   );
