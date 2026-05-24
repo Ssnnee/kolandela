@@ -75,8 +75,8 @@ export default function CategoriesScreen() {
   }, [monthlyTrans, cats, tab]);
 
   const accentColor = tab === 'EXPENSE'
-    ? isDark ? 'rgb(173,123,255)' : 'rgb(140,90,220)'
-    : isDark ? 'rgb(255,121,102)' : 'rgb(255,100,80)';
+    ? isDark ? 'rgb(255,121,102)' : 'rgb(255,100,80)'
+    : isDark ? 'rgb(173,123,255)' : 'rgb(140,90,220)';
 
   const spentPct = totalIncome > 0 ? Math.round((totalExpenses / totalIncome) * 100) : 0;
   const insight =

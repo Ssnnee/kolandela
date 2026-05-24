@@ -168,8 +168,8 @@ export default function StatsScreen() {
       const income = wt.filter((t) => t.type === 'INCOME').reduce((s, t) => s + t.amount, 0);
       const expenses = wt.filter((t) => t.type === 'EXPENSE').reduce((s, t) => s + t.amount, 0);
       // Income bar carries the label
-      result.push({ value: income, frontColor: primaryColor, label: `W${w + 1}`, spacing: 4, labelTextStyle: { color: mutedColor, fontSize: 10 } });
-      result.push({ value: expenses, frontColor: violetColor, spacing: 16 });
+      result.push({ value: income, frontColor: violetColor, label: `W${w + 1}`, spacing: 4, labelTextStyle: { color: mutedColor, fontSize: 10 } });
+      result.push({ value: expenses, frontColor: primaryColor, spacing: 16 });
     }
     return result;
   }, [currentMonthTrans, currentMonth, currentYear, primaryColor, violetColor, mutedColor]);
@@ -215,21 +215,21 @@ export default function StatsScreen() {
         <View style={{ flexDirection: 'row', gap: 10 }}>
           <View style={{ flex: 1, backgroundColor: cardBg, borderRadius: 16, borderWidth: 1, borderColor, padding: 16 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-              <View style={{ width: 7, height: 7, borderRadius: 3.5, backgroundColor: primaryColor }} />
+              <View style={{ width: 7, height: 7, borderRadius: 3.5, backgroundColor: violetColor }} />
               <Text style={{ color: mutedColor, fontSize: 10, fontWeight: '500', textTransform: 'uppercase', letterSpacing: 0.5 }}>Income</Text>
             </View>
             <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}
-              style={{ color: primaryColor, fontSize: 16, fontWeight: '700' }}>
+              style={{ color: violetColor, fontSize: 16, fontWeight: '700' }}>
               {fmt(allTimeIncome)}
             </Text>
           </View>
           <View style={{ flex: 1, backgroundColor: cardBg, borderRadius: 16, borderWidth: 1, borderColor, padding: 16 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-              <View style={{ width: 7, height: 7, borderRadius: 3.5, backgroundColor: violetColor }} />
+              <View style={{ width: 7, height: 7, borderRadius: 3.5, backgroundColor: primaryColor }} />
               <Text style={{ color: mutedColor, fontSize: 10, fontWeight: '500', textTransform: 'uppercase', letterSpacing: 0.5 }}>Expenses</Text>
             </View>
             <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}
-              style={{ color: violetColor, fontSize: 16, fontWeight: '700' }}>
+              style={{ color: primaryColor, fontSize: 16, fontWeight: '700' }}>
               {fmt(allTimeExpenses)}
             </Text>
           </View>
@@ -306,7 +306,7 @@ export default function StatsScreen() {
         </View>
 
         <View style={{ flexDirection: 'row', gap: 16, marginBottom: 16 }}>
-          {[{ label: 'Income', color: primaryColor }, { label: 'Expenses', color: violetColor }].map((l) => (
+          {[{ label: 'Income', color: violetColor }, { label: 'Expenses', color: primaryColor }].map((l) => (
             <View key={l.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
               <View style={{ width: 8, height: 8, borderRadius: 2, backgroundColor: l.color }} />
               <Text style={{ color: mutedColor, fontSize: 11 }}>{l.label}</Text>
@@ -332,12 +332,12 @@ export default function StatsScreen() {
           />
         ) : (
           <LineChart
-            data={monthlyData.map((m) => ({ value: m.income, label: m.month, dataPointColor: primaryColor }))}
-            data2={monthlyData.map((m) => ({ value: m.expenses, dataPointColor: violetColor }))}
+            data={monthlyData.map((m) => ({ value: m.income, label: m.month, dataPointColor: violetColor }))}
+            data2={monthlyData.map((m) => ({ value: m.expenses, dataPointColor: primaryColor }))}
             width={CHART_WIDTH}
             height={180}
-            color1={primaryColor}
-            color2={violetColor}
+            color1={violetColor}
+            color2={primaryColor}
             thickness={2}
             noOfSections={4}
             yAxisThickness={0}
@@ -346,8 +346,8 @@ export default function StatsScreen() {
             yAxisTextStyle={{ color: mutedColor, fontSize: 10 }}
             xAxisLabelTextStyle={{ color: mutedColor, fontSize: 10 }}
             rulesColor={isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}
-            startFillColor1={primaryColor}
-            startFillColor2={violetColor}
+            startFillColor1={violetColor}
+            startFillColor2={primaryColor}
             endFillColor1="transparent"
             endFillColor2="transparent"
             startOpacity={0.15}

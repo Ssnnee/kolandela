@@ -96,7 +96,7 @@ export default function AddTransaction() {
     }
   };
 
-  const accentColor = type === 'INCOME' ? primaryColor : violetColor;
+  const accentColor = type === 'INCOME' ? violetColor : primaryColor;
 
   return (
     <View style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)', paddingTop: insets.top }}>
@@ -121,7 +121,7 @@ export default function AddTransaction() {
         <View style={{ flexDirection: 'row', backgroundColor: tabBg, borderRadius: 14, padding: 4, marginBottom: 24 }}>
           {(['EXPENSE', 'INCOME'] as TxType[]).map((t) => {
             const isActive = type === t;
-            const color = t === 'INCOME' ? primaryColor : violetColor;
+            const color = t === 'INCOME' ? violetColor : primaryColor;
             return (
               <TouchableOpacity
                 key={t}

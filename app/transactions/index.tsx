@@ -133,8 +133,8 @@ export default function TransactionsScreen() {
       {/* Summary */}
       <View style={{ flexDirection: 'row', marginHorizontal: 20, marginBottom: 12, backgroundColor: cardBg, borderRadius: 14, borderWidth: 1, borderColor, overflow: 'hidden' }}>
         {[
-          { label: 'Income', value: totalIncome, color: isDark ? 'rgb(255,121,102)' : 'rgb(255,100,80)' },
-          { label: 'Expenses', value: totalExpenses, color: isDark ? 'rgb(173,123,255)' : 'rgb(140,90,220)' },
+          { label: 'Income', value: totalIncome, color: isDark ? 'rgb(173,123,255)' : 'rgb(140,90,220)' },
+          { label: 'Expenses', value: totalExpenses, color: isDark ? 'rgb(255,121,102)' : 'rgb(255,100,80)' },
           { label: 'Net', value: totalIncome - totalExpenses, color: totalIncome - totalExpenses >= 0 ? (isDark ? 'rgb(0,250,217)' : 'rgb(0,200,175)') : 'rgb(255,59,48)' },
         ].map((item, i) => (
           <View key={item.label} style={{ flex: 1, alignItems: 'center', padding: 12, borderLeftWidth: i > 0 ? 1 : 0, borderLeftColor: borderColor }}>

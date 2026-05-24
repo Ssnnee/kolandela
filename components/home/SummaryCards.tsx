@@ -36,8 +36,8 @@ export function SummaryCards({
       {/* Income + Expenses row */}
       <View style={{ flexDirection: 'row', gap: 12 }}>
         {[
-          { label: 'Income', value: income, color: primaryColor },
-          { label: 'Expenses', value: expenses, color: violetColor },
+          { label: 'Income', value: income, color: violetColor },
+          { label: 'Expenses', value: expenses, color: primaryColor },
         ].map((item) => (
           <View key={item.label} style={{ flex: 1, backgroundColor: cardBg, borderRadius: 16, padding: 16, borderWidth: 1, borderColor }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>

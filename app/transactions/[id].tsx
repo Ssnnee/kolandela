@@ -58,7 +58,7 @@ export default function TransactionDetailScreen() {
   }
 
   const isIncome = tx.type === 'INCOME';
-  const amountColor = isIncome ? primaryColor : violetColor;
+  const amountColor = isIncome ? violetColor : primaryColor;
   const amountPrefix = isIncome ? '+' : '-';
 
   const handleDelete = () => {

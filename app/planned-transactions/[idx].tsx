@@ -51,7 +51,7 @@ export default function PlannedTransactionDetailScreen() {
   }
 
   const isExpense = ptx.type === 'EXPENSE';
-  const amountColor = isExpense ? violetColor : primaryColor;
+  const amountColor = isExpense ? primaryColor : violetColor;
   const amountPrefix = isExpense ? '-' : '+';
 
   const handleDelete = () => {

@@ -147,8 +147,8 @@ export default function PlannedTransactionsScreen() {
       {/* Summary */}
       <View style={{ flexDirection: 'row', gap: 8, marginHorizontal: 20, marginBottom: 12 }}>
         {[
-          { label: 'Committed', value: committedExpenses, color: isDark ? 'rgb(173,123,255)' : 'rgb(140,90,220)' },
-          { label: 'Expected', value: expectedIncome, color: isDark ? 'rgb(255,121,102)' : 'rgb(255,100,80)' },
+          { label: 'Committed', value: committedExpenses, color: isDark ? 'rgb(255,121,102)' : 'rgb(255,100,80)' },
+          { label: 'Expected', value: expectedIncome, color: isDark ? 'rgb(173,123,255)' : 'rgb(140,90,220)' },
           { label: 'Count', value: filtered.length, color: textColor, isCount: true },
         ].map((item) => (
           <View key={item.label} style={{

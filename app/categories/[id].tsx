@@ -31,7 +31,7 @@ export default function CategoryDetailScreen() {
   }
 
   const isIncome = category.type === 'INCOME';
-  const typeColor = isIncome ? primaryColor : violetColor;
+  const typeColor = isIncome ? violetColor : primaryColor;
 
   const totalAmount = (txList ?? []).reduce((sum, t) => sum + t.amount, 0);
   const txCount = txList?.length ?? 0;

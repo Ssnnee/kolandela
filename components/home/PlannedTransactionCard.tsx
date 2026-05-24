@@ -25,12 +25,12 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
   const isExpense = item.type === 'EXPENSE';
   const overdue = isOverdue(item);
   const redColor = 'rgb(255,59,48)';
-  const accentColor = overdue ? redColor : isExpense ? violetColor : primaryColor;
+  const accentColor = overdue ? redColor : isExpense ? primaryColor : violetColor;
   const accentDim = overdue
     ? 'rgba(255,59,48,0.12)'
     : isExpense
-      ? isDark ? 'rgba(173,123,255,0.12)' : 'rgba(140,90,220,0.1)'
-      : isDark ? 'rgba(255,121,102,0.12)' : 'rgba(255,100,80,0.1)';
+      ? isDark ? 'rgba(255,121,102,0.12)' : 'rgba(255,100,80,0.1)'
+      : isDark ? 'rgba(173,123,255,0.12)' : 'rgba(140,90,220,0.1)';
 
   const handleExecute = async () => {
     try {
