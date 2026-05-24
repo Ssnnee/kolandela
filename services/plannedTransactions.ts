@@ -1,6 +1,6 @@
 import { db } from '@/db';
 import { plannedTransactions, categories, transactions } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, desc, leftJoin } from 'drizzle-orm';
 import type { NewPlannedTransaction } from '@/db/schema';
 import type { SQLiteUpdateSetSource } from 'drizzle-orm/sqlite-core';
 
@@ -21,6 +21,26 @@ export function getByIdWithCategory(id: string) {
     .from(plannedTransactions)
     .leftJoin(categories, eq(plannedTransactions.categoryId, categories.id))
     .where(eq(plannedTransactions.id, id));
+}
+
+export function getAllWithCategory() {
+  return db
+    .select({
+      id: plannedTransactions.id,
+      type: plannedTransactions.type,
+      amount: plannedTransactions.amount,
+      description: plannedTransactions.description,
+      frequency: plannedTransactions.frequency,
+      startDate: plannedTransactions.startDate,
+      endDate: plannedTransactions.endDate,
+      recurring: plannedTransactions.recurring,
+      categoryName: categories.name,
+      categoryType: categories.type,
+    })
+    .from(plannedTransactions)
+    .leftJoin(categories, eq(plannedTransactions.categoryId, categories.id))
+    .where(eq(plannedTransactions.isDeleted, false))
+    .orderBy(desc(plannedTransactions.startDate));
 }
 
 export async function create(data: NewPlannedTransaction) {

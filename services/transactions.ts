@@ -1,6 +1,6 @@
 import { db } from '@/db';
 import { transactions, categories } from '@/db/schema';
-import { eq, desc, and } from 'drizzle-orm';
+import { eq, desc, and, leftJoin } from 'drizzle-orm';
 import type { NewTransaction } from '@/db/schema';
 import type { SQLiteUpdateSetSource } from 'drizzle-orm/sqlite-core';
 
@@ -33,6 +33,25 @@ export function getByCategory(categoryId: string) {
         eq(transactions.isDeleted, false),
       ),
     )
+    .orderBy(desc(transactions.transactionDate));
+}
+
+export function getAllWithCategory() {
+  return db
+    .select({
+      id: transactions.id,
+      transactionDate: transactions.transactionDate,
+      type: transactions.type,
+      amount: transactions.amount,
+      description: transactions.description,
+      paymentMethod: transactions.paymentMethod,
+      paymentDetails: transactions.paymentDetails,
+      categoryName: categories.name,
+      categoryType: categories.type,
+    })
+    .from(transactions)
+    .leftJoin(categories, eq(transactions.categoryId, categories.id))
+    .where(eq(transactions.isDeleted, false))
     .orderBy(desc(transactions.transactionDate));
 }
 
