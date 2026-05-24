@@ -1,8 +1,8 @@
 import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { db } from '@/db';
-import { transactions, categories } from '@/db/schema';
+import * as transactionService from '@/services/transactions';
+import * as categoryService from '@/services/categories';
 import { useMemo, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { BarChart, LineChart } from 'react-native-gifted-charts';
@@ -42,8 +42,8 @@ export default function StatsScreen() {
   const { textColor, mutedColor, primaryColor, violetColor, cardBg, borderColor, tabBg, isDark } =
     useThemeColors();
 
-  const { data: trans } = useLiveQuery(db.select().from(transactions));
-  const { data: cats } = useLiveQuery(db.select().from(categories));
+  const { data: trans } = useLiveQuery(transactionService.getAll());
+  const { data: cats } = useLiveQuery(categoryService.getAll());
 
   const [chartTab, setChartTab] = useState<ChartTab>('line');
 

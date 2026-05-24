@@ -3,9 +3,8 @@ import { useState } from 'react';
 import { AlertDialog } from '@/components/AlertDialog';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { db } from '@/db';
-import { plannedTransactions, categories, transactions } from '@/db/schema';
-import { eq, desc } from 'drizzle-orm';
+import * as plannedTransactionService from '@/services/plannedTransactions';
+import * as transactionService from '@/services/transactions';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useThemeColors, fmt, rgba } from '@/components/home/useThemeColors';
@@ -33,23 +32,14 @@ export default function PlannedTransactionDetailScreen() {
   const [dialog, setDialog] = useState<DialogState>(null);
 
   const { data: results } = useLiveQuery(
-    db.select({
-      plannedTransaction: plannedTransactions,
-      category: categories,
-    })
-    .from(plannedTransactions)
-    .leftJoin(categories, eq(plannedTransactions.categoryId, categories.id))
-    .where(eq(plannedTransactions.id, idx))
+    plannedTransactionService.getByIdWithCategory(idx)
   );
 
   const ptx = results?.[0]?.plannedTransaction;
   const category = results?.[0]?.category;
 
   const { data: executions } = useLiveQuery(
-    db.select()
-      .from(transactions)
-      .where(eq(transactions.plannedTransactionId, idx))
-      .orderBy(desc(transactions.transactionDate))
+    transactionService.getByPlannedTransaction(idx)
   );
 
   if (!ptx) {
@@ -72,9 +62,7 @@ export default function PlannedTransactionDetailScreen() {
       destructive: true,
       onConfirm: async () => {
         try {
-          await db.update(plannedTransactions)
-            .set({ isDeleted: true, deletedAt: new Date(), isActive: false })
-            .where(eq(plannedTransactions.id, ptx.id));
+          await plannedTransactionService.softDelete(ptx.id);
           router.back();
         } catch {
           setDialog({ title: 'Error', description: 'Could not delete planned transaction.' });
@@ -90,32 +78,7 @@ export default function PlannedTransactionDetailScreen() {
       confirmLabel: 'Execute',
       onConfirm: async () => {
         try {
-          await db.insert(transactions).values({
-            plannedTransactionId: ptx.id,
-            categoryId: ptx.categoryId,
-            description: ptx.description,
-            amount: ptx.amount,
-            type: ptx.type,
-            paymentMethod: 'BANK',
-            transactionDate: new Date(),
-          });
-
-          if (ptx.recurring) {
-            const next = new Date(ptx.nextExecutionDate || ptx.startDate);
-            switch (ptx.frequency) {
-              case 'DAILY': next.setDate(next.getDate() + 1); break;
-              case 'WEEKLY': next.setDate(next.getDate() + 7); break;
-              case 'MONTHLY': next.setMonth(next.getMonth() + 1); break;
-              case 'YEARLY': next.setFullYear(next.getFullYear() + 1); break;
-            }
-            await db.update(plannedTransactions)
-              .set({ nextExecutionDate: next })
-              .where(eq(plannedTransactions.id, ptx.id));
-          } else {
-            await db.update(plannedTransactions)
-              .set({ isActive: false, nextExecutionDate: null })
-              .where(eq(plannedTransactions.id, ptx.id));
-          }
+          await plannedTransactionService.execute(ptx.id, 'BANK');
           setDialog({ title: 'Success', description: 'Transaction executed successfully.' });
         } catch {
           setDialog({ title: 'Error', description: 'Could not execute transaction.' });
@@ -126,9 +89,7 @@ export default function PlannedTransactionDetailScreen() {
 
   const handleToggleActive = async () => {
     try {
-      await db.update(plannedTransactions)
-        .set({ isActive: !ptx.isActive })
-        .where(eq(plannedTransactions.id, ptx.id));
+      await plannedTransactionService.update(ptx.id, { isActive: !ptx.isActive });
     } catch {
       setDialog({ title: 'Error', description: 'Could not update status.' });
     }

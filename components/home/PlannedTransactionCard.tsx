@@ -2,9 +2,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { eq } from 'drizzle-orm';
-import { db } from '@/db';
-import { transactions, plannedTransactions } from '@/db/schema';
+import * as plannedTransactionService from '@/services/plannedTransactions';
 import { useThemeColors, fmt, rgba } from './useThemeColors';
 import type { PlannedTransaction } from '@/db/schema';
 
@@ -36,29 +34,7 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
 
   const handleExecute = async () => {
     try {
-      await db.insert(transactions).values({
-        plannedTransactionId: item.id,
-        categoryId: item.categoryId,
-        description: item.description,
-        amount: item.amount,
-        type: item.type,
-        paymentMethod: 'BANK',
-        transactionDate: new Date(),
-      });
-
-      if (item.recurring) {
-        const next = new Date(item.nextExecutionDate || item.startDate);
-        switch (item.frequency) {
-          case 'DAILY': next.setDate(next.getDate() + 1); break;
-          case 'WEEKLY': next.setDate(next.getDate() + 7); break;
-          case 'MONTHLY': next.setMonth(next.getMonth() + 1); break;
-          case 'YEARLY': next.setFullYear(next.getFullYear() + 1); break;
-        }
-        await db.update(plannedTransactions)
-          .set({ nextExecutionDate: next })
-          .where(eq(plannedTransactions.id, item.id));
-      }
-
+      await plannedTransactionService.execute(item.id, 'BANK');
       setExecuted(true);
     } catch (e) {
       console.error('Execute error:', e);

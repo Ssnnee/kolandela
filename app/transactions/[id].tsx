@@ -3,9 +3,8 @@ import { useState } from 'react';
 import { AlertDialog } from '@/components/AlertDialog';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { db } from '@/db';
-import { transactions, categories, plannedTransactions } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import * as transactionService from '@/services/transactions';
+import * as plannedTransactionService from '@/services/plannedTransactions';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useThemeColors, fmt, rgba } from '@/components/home/useThemeColors';
@@ -39,20 +38,14 @@ export default function TransactionDetailScreen() {
   const [dialog, setDialog] = useState<DialogState>(null);
 
   const { data: results } = useLiveQuery(
-    db.select({
-      transaction: transactions,
-      category: categories,
-    })
-    .from(transactions)
-    .leftJoin(categories, eq(transactions.categoryId, categories.id))
-    .where(eq(transactions.id, id))
+    transactionService.getByIdWithCategory(id)
   );
 
   const tx = results?.[0]?.transaction;
   const category = results?.[0]?.category;
 
   const { data: plannedResults } = useLiveQuery(
-    db.select().from(plannedTransactions).where(eq(plannedTransactions.id, tx?.plannedTransactionId ?? ''))
+    plannedTransactionService.getById(tx?.plannedTransactionId ?? '')
   );
   const plannedTx = plannedResults?.[0];
 
@@ -76,9 +69,7 @@ export default function TransactionDetailScreen() {
       destructive: true,
       onConfirm: async () => {
         try {
-          await db.update(transactions)
-            .set({ isDeleted: true, deletedAt: new Date() })
-            .where(eq(transactions.id, tx.id));
+          await transactionService.softDelete(tx.id);
           router.back();
         } catch {
           setDialog({ title: 'Error', description: 'Could not delete transaction.' });

@@ -6,8 +6,9 @@ import { AlertDialog } from '@/components/AlertDialog';
 import { useTheme } from '@/app/_context/ThemeContext';
 import { useState } from 'react';
 import { useScrollHandler } from '@/lib/useScrollHandler';
-import { db } from '@/db';
-import { transactions, plannedTransactions, categories } from '@/db/schema';
+import * as transactionService from '@/services/transactions';
+import * as plannedTransactionService from '@/services/plannedTransactions';
+import * as categoryService from '@/services/categories';
 import * as Linking from 'expo-linking';
 
 const APP_VERSION = '0.0.1';
@@ -128,9 +129,9 @@ export default function SettingsScreen() {
       destructive: true,
       onConfirm: async () => {
         try {
-          await db.delete(transactions);
-          await db.delete(plannedTransactions);
-          await db.delete(categories).where();
+          await transactionService.deleteAll();
+          await plannedTransactionService.deleteAll();
+          await categoryService.deleteAll();
           setDialog({ title: 'Done', description: 'All data has been deleted.' });
         } catch {
           setDialog({ title: 'Error', description: 'Something went wrong while deleting data.' });

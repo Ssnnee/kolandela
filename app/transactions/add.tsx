@@ -3,13 +3,12 @@ import { AlertDialog } from '@/components/AlertDialog';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { db } from '@/db';
-import { transactions, categories } from '@/db/schema';
+import * as transactionService from '@/services/transactions';
+import * as categoryService from '@/services/categories';
 import { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/components/home/useThemeColors';
 import { FormInput, FormPicker, CategoryPicker, DatePickerButton } from '@/components/forms';
-import { eq } from 'drizzle-orm';
 
 type TxType = 'INCOME' | 'EXPENSE';
 type PaymentMethod = 'CASH' | 'BANK' | 'MOBILE_MONEY' | 'OTHER';
@@ -27,9 +26,9 @@ export default function AddTransaction() {
   const { textColor, mutedColor, primaryColor, violetColor, cardBg, borderColor, tabBg, isDark } = useThemeColors();
   const [dialog, setDialog] = useState<{ title: string; description: string } | null>(null);
 
-  const { data: cats } = useLiveQuery(db.select().from(categories));
+  const { data: cats } = useLiveQuery(categoryService.getAll());
   const { data: txList } = useLiveQuery(
-    db.select().from(transactions).where(eq(transactions.id, id ?? ''))
+    transactionService.getById(id ?? '')
   );
   const editingTx = id ? txList?.[0] : null;
 
@@ -71,18 +70,16 @@ export default function AddTransaction() {
     setSaving(true);
     try {
       if (id) {
-        await db.update(transactions)
-          .set({
-            description: description.trim(),
-            amount: Math.round(Number(amount)),
-            type,
-            categoryId: categoryId!,
-            paymentMethod,
-            transactionDate: date,
-          })
-          .where(eq(transactions.id, id));
+        await transactionService.update(id, {
+          description: description.trim(),
+          amount: Math.round(Number(amount)),
+          type,
+          categoryId: categoryId!,
+          paymentMethod,
+          transactionDate: date,
+        });
       } else {
-        await db.insert(transactions).values({
+        await transactionService.create({
           description: description.trim(),
           amount: Math.round(Number(amount)),
           type,

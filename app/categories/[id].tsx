@@ -1,9 +1,8 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { db } from '@/db';
-import { categories, transactions } from '@/db/schema';
-import { eq, desc, and } from 'drizzle-orm';
+import * as categoryService from '@/services/categories';
+import * as transactionService from '@/services/transactions';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useThemeColors, fmt, rgba } from '@/components/home/useThemeColors';
@@ -15,15 +14,12 @@ export default function CategoryDetailScreen() {
   const insets = useSafeAreaInsets();
 
   const { data: categoryList } = useLiveQuery(
-    db.select().from(categories).where(eq(categories.id, id ?? ''))
+    categoryService.getById(id ?? '')
   );
   const category = categoryList?.[0];
 
   const { data: txList } = useLiveQuery(
-    db.select()
-      .from(transactions)
-      .where(and(eq(transactions.categoryId, id ?? ''), eq(transactions.isDeleted, false)))
-      .orderBy(desc(transactions.transactionDate))
+    transactionService.getByCategory(id ?? '')
   );
 
   if (!category) {

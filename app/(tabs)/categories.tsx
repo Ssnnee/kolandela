@@ -1,8 +1,8 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { db } from '@/db';
-import { categories, transactions } from '@/db/schema';
+import * as categoryService from '@/services/categories';
+import * as transactionService from '@/services/transactions';
 import { useState, useMemo } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors, fmt, rgba } from '@/components/home/useThemeColors';
@@ -21,8 +21,8 @@ export default function CategoriesScreen() {
   const insets = useSafeAreaInsets();
   const scrollHandler = useScrollHandler();
 
-  const { data: cats } = useLiveQuery(db.select().from(categories));
-  const { data: trans } = useLiveQuery(db.select().from(transactions));
+  const { data: cats } = useLiveQuery(categoryService.getAll());
+  const { data: trans } = useLiveQuery(transactionService.getAll());
 
   const now = new Date();
   const [selectedDate, setSelectedDate] = useState<Date>(now);

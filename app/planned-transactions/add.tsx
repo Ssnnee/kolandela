@@ -3,13 +3,12 @@ import { AlertDialog } from '@/components/AlertDialog';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { db } from '@/db';
-import { plannedTransactions, categories } from '@/db/schema';
+import * as plannedTransactionService from '@/services/plannedTransactions';
+import * as categoryService from '@/services/categories';
 import { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/components/home/useThemeColors';
 import { FormInput, FormPicker, FormToggle, CategoryPicker, DatePickerButton } from '@/components/forms';
-import { eq } from 'drizzle-orm';
 
 type TxType = 'INCOME' | 'EXPENSE';
 type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
@@ -27,9 +26,9 @@ export default function AddPlannedTransaction() {
   const { textColor, mutedColor, primaryColor, violetColor, cardBg, borderColor, tabBg, isDark } = useThemeColors();
   const [dialog, setDialog] = useState<{ title: string; description: string } | null>(null);
 
-  const { data: cats } = useLiveQuery(db.select().from(categories));
+  const { data: cats } = useLiveQuery(categoryService.getAll());
   const { data: plannedList } = useLiveQuery(
-    db.select().from(plannedTransactions).where(eq(plannedTransactions.id, id ?? ''))
+    plannedTransactionService.getById(id ?? '')
   );
   const editingPlanned = id ? plannedList?.[0] : null;
 
@@ -73,20 +72,18 @@ export default function AddPlannedTransaction() {
     setSaving(true);
     try {
       if (id) {
-        await db.update(plannedTransactions)
-          .set({
-            description: description.trim(),
-            amount: Math.round(Number(amount)),
-            type,
-            categoryId: categoryId!,
-            frequency,
-            recurring,
-            startDate,
-            nextExecutionDate: startDate,
-          })
-          .where(eq(plannedTransactions.id, id));
+        await plannedTransactionService.update(id, {
+          description: description.trim(),
+          amount: Math.round(Number(amount)),
+          type,
+          categoryId: categoryId!,
+          frequency,
+          recurring,
+          startDate,
+          nextExecutionDate: startDate,
+        });
       } else {
-        await db.insert(plannedTransactions).values({
+        await plannedTransactionService.create({
           description: description.trim(),
           amount: Math.round(Number(amount)),
           type,

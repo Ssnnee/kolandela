@@ -1,8 +1,8 @@
 import { View, Text, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { db } from '@/db';
-import { plannedTransactions } from '@/db/schema';
+import * as plannedTransactionService from '@/services/plannedTransactions';
+import type { PlannedTransaction } from '@/db/schema';
 import { useState, useMemo } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -35,7 +35,7 @@ const STATUS_OPTIONS = [
   { label: 'Inactive', value: 'INACTIVE' as StatusFilter },
 ];
 
-function isOverdue(p: typeof plannedTransactions.$inferSelect): boolean {
+function isOverdue(p: PlannedTransaction): boolean {
   const nextDate = new Date(p.nextExecutionDate || p.startDate);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -46,7 +46,7 @@ export default function PlannedTransactionsScreen() {
   const { cardBg, borderColor, textColor, mutedColor, primaryColor, violetColor, isDark } = useThemeColors();
   const insets = useSafeAreaInsets();
 
-  const { data: planned } = useLiveQuery(db.select().from(plannedTransactions));
+  const { data: planned } = useLiveQuery(plannedTransactionService.getAll());
 
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('ALL');

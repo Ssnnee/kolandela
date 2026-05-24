@@ -1,8 +1,8 @@
 import { View, Text, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { db } from '@/db';
-import { transactions, categories } from '@/db/schema';
+import * as transactionService from '@/services/transactions';
+import * as categoryService from '@/services/categories';
 import { useState, useMemo } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -32,8 +32,8 @@ export default function TransactionsScreen() {
   const { cardBg, borderColor, textColor, mutedColor, primaryColor, violetColor, isDark } = useThemeColors();
   const insets = useSafeAreaInsets();
 
-  const { data: trans } = useLiveQuery(db.select().from(transactions));
-  const { data: cats } = useLiveQuery(db.select().from(categories));
+  const { data: trans } = useLiveQuery(transactionService.getAll());
+  const { data: cats } = useLiveQuery(categoryService.getAll());
 
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('ALL');

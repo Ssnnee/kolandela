@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { db } from '@/db';
-import { transactions, plannedTransactions } from '@/db/schema';
+import * as transactionService from '@/services/transactions';
+import * as plannedTransactionService from '@/services/plannedTransactions';
 import { useScrollHandler } from '@/lib/useScrollHandler';
 import { useState, useMemo } from 'react';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,8 +18,8 @@ type ListTab = 'transactions' | 'planned';
 
 export default function Index() {
   const { isDark, textColor, mutedColor, primaryColor, cardBg, tabBg } = useThemeColors();
-  const { data: trans } = useLiveQuery(db.select().from(transactions));
-  const { data: plannedTrans } = useLiveQuery(db.select().from(plannedTransactions));
+  const { data: trans } = useLiveQuery(transactionService.getAll());
+  const { data: plannedTrans } = useLiveQuery(plannedTransactionService.getAll());
   const scrollHandler = useScrollHandler();
 
   const now = new Date();
