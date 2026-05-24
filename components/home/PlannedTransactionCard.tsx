@@ -64,6 +64,7 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
       : isDark ? 'rgba(173,123,255,0.12)' : 'rgba(140,90,220,0.1)';
 
   const handleExecute = () => {
+    if (checked) return;
     setOptimisticChecked(true);
     setTimeout(async () => {
       try {
@@ -72,7 +73,7 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
         console.error('Execute error:', e);
       }
       setOptimisticChecked(false);
-    }, 1000);
+    }, 3000);
   };
 
   return (
@@ -108,6 +109,7 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
       </Text>
 
       <TouchableOpacity
+        disabled={checked}
         onPress={(e) => { e.stopPropagation?.(); handleExecute(); }}
         hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         style={checked ? {
