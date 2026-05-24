@@ -1,4 +1,5 @@
 import { View, Text, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
@@ -44,11 +45,13 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
   const { textColor, mutedColor, primaryColor, violetColor, cardBg, borderColor, isDark } =
     useThemeColors();
 
+  const [optimisticChecked, setOptimisticChecked] = useState(false);
+
   const { data: executions } = useLiveQuery(
     transactionService.getByPlannedTransaction(item.id),
   );
   const hasExecuted = (executions?.length ?? 0) > 0;
-  const checked = isChecked(hasExecuted, item);
+  const checked = optimisticChecked || isChecked(hasExecuted, item);
 
   const isExpense = item.type === 'EXPENSE';
   const overdue = isOverdue(item);
@@ -60,12 +63,16 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
       ? isDark ? 'rgba(255,121,102,0.12)' : 'rgba(255,100,80,0.1)'
       : isDark ? 'rgba(173,123,255,0.12)' : 'rgba(140,90,220,0.1)';
 
-  const handleExecute = async () => {
-    try {
-      await plannedTransactionService.execute(item.id, 'BANK');
-    } catch (e) {
-      console.error('Execute error:', e);
-    }
+  const handleExecute = () => {
+    setOptimisticChecked(true);
+    setTimeout(async () => {
+      try {
+        await plannedTransactionService.execute(item.id, 'BANK');
+      } catch (e) {
+        console.error('Execute error:', e);
+      }
+      setOptimisticChecked(false);
+    }, 1000);
   };
 
   return (
