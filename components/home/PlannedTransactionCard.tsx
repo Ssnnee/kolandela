@@ -1,13 +1,21 @@
 import { View, Text, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as plannedTransactionService from '@/services/plannedTransactions';
+import * as transactionService from '@/services/transactions';
 import { useThemeColors, fmt, rgba } from './useThemeColors';
 import type { PlannedTransaction } from '@/db/schema';
 
 const FREQ_LABEL: Record<string, string> = {
   DAILY: 'Daily', WEEKLY: 'Weekly', MONTHLY: 'Monthly', YEARLY: 'Yearly',
+};
+
+const THRESHOLD_DAYS: Record<string, number> = {
+  DAILY: 0,
+  WEEKLY: 1,
+  MONTHLY: 7,
+  YEARLY: 7,
 };
 
 function isOverdue(p: PlannedTransaction): boolean {
@@ -17,10 +25,30 @@ function isOverdue(p: PlannedTransaction): boolean {
   return nextDate < today && p.isActive;
 }
 
+function isChecked(hasExecuted: boolean, item: PlannedTransaction): boolean {
+  if (!hasExecuted || !item.isActive) return false;
+  if (!item.recurring) return true;
+
+  const nextDate = new Date(item.nextExecutionDate || item.startDate);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const msPerDay = 86400000;
+  const daysUntilNext = Math.ceil(
+    (nextDate.getTime() - today.getTime()) / msPerDay
+  );
+
+  return daysUntilNext > (THRESHOLD_DAYS[item.frequency] ?? 0);
+}
+
 export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
   const { textColor, mutedColor, primaryColor, violetColor, cardBg, borderColor, isDark } =
     useThemeColors();
-  const [executed, setExecuted] = useState(false);
+
+  const { data: executions } = useLiveQuery(
+    transactionService.getByPlannedTransaction(item.id),
+  );
+  const hasExecuted = (executions?.length ?? 0) > 0;
+  const checked = isChecked(hasExecuted, item);
 
   const isExpense = item.type === 'EXPENSE';
   const overdue = isOverdue(item);
@@ -35,7 +63,6 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
   const handleExecute = async () => {
     try {
       await plannedTransactionService.execute(item.id, 'BANK');
-      setExecuted(true);
     } catch (e) {
       console.error('Execute error:', e);
     }
@@ -76,7 +103,7 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
       <TouchableOpacity
         onPress={(e) => { e.stopPropagation?.(); handleExecute(); }}
         hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        style={executed ? {
+        style={checked ? {
           width: 32,
           height: 32,
           borderRadius: 16,
@@ -98,7 +125,7 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        {executed ? (
+        {checked ? (
           <Ionicons name="checkmark" size={18} color="white" />
         ) : (
           <Ionicons name="ellipse" size={12} color={accentDim} />
