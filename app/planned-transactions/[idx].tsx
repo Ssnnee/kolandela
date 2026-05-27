@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { AlertDialog } from '@/components/AlertDialog';
+import { DetailCard } from '@/components/DetailCard';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as plannedTransactionService from '@/services/plannedTransactions';
@@ -8,7 +9,6 @@ import * as transactionService from '@/services/transactions';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
-import { TransactionCard } from '@/components/home/TransactionCard';
 
 const FREQ_LABEL: Record<string, string> = {
   DAILY: 'Daily',
@@ -33,14 +33,14 @@ export default function PlannedTransactionDetailScreen() {
   const [dialog, setDialog] = useState<DialogState>(null);
 
   const { data: results } = useLiveQuery(
-    plannedTransactionService.getByIdWithCategory(idx)
+    plannedTransactionService.getByIdWithCategory(idx ?? '')
   );
 
   const ptx = results?.[0]?.plannedTransaction;
   const category = results?.[0]?.category;
 
   const { data: executions } = useLiveQuery(
-    transactionService.getByPlannedTransaction(idx)
+    transactionService.getByPlannedTransaction(idx ?? '')
   );
 
   if (!ptx) {
@@ -52,7 +52,7 @@ export default function PlannedTransactionDetailScreen() {
   }
 
   const isExpense = ptx.type === 'EXPENSE';
-  const amountColor = isExpense ? primaryColor : violetColor;
+  const heroBgColor = isExpense ? violetColor : primaryColor;
   const amountPrefix = isExpense ? '-' : '+';
 
   const handleDelete = () => {
@@ -104,15 +104,17 @@ export default function PlannedTransactionDetailScreen() {
 
   const formattedNextDate = ptx.nextExecutionDate
     ? new Date(ptx.nextExecutionDate).toLocaleDateString('en-GB', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      })
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    })
     : 'None';
+
+  const isOverdue = ptx.isActive && ptx.nextExecutionDate && new Date(ptx.nextExecutionDate) < new Date();
 
   return (
     <View style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)', paddingTop: insets.top }}>
-      {/* Header */}
+      {/* Header Bar */}
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 16, gap: 12 }}>
         <TouchableOpacity
           onPress={() => router.back()}
@@ -135,218 +137,154 @@ export default function PlannedTransactionDetailScreen() {
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 + insets.bottom }} showsVerticalScrollIndicator={false}>
-        {/* Hero Amount */}
-        <View style={{ alignItems: 'center', marginVertical: 32 }}>
-          <Text style={{ color: amountColor, fontSize: 44, fontWeight: '800', letterSpacing: -1 }}>
+
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 + insets.bottom }} showsVerticalScrollIndicator={false}>
+
+        {/* Top Hero Container Box */}
+        <View style={{ backgroundColor: heroBgColor, borderRadius: 28, paddingVertical: 32, alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+            <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 14, paddingVertical: 4, borderRadius: 12 }}>
+              <Text style={{ color: '#FFF', fontSize: 11, fontWeight: '700', letterSpacing: 0.5 }}>{ptx.type}</Text>
+            </View>
+            {isOverdue && (
+              <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 14, paddingVertical: 4, borderRadius: 12 }}>
+                <Text style={{ color: '#FFF', fontSize: 11, fontWeight: '700', letterSpacing: 0.5 }}>OVERDUE</Text>
+              </View>
+            )}
+          </View>
+
+          <Text style={{ color: '#FFF', fontSize: 44, fontWeight: '600', letterSpacing: -0.5 }}>
             {amountPrefix}{format(ptx.amount)}
           </Text>
-          <Text style={{ color: mutedColor, fontSize: 13, fontWeight: '500', textTransform: 'uppercase', letterSpacing: 1, marginTop: 4 }}>
-            Planned Amount
+
+          <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14, marginTop: 12, fontWeight: '500' }}>
+            {FREQ_LABEL[ptx.frequency]} · {ptx.recurring ? 'Recurring' : 'One-time'}
+          </Text>
+          <Text style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, marginTop: 2 }}>
+            Next: {ptx.isActive ? formattedNextDate : 'Paused'}
           </Text>
         </View>
 
-        {/* Action Controls */}
+        {/* Action Feature Buttons Row */}
         <View style={{ flexDirection: 'row', gap: 12, marginBottom: 20 }}>
           <TouchableOpacity
             onPress={handleExecute}
+            activeOpacity={0.7}
             disabled={!ptx.isActive}
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: ptx.isActive ? amountColor : 'rgba(131, 131, 156, 0.2)',
-              borderRadius: 14,
-              paddingVertical: 12,
-              gap: 8,
-              opacity: ptx.isActive ? 1 : 0.6,
-            }}>
-            <Ionicons name="flash-outline" size={18} color="white" />
-            <Text style={{ color: 'white', fontSize: 14, fontWeight: '700' }}>Execute Now</Text>
+            style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: ptx.isActive ? (isExpense ? primaryColor : violetColor) : 'rgba(131, 131, 156, 0.15)', borderRadius: 16, paddingVertical: 14, gap: 8, opacity: ptx.isActive ? 1 : 0.5 }}>
+            <Ionicons name="flash-sharp" size={18} color={ptx.isActive ? 'white' : mutedColor} />
+            <Text style={{ color: ptx.isActive ? 'white' : mutedColor, fontSize: 14, fontWeight: '600' }}>Execute Now</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={handleToggleActive}
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: cardBg,
-              borderWidth: 1,
-              borderColor,
-              borderRadius: 14,
-              paddingVertical: 12,
-              gap: 8,
-            }}>
-            <Ionicons name={ptx.isActive ? 'pause-outline' : 'play-outline'} size={18} color={textColor} />
-            <Text style={{ color: textColor, fontSize: 14, fontWeight: '700' }}>
+            activeOpacity={0.7}
+            style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: cardBg, borderWidth: 1, borderColor, borderRadius: 16, paddingVertical: 14, gap: 8 }}>
+            <Ionicons name={ptx.isActive ? 'pause-sharp' : 'play-sharp'} size={18} color={textColor} />
+            <Text style={{ color: textColor, fontSize: 14, fontWeight: '600' }}>
               {ptx.isActive ? 'Pause' : 'Resume'}
             </Text>
           </TouchableOpacity>
         </View>
 
-        {/* Key details card */}
-        <View style={{ backgroundColor: cardBg, borderRadius: 20, borderWidth: 1, borderColor, padding: 18, gap: 16 }}>
-          {/* Description */}
-          <View>
-            <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>
-              Description
-            </Text>
-            <Text style={{ color: textColor, fontSize: 16, fontWeight: '700' }}>
-              {ptx.description}
-            </Text>
-          </View>
+        {/* Main Parameters Block */}
+        <DetailCard.Container style={{ marginBottom: 24 }}>
+          <DetailCard.Row
+            icon={<Text style={{ color: textColor, fontSize: 15, fontWeight: '600' }}>Aa</Text>}
+            iconBg={isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.04)'}
+          >
+            <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>Description</Text>
+            <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }}>{ptx.description}</Text>
+          </DetailCard.Row>
 
-          <View style={{ height: 1, backgroundColor: borderColor }} />
+          <DetailCard.Divider />
 
-          {/* Category */}
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <View>
-              <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>
-                Category
-              </Text>
-              {category ? (
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                  <View style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: rgba(category.color, 0.13), alignItems: 'center', justifyContent: 'center' }}>
-                    <Ionicons name={(category.icon as any) || 'grid-outline'} size={16} color={category.color} />
-                  </View>
-                  <Text style={{ color: textColor, fontSize: 14, fontWeight: '600' }}>
-                    {category.name}
-                  </Text>
-                </View>
-              ) : (
-                <Text style={{ color: textColor, fontSize: 14, fontWeight: '600' }}>Uncategorized</Text>
-              )}
+          <DetailCard.Row
+            icon={<Ionicons name={(category?.icon as any) || 'grid'} size={20} color={category?.color || mutedColor} />}
+            iconBg={category ? rgba(category.color, 0.15) : 'rgba(0,0,0,0.04)'}
+          >
+            <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>Category</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: category?.color || mutedColor }} />
+              <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }}>{category?.name || 'Uncategorized'}</Text>
             </View>
-          </View>
+          </DetailCard.Row>
 
-          <View style={{ height: 1, backgroundColor: borderColor }} />
+          <DetailCard.Divider />
 
-          {/* Frequency & Recurring */}
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <View>
-              <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 2 }}>
-                Frequency
-              </Text>
-              <Text style={{ color: textColor, fontSize: 14, fontWeight: '600' }}>
-                {FREQ_LABEL[ptx.frequency]} {ptx.recurring ? '(Recurring)' : '(One-time)'}
-              </Text>
-            </View>
-            <Ionicons name="repeat-outline" size={20} color={mutedColor} />
-          </View>
+          <DetailCard.Row
+            icon={<Ionicons name="calendar-sharp" size={20} color={textColor} />}
+            iconBg={isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.04)'}
+          >
+            <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>Start date</Text>
+            <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }}>{formattedStartDate}</Text>
+          </DetailCard.Row>
+        </DetailCard.Container>
 
-          <View style={{ height: 1, backgroundColor: borderColor }} />
-
-          {/* Next Execution */}
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <View>
-              <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 2 }}>
-                Next Execution
-              </Text>
-              <Text style={{ color: ptx.isActive ? textColor : mutedColor, fontSize: 14, fontWeight: '600' }}>
-                {ptx.isActive ? formattedNextDate : 'Paused'}
-              </Text>
-            </View>
-            <Ionicons name="time-outline" size={20} color={mutedColor} />
-          </View>
-
-          <View style={{ height: 1, backgroundColor: borderColor }} />
-
-          {/* Start Date */}
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <View>
-              <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 2 }}>
-                Start Date
-              </Text>
-              <Text style={{ color: textColor, fontSize: 14, fontWeight: '600' }}>
-                {formattedStartDate}
-              </Text>
-            </View>
-            <Ionicons name="calendar-outline" size={20} color={mutedColor} />
-          </View>
-
-          <View style={{ height: 1, backgroundColor: borderColor }} />
-
-          {/* Status Badge */}
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-              Status
-            </Text>
-            <View style={{
-              backgroundColor: ptx.isActive
-                ? 'rgba(0, 250, 217, 0.12)'
-                : 'rgba(255, 59, 48, 0.12)',
-              borderRadius: 8,
-              paddingHorizontal: 10,
-              paddingVertical: 4,
-            }}>
-              <Text style={{
-                color: ptx.isActive
-                  ? (isDark ? 'rgb(0,250,217)' : 'rgb(0,180,150)')
-                  : redColor,
-                fontSize: 12,
-                fontWeight: '700',
-                textTransform: 'uppercase',
-              }}>
-                {ptx.isActive ? 'Active' : 'Inactive'}
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Previous executions list */}
-        <View style={{ marginTop: 24 }}>
-          <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8, marginLeft: 4 }}>
-            Previous Executions ({executions?.length || 0})
+        {/* Execution History Section */}
+        <View style={{ marginBottom: 24 }}>
+          <Text style={{ color: mutedColor, fontSize: 12, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 12, marginLeft: 4 }}>
+            Execution History ({executions?.length || 0})
           </Text>
 
           {executions && executions.length > 0 ? (
-            executions.map((exec) => (
-              <TransactionCard
-                key={exec.id}
-                id={exec.id}
-                description={exec.description}
-                amount={exec.amount}
-                type={exec.type as 'INCOME' | 'EXPENSE'}
-                transactionDate={exec.transactionDate}
-              />
-            ))
+            <DetailCard.Container>
+              {executions.map((exec, idx) => {
+                const formattedExecDate = new Date(exec.transactionDate).toLocaleDateString('en-GB', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                });
+
+                return (
+                  <View key={exec.id}>
+                    <TouchableOpacity
+                      onPress={() => router.push(`/transactions/${exec.id}`)}
+                      activeOpacity={0.7}
+                      style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 16 }}>
+                      <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: category?.color || primaryColor, marginRight: 14, marginLeft: 4 }} />
+                      <View style={{ flex: 1, marginRight: 8 }}>
+                        <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }} numberOfLines={1}>
+                          {formattedExecDate}
+                        </Text>
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                        <Text style={{ color: exec.type === 'INCOME' ? violetColor : primaryColor, fontSize: 16, fontWeight: '600' }}>
+                          {exec.type === 'INCOME' ? '+' : '-'}{format(exec.amount)}
+                        </Text>
+                        <Ionicons name="chevron-forward-sharp" size={16} color={mutedColor} />
+                      </View>
+                    </TouchableOpacity>
+                    {idx < executions.length - 1 && (
+                      <DetailCard.Divider />
+                    )}
+                  </View>
+                );
+              })}
+            </DetailCard.Container>
           ) : (
-            <View style={{ backgroundColor: cardBg, borderRadius: 16, borderWidth: 1, borderColor, padding: 20, alignItems: 'center' }}>
-              <Ionicons name="receipt-outline" size={28} color={mutedColor} />
-              <Text style={{ color: mutedColor, fontSize: 13, marginTop: 8 }}>
-                No executions recorded yet
-              </Text>
+            <View style={{ backgroundColor: cardBg, borderRadius: 24, borderWidth: 1, borderColor, padding: 32, alignItems: 'center', justifyContent: 'center' }}>
+              <Ionicons name="receipt-sharp" size={28} color={mutedColor} style={{ marginBottom: 8 }} />
+              <Text style={{ color: mutedColor, fontSize: 14 }}>No executions recorded yet</Text>
             </View>
           )}
         </View>
 
-        {/* Danger zone */}
-        <View style={{ marginTop: 32 }}>
-          <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8, marginLeft: 4 }}>
-            Danger Zone
-          </Text>
-          <TouchableOpacity
+        {/* Delete Row Card Box Layout */}
+        <DetailCard.Container style={{ borderColor: isDark ? 'rgba(255,59,48,0.15)' : borderColor }}>
+          <DetailCard.Row
+            icon={<Ionicons name="trash-sharp" size={20} color={redColor} />}
+            iconBg="rgba(255,59,48,0.1)"
             onPress={handleDelete}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: isDark ? 'rgba(255,59,48,0.1)' : 'rgba(255,59,48,0.06)',
-              borderRadius: 16,
-              paddingVertical: 14,
-              borderWidth: 1,
-              borderColor: 'rgba(255,59,48,0.25)',
-              gap: 8,
-            }}>
-            <Ionicons name="trash-outline" size={18} color={redColor} />
-            <Text style={{ color: redColor, fontSize: 14, fontWeight: '700' }}>
-              Delete Planned Transaction
+            showChevron
+            chevronColor={redColor}
+          >
+            <Text style={{ color: redColor, fontSize: 16, fontWeight: '600' }}>
+              Delete planned transaction
             </Text>
-          </TouchableOpacity>
-        </View>
+          </DetailCard.Row>
+        </DetailCard.Container>
+
       </ScrollView>
 
       <AlertDialog

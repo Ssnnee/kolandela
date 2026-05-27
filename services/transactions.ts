@@ -1,6 +1,6 @@
 import { db } from '@/db';
 import { transactions, categories } from '@/db/schema';
-import { eq, desc, and, leftJoin } from 'drizzle-orm';
+import { eq, desc, and } from 'drizzle-orm';
 import type { NewTransaction } from '@/db/schema';
 import type { SQLiteUpdateSetSource } from 'drizzle-orm/sqlite-core';
 

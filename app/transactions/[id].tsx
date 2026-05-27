@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { AlertDialog } from '@/components/AlertDialog';
+import { DetailCard } from '@/components/DetailCard';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as transactionService from '@/services/transactions';
@@ -10,17 +11,17 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
 
 const PAYMENT_LABELS: Record<string, string> = {
-  BANK: 'Bank Transfer',
+  BANK: 'Bank transfer',
   CASH: 'Cash',
   MOBILE_MONEY: 'Mobile Money',
   OTHER: 'Other',
 };
 
 const PAYMENT_ICONS: Record<string, string> = {
-  BANK: 'card-outline',
-  CASH: 'cash-outline',
-  MOBILE_MONEY: 'phone-portrait-outline',
-  OTHER: 'ellipsis-horizontal-circle-outline',
+  BANK: 'card',
+  CASH: 'cash',
+  MOBILE_MONEY: 'phone-portrait',
+  OTHER: 'ellipsis-horizontal-circle',
 };
 
 type DialogState = {
@@ -59,7 +60,7 @@ export default function TransactionDetailScreen() {
   }
 
   const isIncome = tx.type === 'INCOME';
-  const amountColor = isIncome ? violetColor : primaryColor;
+  const heroBgColor = isIncome ? violetColor : primaryColor;
   const amountPrefix = isIncome ? '+' : '-';
 
   const handleDelete = () => {
@@ -86,9 +87,14 @@ export default function TransactionDetailScreen() {
     year: 'numeric',
   });
 
+  const formattedTime = new Date(tx.transactionDate).toLocaleTimeString('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
   return (
     <View style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)', paddingTop: insets.top }}>
-      {/* Header */}
+      {/* Header Bar */}
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 16, gap: 12 }}>
         <TouchableOpacity
           onPress={() => router.back()}
@@ -103,177 +109,94 @@ export default function TransactionDetailScreen() {
             style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: cardBg, borderWidth: 1, borderColor, alignItems: 'center', justifyContent: 'center' }}>
             <Ionicons name="pencil-outline" size={18} color={textColor} />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleDelete}
-            style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: cardBg, borderWidth: 1, borderColor, alignItems: 'center', justifyContent: 'center' }}>
-            <Ionicons name="trash-outline" size={18} color={redColor} />
-          </TouchableOpacity>
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 + insets.bottom }} showsVerticalScrollIndicator={false}>
-        {/* Hero Amount */}
-        <View style={{ alignItems: 'center', marginVertical: 32 }}>
-          <Text style={{ color: amountColor, fontSize: 44, fontWeight: '800', letterSpacing: -1 }}>
+
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 + insets.bottom }} showsVerticalScrollIndicator={false}>
+
+        {/* Top Hero Card Box */}
+        <View style={{ backgroundColor: heroBgColor, borderRadius: 28, paddingVertical: 32, alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+          <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 14, paddingVertical: 4, borderRadius: 12, marginBottom: 12 }}>
+            <Text style={{ color: '#FFF', fontSize: 11, fontWeight: '700', letterSpacing: 0.5 }}>{tx.type}</Text>
+          </View>
+          <Text style={{ color: '#FFF', fontSize: 44, fontWeight: '600', letterSpacing: -0.5 }}>
             {amountPrefix}{format(tx.amount)}
           </Text>
-          <Text style={{ color: mutedColor, fontSize: 13, fontWeight: '500', textTransform: 'uppercase', letterSpacing: 1, marginTop: 4 }}>
-            Amount
+          <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14, marginTop: 12, fontWeight: '400' }}>
+            {formattedDate}
+          </Text>
+          <Text style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, marginTop: 2 }}>
+            {formattedTime}
           </Text>
         </View>
 
-        {/* Key details card */}
-        <View style={{ backgroundColor: cardBg, borderRadius: 20, borderWidth: 1, borderColor, padding: 18, gap: 16 }}>
-          {/* Description */}
-          <View>
-            <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>
-              Description
-            </Text>
-            <Text style={{ color: textColor, fontSize: 16, fontWeight: '700' }}>
-              {tx.description}
-            </Text>
-          </View>
+        {/* Main Parameters Block */}
+        <DetailCard.Container style={{ marginBottom: 16 }}>
+          <DetailCard.Row
+            icon={<Text style={{ color: textColor, fontSize: 15, fontWeight: '600' }}>Aa</Text>}
+            iconBg={isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.04)'}
+          >
+            <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>Description</Text>
+            <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }}>{tx.description}</Text>
+          </DetailCard.Row>
 
-          <View style={{ height: 1, backgroundColor: borderColor }} />
+          <DetailCard.Divider />
 
-          {/* Date */}
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <View>
-              <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 2 }}>
-                Date
-              </Text>
-              <Text style={{ color: textColor, fontSize: 14, fontWeight: '600' }}>
-                {formattedDate}
-              </Text>
+          <DetailCard.Row
+            icon={<Ionicons name={(category?.icon as any) || 'grid'} size={20} color={category?.color || mutedColor} />}
+            iconBg={category ? rgba(category.color, 0.15) : 'rgba(0,0,0,0.04)'}
+          >
+            <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>Category</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: category?.color || mutedColor }} />
+              <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }}>{category?.name || 'Uncategorized'}</Text>
             </View>
-            <Ionicons name="calendar-outline" size={20} color={mutedColor} />
-          </View>
+          </DetailCard.Row>
 
-          <View style={{ height: 1, backgroundColor: borderColor }} />
+          <DetailCard.Divider />
 
-          {/* Category */}
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <View>
-              <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>
-                Category
-              </Text>
-              {category ? (
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                  <View style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: rgba(category.color, 0.13), alignItems: 'center', justifyContent: 'center' }}>
-                    <Ionicons name={(category.icon as any) || 'grid-outline'} size={16} color={category.color} />
-                  </View>
-                  <Text style={{ color: textColor, fontSize: 14, fontWeight: '600' }}>
-                    {category.name}
-                  </Text>
-                </View>
-              ) : (
-                <Text style={{ color: textColor, fontSize: 14, fontWeight: '600' }}>Uncategorized</Text>
-              )}
-            </View>
-          </View>
+          <DetailCard.Row
+            icon={<Ionicons name={(PAYMENT_ICONS[tx.paymentMethod] as any) || 'card'} size={20} color={textColor} />}
+            iconBg={isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.04)'}
+          >
+            <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>Payment method</Text>
+            <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }}>{PAYMENT_LABELS[tx.paymentMethod] || tx.paymentMethod}</Text>
+          </DetailCard.Row>
+        </DetailCard.Container>
 
-          <View style={{ height: 1, backgroundColor: borderColor }} />
-
-          {/* Payment Method */}
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <View>
-              <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 2 }}>
-                Payment Method
-              </Text>
-              <Text style={{ color: textColor, fontSize: 14, fontWeight: '600' }}>
-                {PAYMENT_LABELS[tx.paymentMethod] || tx.paymentMethod}
-              </Text>
-            </View>
-            <Ionicons name={(PAYMENT_ICONS[tx.paymentMethod] as any) || 'card-outline'} size={20} color={mutedColor} />
-          </View>
-
-          <View style={{ height: 1, backgroundColor: borderColor }} />
-
-          {/* Type Badge */}
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-              Type
-            </Text>
-            <View style={{
-              backgroundColor: isIncome
-                ? 'rgba(0, 250, 217, 0.12)'
-                : 'rgba(255, 59, 48, 0.12)',
-              borderRadius: 8,
-              paddingHorizontal: 10,
-              paddingVertical: 4,
-            }}>
-              <Text style={{
-                color: isIncome
-                  ? (isDark ? 'rgb(0,250,217)' : 'rgb(0,180,150)')
-                  : redColor,
-                fontSize: 12,
-                fontWeight: '700',
-                textTransform: 'uppercase',
-              }}>
-                {tx.type}
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Linked planned transaction */}
+        {/* Dynamic Forwarding "From Planned" Card Block */}
         {plannedTx && (
-          <View style={{ marginTop: 20 }}>
-            <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8, marginLeft: 4 }}>
-              Recurrence Link
-            </Text>
-            <TouchableOpacity
+          <DetailCard.Container style={{ marginBottom: 16 }}>
+            <DetailCard.Row
+              icon={<Ionicons name="repeat-sharp" size={20} color={violetColor} />}
+              iconBg={isDark ? 'rgba(140,90,220,0.15)' : 'rgba(140,90,220,0.1)'}
               onPress={() => router.push(`/planned-transactions/${plannedTx.id}`)}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                backgroundColor: cardBg,
-                borderRadius: 16,
-                padding: 14,
-                borderWidth: 1,
-                borderColor,
-                gap: 12,
-              }}>
-              <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: isDark ? 'rgba(173,123,255,0.12)' : 'rgba(140,90,220,0.1)', alignItems: 'center', justifyContent: 'center' }}>
-                <Ionicons name="calendar-outline" size={16} color={violetColor} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ color: textColor, fontSize: 14, fontWeight: '600' }} numberOfLines={1}>
-                  {plannedTx.description}
-                </Text>
-                <Text style={{ color: mutedColor, fontSize: 11, marginTop: 2 }}>
-                  Executed from planned transaction
-                </Text>
-              </View>
-              <Ionicons name="chevron-forward" size={16} color={mutedColor} />
-            </TouchableOpacity>
-          </View>
+              showChevron
+            >
+              <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>From planned</Text>
+              <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }} numberOfLines={1}>
+                {plannedTx.description}
+              </Text>
+            </DetailCard.Row>
+          </DetailCard.Container>
         )}
 
-        {/* Danger zone */}
-        <View style={{ marginTop: 32 }}>
-          <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8, marginLeft: 4 }}>
-            Danger Zone
-          </Text>
-          <TouchableOpacity
+        {/* Delete Interactive Row Card */}
+        <DetailCard.Container style={{ borderColor: isDark ? 'rgba(255,59,48,0.15)' : borderColor }}>
+          <DetailCard.Row
+            icon={<Ionicons name="trash-sharp" size={20} color={redColor} />}
+            iconBg="rgba(255,59,48,0.1)"
             onPress={handleDelete}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: isDark ? 'rgba(255,59,48,0.1)' : 'rgba(255,59,48,0.06)',
-              borderRadius: 16,
-              paddingVertical: 14,
-              borderWidth: 1,
-              borderColor: 'rgba(255,59,48,0.25)',
-              gap: 8,
-            }}>
-            <Ionicons name="trash-outline" size={18} color={redColor} />
-            <Text style={{ color: redColor, fontSize: 14, fontWeight: '700' }}>
-              Delete Transaction
+            showChevron
+            chevronColor={redColor}
+          >
+            <Text style={{ color: redColor, fontSize: 16, fontWeight: '600' }}>
+              Delete transaction
             </Text>
-          </TouchableOpacity>
-        </View>
+          </DetailCard.Row>
+        </DetailCard.Container>
+
       </ScrollView>
 
       <AlertDialog
