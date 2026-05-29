@@ -3,11 +3,10 @@ import { View, Text, TouchableOpacity, Modal, Pressable, Animated } from 'react-
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useThemeColors, rgba } from '@/components/home/useThemeColors';
+import { useThemeColors } from '@/components/home/useThemeColors';
 
 export const AddActionSheet = forwardRef<any, {}>((_props, ref) => {
-  const { cardBg, borderColor, textColor, mutedColor, primaryColor, violetColor, isDark } =
-    useThemeColors();
+  const { textColor, mutedColor, primaryColor, violetColor, isDark } = useThemeColors();
   const [visible, setVisible] = useState(false);
   const slideAnim = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
@@ -18,8 +17,8 @@ export const AddActionSheet = forwardRef<any, {}>((_props, ref) => {
       Animated.spring(slideAnim, {
         toValue: 1,
         useNativeDriver: true,
-        damping: 24,
-        stiffness: 240,
+        damping: 26,
+        stiffness: 260,
       }).start();
     },
     close: () => {
@@ -31,20 +30,21 @@ export const AddActionSheet = forwardRef<any, {}>((_props, ref) => {
     },
   }));
 
-  const handleTransaction = () => {
-    setVisible(false);
-    router.push('/transactions/add');
-  };
-
-  const handlePlanned = () => {
-    setVisible(false);
-    router.push('/planned-transactions/add');
+  const handleNavigation = (path: '/transactions/add' | '/planned-transactions/add') => {
+    Animated.timing(slideAnim, {
+      toValue: 0,
+      duration: 140,
+      useNativeDriver: true,
+    }).start(() => {
+      setVisible(false);
+      router.push(path);
+    });
   };
 
   return (
-    <Modal visible={visible} transparent onRequestClose={() => setVisible(false)}>
+    <Modal visible={visible} transparent onRequestClose={() => setVisible(false)} animationType="none">
       <Pressable
-        style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' }}
+        style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' }}
         onPress={() => setVisible(false)}>
         <Animated.View
           style={{
@@ -52,123 +52,115 @@ export const AddActionSheet = forwardRef<any, {}>((_props, ref) => {
               {
                 translateY: slideAnim.interpolate({
                   inputRange: [0, 1],
-                  outputRange: [360, 0],
+                  outputRange: [320, 0],
                 }),
               },
             ],
           }}>
           <View
             style={{
-              backgroundColor: cardBg,
-              borderTopLeftRadius: 24,
-              borderTopRightRadius: 24,
-              paddingTop: 12,
-              paddingHorizontal: 24,
-              paddingBottom: 24 + insets.bottom,
+              backgroundColor: isDark ? 'rgb(20, 20, 26)' : '#FFFFFF',
+              borderTopLeftRadius: 28,
+              borderTopRightRadius: 28,
+              paddingTop: 8,
+              paddingHorizontal: 16,
+              paddingBottom: 16 + insets.bottom,
               borderWidth: 1,
-              borderColor,
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: -4 },
-              shadowOpacity: isDark ? 0.4 : 0.1,
-              shadowRadius: 16,
-              elevation: 20,
+              borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)',
             }}>
+
+            {/* Grab Handle */}
             <View style={{ alignItems: 'center', marginBottom: 16 }}>
               <View
                 style={{
                   width: 36,
                   height: 4,
                   borderRadius: 2,
-                  backgroundColor: isDark ? 'rgb(60, 60, 72)' : 'rgb(200, 200, 210)',
+                  backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)',
                 }}
               />
             </View>
 
+            {/* Title */}
             <Text
               style={{
                 color: textColor,
-                fontSize: 17,
-                fontWeight: '700',
-                marginBottom: 20,
-                textAlign: 'center',
+                fontSize: 18,
+                fontWeight: '600',
+                marginBottom: 16,
+                marginLeft: 4,
+                letterSpacing: -0.2,
               }}>
-              Add new
+              What would you like to do?
             </Text>
 
-            <View style={{ flexDirection: 'row', gap: 12 }}>
+            {/* Grid Container */}
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+
+              {/* Add Card */}
               <TouchableOpacity
-                onPress={handleTransaction}
-                activeOpacity={0.7}
+                onPress={() => handleNavigation('/transactions/add')}
+                activeOpacity={0.75}
                 style={{
                   flex: 1,
-                  backgroundColor: rgba(primaryColor, 0.12),
-                  borderRadius: 16,
-                  padding: 20,
-                  alignItems: 'center',
-                  gap: 10,
+                  backgroundColor: isDark ? 'rgba(255, 100, 80, 0.06)' : 'rgba(255, 100, 80, 0.03)',
+                  borderRadius: 20,
+                  padding: 16,
                   borderWidth: 1,
-                  borderColor: rgba(primaryColor, 0.25),
+                  borderColor: isDark ? 'rgba(255, 100, 80, 0.12)' : 'rgba(255, 100, 80, 0.06)',
                 }}>
                 <View
                   style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 14,
+                    width: 44,
+                    height: 44,
+                    borderRadius: 22,
                     backgroundColor: primaryColor,
                     alignItems: 'center',
                     justifyContent: 'center',
+                    marginBottom: 14,
                   }}>
-                  <Ionicons name="add-circle-outline" size={24} color="white" />
+                  <Ionicons name="add-sharp" size={24} color="white" />
                 </View>
-                <Text style={{ color: primaryColor, fontSize: 14, fontWeight: '700' }}>
-                  Transaction
+                <Text style={{ color: primaryColor, fontSize: 17, fontWeight: '600', marginBottom: 4 }}>
+                  Add
                 </Text>
-                <Text
-                  style={{
-                    color: mutedColor,
-                    fontSize: 11,
-                    textAlign: 'center',
-                    lineHeight: 15,
-                  }}>
-                  Record income or expense
+                <Text style={{ color: mutedColor, fontSize: 12, fontWeight: '400', lineHeight: 16 }}>
+                  New expense or income
                 </Text>
               </TouchableOpacity>
 
+              {/* Plan Card */}
               <TouchableOpacity
-                onPress={handlePlanned}
-                activeOpacity={0.7}
+                onPress={() => handleNavigation('/planned-transactions/add')}
+                activeOpacity={0.75}
                 style={{
                   flex: 1,
-                  backgroundColor: rgba(violetColor, 0.12),
-                  borderRadius: 16,
-                  padding: 20,
-                  alignItems: 'center',
-                  gap: 10,
+                  backgroundColor: isDark ? 'rgba(150, 120, 255, 0.06)' : 'rgba(150, 120, 255, 0.03)',
+                  borderRadius: 20,
+                  padding: 16,
                   borderWidth: 1,
-                  borderColor: rgba(violetColor, 0.25),
+                  borderColor: isDark ? 'rgba(150, 120, 255, 0.12)' : 'rgba(150, 120, 255, 0.06)',
                 }}>
                 <View
                   style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 14,
+                    width: 44,
+                    height: 44,
+                    borderRadius: 22,
                     backgroundColor: violetColor,
                     alignItems: 'center',
                     justifyContent: 'center',
+                    marginBottom: 14,
                   }}>
-                  <Ionicons name="calendar-outline" size={24} color="white" />
+                  <Ionicons name="calendar-sharp" size={18} color="white" />
                 </View>
-                <Text style={{ color: violetColor, fontSize: 14, fontWeight: '700' }}>Planned</Text>
-                <Text
-                  style={{
-                    color: mutedColor,
-                    fontSize: 11,
-                    textAlign: 'center',
-                    lineHeight: 15,
-                  }}>
-                  Schedule a future transaction
+                <Text style={{ color: violetColor, fontSize: 17, fontWeight: '600', marginBottom: 4 }}>
+                  Plan
+                </Text>
+                <Text style={{ color: mutedColor, fontSize: 12, fontWeight: '400', lineHeight: 16 }}>
+                  Schedule future transaction
                 </Text>
               </TouchableOpacity>
+
             </View>
           </View>
         </Animated.View>
