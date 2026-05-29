@@ -160,7 +160,10 @@
       "sectionPreferences": "Préférences",
       "language": "Langue",
       "english": "Anglais",
+      "french": "Français",
       "selectCurrency": "Sélectionner la devise",
+      "selectLanguage": "Sélectionner la langue",
+      "selectTheme": "Sélectionner le thème",
       "changeLanguage": "Changer de langue",
       "currency": "Devise",
       "sectionData": "Données",
@@ -179,6 +182,11 @@
     }
   },
   "screens": {
+    "notFound": {
+      "title": "Page introuvable",
+      "description": "La route que vous cherchez n'existe pas ou a été déplacée.",
+      "goHome": "Accueil"
+    },
     "transactions": {
       "add": "Ajouter une transaction",
       "details": "Détails de la transaction",

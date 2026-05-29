@@ -4,9 +4,9 @@ import { useThemeColors, rgba } from '@/components/home/useThemeColors';
 import { useTranslation } from '@/app/_context/LanguageContext';
 import type { LanguageCode } from '@/app/_i18n';
 
-const LANGUAGES: { code: LanguageCode; label: string; native: string }[] = [
-  { code: 'en', label: 'English', native: 'English' },
-  { code: 'fr', label: 'French', native: 'Français' },
+const LANGUAGES: { code: LanguageCode; labelKey: string; native: string }[] = [
+  { code: 'en', labelKey: 'tabs.settings.english', native: 'English' },
+  { code: 'fr', labelKey: 'tabs.settings.french', native: 'Français' },
 ];
 
 interface LanguagePickerProps {
@@ -16,7 +16,7 @@ interface LanguagePickerProps {
 
 export function LanguagePicker({ visible, onClose }: LanguagePickerProps) {
   const { textColor, primaryColor, cardBg, borderColor } = useThemeColors();
-  const { language, setLanguage } = useTranslation();
+  const { language, setLanguage, t } = useTranslation();
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
@@ -26,7 +26,7 @@ export function LanguagePicker({ visible, onClose }: LanguagePickerProps) {
       >
         <Pressable onPress={() => { }} style={{ width: 280, backgroundColor: cardBg, borderRadius: 20, borderWidth: 1, borderColor, padding: 8 }}>
           <Text style={{ color: textColor, fontSize: 17, fontWeight: '700', textAlign: 'center', paddingVertical: 12 }}>
-            Language
+            {t('tabs.settings.selectLanguage')}
           </Text>
           {LANGUAGES.map((l) => (
             <TouchableOpacity
@@ -40,7 +40,7 @@ export function LanguagePicker({ visible, onClose }: LanguagePickerProps) {
               }}
             >
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                <Text style={{ color: textColor, fontSize: 16, fontWeight: '500' }}>{l.label}</Text>
+                <Text style={{ color: textColor, fontSize: 16, fontWeight: '500' }}>{t(l.labelKey)}</Text>
               </View>
               <Text style={{ color: textColor, fontSize: 14 }}>{l.native}</Text>
               {l.code === language && (

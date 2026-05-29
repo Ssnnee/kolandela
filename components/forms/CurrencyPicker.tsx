@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, Modal, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors, rgba, useCurrency } from '@/components/home/useThemeColors';
+import { useTranslation } from '@/app/_context/LanguageContext';
 import { CURRENCIES } from '@/constants/currency';
 
 interface CurrencyPickerProps {
@@ -11,6 +12,7 @@ interface CurrencyPickerProps {
 export function CurrencyPicker({ visible, onClose }: CurrencyPickerProps) {
   const { textColor, primaryColor, cardBg, borderColor } = useThemeColors();
   const { currency, setCurrency } = useCurrency();
+  const { t } = useTranslation();
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
@@ -20,7 +22,7 @@ export function CurrencyPicker({ visible, onClose }: CurrencyPickerProps) {
       >
         <Pressable onPress={() => { }} style={{ width: 280, backgroundColor: cardBg, borderRadius: 20, borderWidth: 1, borderColor, padding: 8 }}>
           <Text style={{ color: textColor, fontSize: 17, fontWeight: '700', textAlign: 'center', paddingVertical: 12 }}>
-            Select currencysne
+            {t('tabs.settings.selectCurrency')}
           </Text>
           {CURRENCIES.map((c) => (
             <TouchableOpacity

@@ -2,10 +2,12 @@ import { View, Text, TouchableOpacity, Platform } from 'react-native';
 import { router, usePathname } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useThemeColors } from '@/components/home/useThemeColors';
+import { useTranslation } from '@/app/_context/LanguageContext';
 
 export default function NotFound() {
   const { textColor, mutedColor, primaryColor, cardBg, borderColor, isDark } = useThemeColors();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
   const pathname = usePathname();
 
   return (
@@ -39,7 +41,7 @@ export default function NotFound() {
           marginBottom: 8,
           textAlign: 'center',
         }}>
-        Page not found
+        {t('screens.notFound.title')}
       </Text>
       <Text
         style={{
@@ -49,7 +51,7 @@ export default function NotFound() {
           lineHeight: 21,
           marginBottom: 8,
         }}>
-        The route you're looking for doesn't exist or has been moved.
+        {t('screens.notFound.description')}
       </Text>
       <View
         style={{
@@ -81,7 +83,7 @@ export default function NotFound() {
           shadowRadius: 12,
           elevation: 8,
         }}>
-        <Text style={{ color: 'white', fontSize: 15, fontWeight: '700' }}>Go home</Text>
+        <Text style={{ color: 'white', fontSize: 15, fontWeight: '700' }}>{t('screens.notFound.goHome')}</Text>
       </TouchableOpacity>
     </View>
   );
