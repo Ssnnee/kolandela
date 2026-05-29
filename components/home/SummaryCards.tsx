@@ -12,24 +12,31 @@ export function SummaryCards({
   remaining: number;
   savingsRate: number;
 }) {
-  const { primaryColor, violetColor, cardBg, borderColor, textColor, mutedColor } =
+  const { primaryColor, violetColor, cardBg, borderColor, textColor, mutedColor, redColor } =
     useThemeColors();
   const { format } = useCurrency();
+  const isDeficit = remaining < 0;
 
   return (
     <View style={{ paddingHorizontal: 24, marginBottom: 20, gap: 12 }}>
       {/* Remaining hero */}
-      <View style={{ backgroundColor: primaryColor, borderRadius: 20, padding: 20 }}>
+      <View style={{ backgroundColor: isDeficit ? redColor : primaryColor, borderRadius: 20, padding: 20 }}>
         <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 11, fontWeight: '500', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 4 }}>
-          Remaining
+          {isDeficit ? 'Overspent' : 'Remaining'}
         </Text>
         <Text style={{ color: 'white', fontSize: 32, fontWeight: '800', letterSpacing: -1 }}>
-          {format(remaining)}
+          {format(Math.abs(remaining))}
         </Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8, gap: 6 }}>
-          <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 100, paddingHorizontal: 10, paddingVertical: 3 }}>
-            <Text style={{ color: 'white', fontSize: 11, fontWeight: '600' }}>{savingsRate}% saved</Text>
-          </View>
+          {isDeficit ? (
+            <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 100, paddingHorizontal: 10, paddingVertical: 3 }}>
+              <Text style={{ color: 'white', fontSize: 11, fontWeight: '600' }}>Deficit</Text>
+            </View>
+          ) : (
+            <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 100, paddingHorizontal: 10, paddingVertical: 3 }}>
+              <Text style={{ color: 'white', fontSize: 11, fontWeight: '600' }}>{savingsRate}% saved</Text>
+            </View>
+          )}
           <Text style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11 }}>of income</Text>
         </View>
       </View>

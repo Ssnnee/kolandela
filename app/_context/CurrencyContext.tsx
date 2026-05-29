@@ -10,7 +10,7 @@ interface CurrencyContextType {
 
 const CurrencyContext = createContext<CurrencyContextType>({
   currency: DEFAULT_CURRENCY,
-  setCurrency: () => {},
+  setCurrency: () => { },
 });
 
 export default function CurrencyProvider({ children }: { children: React.ReactNode }) {
