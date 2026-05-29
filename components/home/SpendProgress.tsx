@@ -1,5 +1,6 @@
 import { View, Text } from 'react-native';
 import { useThemeColors, useCurrency, rgba } from './useThemeColors';
+import { useTranslation } from '@/app/_context/LanguageContext';
 
 export function SpendProgress({
   income,
@@ -12,6 +13,7 @@ export function SpendProgress({
 }) {
   const { textColor, mutedColor, violetColor, cardBg, borderColor, isDark } = useThemeColors();
   const { format } = useCurrency();
+  const { t } = useTranslation();
 
   const spentRatio = income > 0 ? Math.min(expenses / income, 1) : 0;
   const plannedRatio = income > 0 ? Math.min((expenses + planned) / income, 1) : 0;
@@ -29,7 +31,7 @@ export function SpendProgress({
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 }}>
         <View>
           <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 3 }}>
-            Spent this month
+            {t('tabs.home.spentThisMonth')}
           </Text>
           <Text style={{ color: textColor, fontSize: 22, fontWeight: '800', letterSpacing: -0.5 }}>
             {format(expenses)}
@@ -53,16 +55,16 @@ export function SpendProgress({
         <View style={{ flexDirection: 'row', gap: 14 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
             <View style={{ width: 7, height: 7, borderRadius: 2, backgroundColor: barColor }} />
-            <Text style={{ color: mutedColor, fontSize: 11 }}>Spent</Text>
+            <Text style={{ color: mutedColor, fontSize: 11 }}>{t('tabs.home.spent')}</Text>
           </View>
           {planned > 0 && (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
               <View style={{ width: 7, height: 7, borderRadius: 2, backgroundColor: rgba(violetColor, 0.5) }} />
-              <Text style={{ color: mutedColor, fontSize: 11 }}>+Planned</Text>
+              <Text style={{ color: mutedColor, fontSize: 11 }}>{t('tabs.home.plusPlanned')}</Text>
             </View>
           )}
         </View>
-        <Text style={{ color: mutedColor, fontSize: 11 }}>of {format(income)}</Text>
+        <Text style={{ color: mutedColor, fontSize: 11 }}>{t('tabs.home.of')} {format(income)}</Text>
       </View>
     </View>
   );

@@ -6,6 +6,7 @@ import * as transactionService from '@/services/transactions';
 import { useState, useMemo } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
+import { useTranslation } from '@/app/_context/LanguageContext';
 import { useScrollHandler } from '@/lib/useScrollHandler';
 import { MonthPicker, buildMonthOptions } from '@/components/home/MonthPicker';
 import { router } from 'expo-router';
@@ -17,8 +18,9 @@ const MONTHS = [
 type Tab = 'EXPENSE' | 'INCOME';
 
 export default function CategoriesScreen() {
-  const { textColor, mutedColor, primaryColor, cardBg, borderColor, tabBg, isDark } = useThemeColors();
+  const { textColor, mutedColor, cardBg, borderColor, tabBg, isDark } = useThemeColors();
   const { format } = useCurrency();
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const scrollHandler = useScrollHandler();
 
@@ -81,9 +83,9 @@ export default function CategoriesScreen() {
 
   const spentPct = totalIncome > 0 ? Math.round((totalExpenses / totalIncome) * 100) : 0;
   const insight =
-    spentPct > 90 ? '⚠️ Spending is very high'
-      : spentPct > 70 ? '📊 Used most of budget'
-        : spentPct > 40 ? '👍 Spending looks balanced'
+    spentPct > 90 ? 'Spending is very high'
+      : spentPct > 70 ? 'Used most of budget'
+        : spentPct > 40 ? 'Spending looks balanced'
           : totalExpenses === 0 ? 'No expenses recorded yet'
             : '🎯 Great control this month';
 
@@ -96,7 +98,7 @@ export default function CategoriesScreen() {
 
       <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 16 }}>
         <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>
-          Breakdown
+          {t('tabs.categories.breakdown')}
         </Text>
         <Text style={{ color: textColor, fontSize: 24, fontWeight: '800', letterSpacing: -0.5 }}>
           {MONTHS[selectedMonth]} {selectedYear}
@@ -112,12 +114,12 @@ export default function CategoriesScreen() {
 
       {/* Tab switcher */}
       <View style={{ flexDirection: 'row', backgroundColor: tabBg, borderRadius: 14, padding: 4, marginHorizontal: 24, marginBottom: 20 }}>
-        {(['EXPENSE', 'INCOME'] as Tab[]).map((t) => {
-          const isActive = tab === t;
+        {(['EXPENSE', 'INCOME'] as Tab[]).map((mode) => {
+          const isActive = tab === mode;
           return (
             <TouchableOpacity
-              key={t}
-              onPress={() => setTab(t)}
+              key={mode}
+              onPress={() => setTab(mode)}
               style={{
                 flex: 1, paddingVertical: 9, alignItems: 'center', borderRadius: 11,
                 backgroundColor: isActive ? (isDark ? 'rgb(26,26,34)' : 'rgb(255,255,255)') : 'transparent',
@@ -128,7 +130,7 @@ export default function CategoriesScreen() {
                 elevation: isActive ? 2 : 0,
               }}>
               <Text style={{ fontSize: 13, fontWeight: isActive ? '700' : '500', color: isActive ? textColor : mutedColor }}>
-                {t === 'EXPENSE' ? 'Expenses' : 'Income'}
+                {mode === 'EXPENSE' ? t('tabs.categories.tabExpenses') : t('tabs.categories.tabIncome')}
               </Text>
             </TouchableOpacity>
           );
@@ -140,7 +142,7 @@ export default function CategoriesScreen() {
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
           <View>
             <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>
-              Total {tab === 'EXPENSE' ? 'spent' : 'received'}
+              {tab === 'EXPENSE' ? t('tabs.categories.totalSpent') : t('tabs.categories.totalReceived')}
             </Text>
             <Text style={{ color: accentColor, fontSize: 26, fontWeight: '800', letterSpacing: -1 }}>
               {format(totalForTab)}
@@ -167,7 +169,7 @@ export default function CategoriesScreen() {
               }} />
             </View>
             <Text style={{ color: mutedColor, fontSize: 11 }}>
-              {spentPct}% of {format(totalIncome)} income
+              {spentPct}% {t('tabs.home.of')} {format(totalIncome)} {t('tabs.home.income')}
             </Text>
           </>
         )}
@@ -176,19 +178,19 @@ export default function CategoriesScreen() {
       {/* Category list */}
       <View style={{ paddingHorizontal: 24 }}>
         <Text style={{ color: textColor, fontSize: 15, fontWeight: '700', marginBottom: 12 }}>
-          By category
+          {t('tabs.categories.byCategory')}
         </Text>
 
         {categoryBreakdown.length === 0 ? (
           <View style={{ alignItems: 'center', paddingVertical: 48 }}>
             <Ionicons name="grid-outline" size={36} color={mutedColor} />
             <Text style={{ color: mutedColor, fontSize: 13, marginTop: 10 }}>
-              No {tab === 'EXPENSE' ? 'expenses' : 'income'} this month
+              {tab === 'EXPENSE' ? t('tabs.categories.noExpenses') : t('tabs.categories.noIncome')}
             </Text>
           </View>
         ) : (
           <>
-            {categoryBreakdown.map((cat, i) => (
+            {categoryBreakdown.map((cat) => (
               <TouchableOpacity
                 key={cat.id}
                 onPress={() => router.push(`/categories/${cat.id}`)}

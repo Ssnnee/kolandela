@@ -8,23 +8,18 @@ import * as categoryService from '@/services/categories';
 import { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors, useCurrency } from '@/components/home/useThemeColors';
+import { useTranslation } from '@/app/_context/LanguageContext';
 import { FormInput, FormPicker, FormToggle, CategoryPicker, DatePickerButton } from '@/components/forms';
 
 type TxType = 'INCOME' | 'EXPENSE';
 type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
-
-const FREQ_OPTIONS = [
-  { label: 'Daily', value: 'DAILY' as Frequency },
-  { label: 'Weekly', value: 'WEEKLY' as Frequency },
-  { label: 'Monthly', value: 'MONTHLY' as Frequency },
-  { label: 'Yearly', value: 'YEARLY' as Frequency },
-];
 
 export default function AddPlannedTransaction() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const insets = useSafeAreaInsets();
   const { textColor, mutedColor, primaryColor, violetColor, cardBg, borderColor, tabBg, isDark } = useThemeColors();
   const { currency } = useCurrency();
+  const { t } = useTranslation();
   const [dialog, setDialog] = useState<{ title: string; description: string } | null>(null);
 
   const formatAmount = (val: string) => val ? val.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '';
@@ -62,11 +57,18 @@ export default function AddPlannedTransaction() {
 
   const filteredCats = (cats ?? []).filter((c) => !c.isDeleted && c.type === type);
 
+  const freqOptions = useMemo(() => [
+    { label: t('global.frequencies.DAILY'), value: 'DAILY' as Frequency },
+    { label: t('global.frequencies.WEEKLY'), value: 'WEEKLY' as Frequency },
+    { label: t('global.frequencies.MONTHLY'), value: 'MONTHLY' as Frequency },
+    { label: t('global.frequencies.YEARLY'), value: 'YEARLY' as Frequency },
+  ], [t]);
+
   const validate = () => {
     const e: Record<string, string> = {};
-    if (!description.trim()) e.description = 'Description is required';
-    if (!amount.trim() || isNaN(Number(amount)) || Number(amount) <= 0) e.amount = 'Enter a valid amount';
-    if (!categoryId) e.category = 'Select a category';
+    if (!description.trim()) e.description = t('global.validation.descriptionRequired');
+    if (!amount.trim() || isNaN(Number(amount)) || Number(amount) <= 0) e.amount = t('global.validation.enterValidAmount');
+    if (!categoryId) e.category = t('global.validation.selectCategory');
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -101,7 +103,7 @@ export default function AddPlannedTransaction() {
       }
       router.back();
     } catch (e) {
-      setDialog({ title: 'Error', description: 'Could not save planned transaction.' });
+      setDialog({ title: t('global.dialogs.error'), description: t('global.errors.couldNotSavePlanned') });
     } finally {
       setSaving(false);
     }
@@ -118,12 +120,12 @@ export default function AddPlannedTransaction() {
           style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: cardBg, borderWidth: 1, borderColor, alignItems: 'center', justifyContent: 'center' }}>
           <Ionicons name="close" size={20} color={textColor} />
         </TouchableOpacity>
-        <Text style={{ flex: 1, color: textColor, fontSize: 18, fontWeight: '700' }}>{id ? 'Edit Planned' : 'New Planned'}</Text>
+        <Text style={{ flex: 1, color: textColor, fontSize: 18, fontWeight: '700' }}>{id ? t('screens.plannedTransactions.edit') : t('screens.plannedTransactions.new')}</Text>
         <TouchableOpacity
           onPress={handleSave}
           disabled={saving}
           style={{ backgroundColor: accentColor, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 8, opacity: saving ? 0.6 : 1 }}>
-          <Text style={{ color: 'white', fontSize: 14, fontWeight: '700' }}>Save</Text>
+          <Text style={{ color: 'white', fontSize: 14, fontWeight: '700' }}>{t('global.actions.save')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -139,7 +141,7 @@ export default function AddPlannedTransaction() {
                 onPress={() => { setType(t); setCategoryId(null); }}
                 style={{ flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 11, backgroundColor: isActive ? color : 'transparent' }}>
                 <Text style={{ fontSize: 14, fontWeight: '700', color: isActive ? 'white' : mutedColor }}>
-                  {t === 'INCOME' ? 'Income' : 'Expense'}
+                  {t === 'INCOME' ? t('tabs.categories.tabIncome') : t('tabs.categories.tabExpenses')}
                 </Text>
               </TouchableOpacity>
             );
@@ -147,24 +149,24 @@ export default function AddPlannedTransaction() {
         </View>
 
         <FormInput
-          label="Description"
+          label={t('screens.transactions.description')}
           value={description}
           onChangeText={setDescription}
-          placeholder="e.g. Netflix subscription"
+          placeholder={t('global.placeholders.plannedDescription')}
           error={errors.description}
         />
 
         <FormInput
-          label={`Amount (${currency.symbol})`}
+          label={`${t('screens.transactions.amount')} (${currency.symbol})`}
           value={formatAmount(amount)}
           onChangeText={handleAmountChange}
-          placeholder="0"
+          placeholder={t('global.placeholders.amount')}
           keyboardType="numeric"
           error={errors.amount}
         />
 
         <DatePickerButton
-          label="Start date"
+          label={t('screens.plannedTransactions.startDate')}
           date={startDate}
           onChange={setStartDate}
         />
@@ -178,16 +180,16 @@ export default function AddPlannedTransaction() {
 
         {recurring && (
           <FormPicker
-            label="Frequency"
-            options={FREQ_OPTIONS}
+            label={t('screens.plannedTransactions.frequency')}
+            options={freqOptions}
             selected={frequency}
             onSelect={setFrequency}
           />
         )}
 
         <FormToggle
-          label="Recurring"
-          sublabel="Automatically advance to next cycle after execution"
+          label={t('screens.plannedTransactions.recurring')}
+          sublabel={t('screens.plannedTransactions.recurringSublabel')}
           value={recurring}
           onValueChange={setRecurring}
         />

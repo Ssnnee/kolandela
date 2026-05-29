@@ -6,7 +6,9 @@ import { AlertDialog } from '@/components/AlertDialog';
 import { DetailCard } from '@/components/DetailCard';
 import { CurrencyPicker } from '@/components/forms/CurrencyPicker';
 import { ThemePicker } from '@/components/forms/ThemePicker';
+import { LanguagePicker } from '@/components/forms/LanguagePicker';
 import { useTheme } from '@/app/_context/ThemeContext';
+import { useTranslation } from '@/app/_context/LanguageContext';
 import { useState } from 'react';
 import { useScrollHandler } from '@/lib/useScrollHandler';
 import * as transactionService from '@/services/transactions';
@@ -101,40 +103,42 @@ export default function SettingsScreen() {
   const { currency } = useCurrency();
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
   const [showThemePicker, setShowThemePicker] = useState(false);
+  const [showLanguagePicker, setShowLanguagePicker] = useState(false);
   const { resolvedTheme, theme } = useTheme();
+  const { language, t } = useTranslation();
   const insets = useSafeAreaInsets();
   const scrollHandler = useScrollHandler();
   const [dialog, setDialog] = useState<DialogState>(null);
 
   const handleDeleteAllData = () => {
     setDialog({
-      title: 'Delete all data',
-      description: 'This will permanently delete all your transactions, planned transactions and custom categories. This cannot be undone.',
-      confirmLabel: 'Delete everything',
+      title: t('global.dialogs.deleteAllData'),
+      description: t('global.dialogs.deleteAllDataDesc'),
+      confirmLabel: t('global.dialogs.deleteEverything'),
       destructive: true,
       onConfirm: async () => {
         try {
           await transactionService.deleteAll();
           await plannedTransactionService.deleteAll();
           await categoryService.deleteAll();
-          setDialog({ title: 'Done', description: 'All data has been deleted.' });
+          setDialog({ title: t('global.dialogs.done'), description: t('global.dialogs.allDataDeleted') });
         } catch {
-          setDialog({ title: 'Error', description: 'Something went wrong while deleting data.' });
+          setDialog({ title: t('global.dialogs.error'), description: t('global.dialogs.somethingWentWrong') });
         }
       },
     });
   };
 
   const handleExport = () => {
-    setDialog({ title: 'Coming soon', description: 'Export will be available in a future update.' });
+    setDialog({ title: t('global.dialogs.comingSoon'), description: t('global.dialogs.exportComingSoon') });
   };
 
   const handleImport = () => {
-    setDialog({ title: 'Coming soon', description: 'Import will be available in a future update.' });
+    setDialog({ title: t('global.dialogs.comingSoon'), description: t('global.dialogs.importComingSoon') });
   };
 
   const themeLabel =
-    theme === 'system' ? 'System' : theme === 'dark' ? 'Dark' : 'Light';
+    theme === 'system' ? t('global.theme.system') : theme === 'dark' ? t('global.theme.dark') : t('global.theme.light');
 
   return (
     <ScrollView
@@ -146,20 +150,20 @@ export default function SettingsScreen() {
       {/* ── Header ── */}
       <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 24 }}>
         <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>
-          App
+          {t('tabs.settings.headerLabel')}
         </Text>
         <Text style={{ color: textColor, fontSize: 24, fontWeight: '800', letterSpacing: -0.5 }}>
-          Settings
+          {t('tabs.settings.title')}
         </Text>
       </View>
 
       {/* ── Appearance ── */}
-      <SectionLabel label="Appearance" />
+      <SectionLabel label={t('tabs.settings.sectionAppearance')} />
       <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
         <SettingsRow
           icon={resolvedTheme === 'dark' ? 'moon' : 'sunny'}
           iconColor={primaryColor}
-          label="Theme"
+          label={t('tabs.settings.theme')}
           sublabel={themeLabel}
           onPress={() => setShowThemePicker(true)}
           right={
@@ -174,51 +178,51 @@ export default function SettingsScreen() {
       </DetailCard.Container>
 
       {/* ── Preferences ── */}
-      <SectionLabel label="Preferences" />
+      <SectionLabel label={t('tabs.settings.sectionPreferences')} />
       <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
         <SettingsRow
           icon="language-outline"
-          label="Language"
-          sublabel="English"
-          onPress={() => setDialog({ title: 'Coming soon', description: 'More languages will be supported soon.' })}
+          label={t('tabs.settings.language')}
+          sublabel={language === 'en' ? t('tabs.settings.english') : 'Français'}
+          onPress={() => setShowLanguagePicker(true)}
         />
         <DetailCard.Divider />
         <SettingsRow
           icon="cash-outline"
-          label="Currency"
+          label={t('tabs.settings.currency')}
           sublabel={`${currency.code} — ${currency.symbol}`}
           onPress={() => setShowCurrencyPicker(true)}
         />
       </DetailCard.Container>
 
       {/* ── Data ── */}
-      <SectionLabel label="Data" />
+      <SectionLabel label={t('tabs.settings.sectionData')} />
       <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
         <SettingsRow
           icon="download-outline"
           iconColor={isDark ? 'rgb(0,250,217)' : 'rgb(0,200,175)'}
-          label="Export data"
-          sublabel="Save your data as CSV or JSON"
+          label={t('tabs.settings.exportData')}
+          sublabel={t('tabs.settings.exportSublabel')}
           onPress={handleExport}
         />
         <DetailCard.Divider />
         <SettingsRow
           icon="cloud-upload-outline"
           iconColor={isDark ? 'rgb(173,123,255)' : 'rgb(140,90,220)'}
-          label="Import data"
-          sublabel="Restore from a previous export"
+          label={t('tabs.settings.importData')}
+          sublabel={t('tabs.settings.importSublabel')}
           onPress={handleImport}
         />
       </DetailCard.Container>
 
       {/* ── About ── */}
-      <SectionLabel label="About" />
+      <SectionLabel label={t('tabs.settings.sectionAbout')} />
       <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
         <SettingsRow
           icon="logo-github"
           iconColor={isDark ? 'rgb(229,229,229)' : 'rgb(40,40,55)'}
-          label="Source code"
-          sublabel="View on GitHub"
+          label={t('tabs.settings.sourceCode')}
+          sublabel={t('tabs.settings.viewOnGitHub')}
           onPress={() => Linking.openURL(GITHUB_URL)}
         />
         <DetailCard.Divider />
@@ -232,7 +236,7 @@ export default function SettingsScreen() {
         <Divider />*/}
         <SettingsRow
           icon="information-circle-outline"
-          label="Version"
+          label={t('tabs.settings.version')}
           sublabel={`Kolandela v${APP_VERSION}`}
           right={
             <Text style={{ color: mutedColor, fontSize: 12 }}>v{APP_VERSION}</Text>
@@ -241,12 +245,12 @@ export default function SettingsScreen() {
       </DetailCard.Container>
 
       {/* ── Danger zone ── */}
-      <SectionLabel label="Danger zone" />
+      <SectionLabel label={t('tabs.settings.sectionDanger')} />
       <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
         <SettingsRow
           icon="trash-outline"
-          label="Delete all data"
-          sublabel="Permanently removes all transactions and categories"
+          label={t('tabs.settings.deleteAllData')}
+          sublabel={t('tabs.settings.deleteAllDataSublabel')}
           onPress={handleDeleteAllData}
           danger
         />
@@ -257,9 +261,10 @@ export default function SettingsScreen() {
         color: mutedColor, fontSize: 11, textAlign: 'center',
         marginTop: 32, marginBottom: 8,
       }}>
-        Made with ♥ · Kolandela v{APP_VERSION}
+        {t('tabs.settings.footer', { version: APP_VERSION })}
       </Text>
 
+      <LanguagePicker visible={showLanguagePicker} onClose={() => setShowLanguagePicker(false)} />
       <CurrencyPicker visible={showCurrencyPicker} onClose={() => setShowCurrencyPicker(false)} />
       <ThemePicker visible={showThemePicker} onClose={() => setShowThemePicker(false)} />
 

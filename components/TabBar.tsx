@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useTheme } from '@/app/_context/ThemeContext';
 import { useBottomSheet } from '@/app/_context/BottomSheetContext';
+import { useTranslation } from '@/app/_context/LanguageContext';
 
 const TAB_ICONS: Record<string,
   {
@@ -16,19 +17,23 @@ const TAB_ICONS: Record<string,
   settings: { active: 'settings', inactive: 'settings-outline' },
 };
 
-const TAB_LABELS: Record<string, string> = {
-  index: 'Home',
-  categories: 'Categories',
-  stats: 'Stats',
-  settings: 'Settings',
-};
-
 const LEFT_ROUTES = ['index', 'categories'];
 const RIGHT_ROUTES = ['stats', 'settings'];
+
+function tabLabel(routeName: string, t: (path: string) => string): string {
+  const map: Record<string, string> = {
+    index: t('tabs.home.title'),
+    categories: t('tabs.categories.title'),
+    stats: t('tabs.stats.title'),
+    settings: t('tabs.settings.title'),
+  };
+  return map[routeName] ?? routeName;
+}
 
 export function TabBar({ state, navigation }: BottomTabBarProps) {
   const { resolvedTheme } = useTheme();
   const { openBottomSheet } = useBottomSheet();
+  const { t } = useTranslation();
   const isDark = resolvedTheme === 'dark';
 
   const primaryColor = isDark ? 'rgb(255, 121, 102)' : 'rgb(255, 100, 80)';
@@ -49,7 +54,7 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
           color={isFocused ? primaryColor : mutedColor}
         />
         <Text className={`text-xs ${isFocused ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
-          {TAB_LABELS[routeName]}
+          {tabLabel(routeName, t)}
         </Text>
       </TouchableOpacity>
     );
@@ -78,7 +83,7 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
           <View className="bg-primary/10 border-primary/25 h-8 w-8 items-center justify-center rounded-full border">
             <Ionicons name="add" size={22} color={primaryColor} />
           </View>
-          <Text className="text-primary text-xs font-medium">Add</Text>
+          <Text className="text-primary text-xs font-medium">{t('global.actions.add')}</Text>
         </TouchableOpacity>
         {RIGHT_ROUTES.map(renderTab)}
       </View>

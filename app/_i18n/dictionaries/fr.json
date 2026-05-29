@@ -1,0 +1,89 @@
+{
+  "global": {
+    "actions": {
+      "add": "Ajouter",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "delete": "Supprimer",
+      "edit": "Modifier",
+      "pause": "Suspendre",
+      "resume": "Reprendre",
+      "executeNow": "Exécuter maintenant"
+    },
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif",
+      "loading": "Chargement en cours...",
+      "overdue": "En retard"
+    },
+    "errors": {
+      "generic": "Une erreur est survenue",
+      "deleteFailed": "Impossible de supprimer la transaction planifiée.",
+      "updateFailed": "Impossible de mettre à jour le statut.",
+      "executeFailed": "Impossible d'exécuter la transaction."
+    },
+    "success": {
+      "executed": "Transaction exécutée avec succès."
+    }
+  },
+  "tabs": {
+    "home": {
+      "title": "Accueil",
+      "recentTransactions": "Transactions récentes"
+    },
+    "categories": {
+      "title": "Catégories",
+      "uncategorized": "Sans catégorie"
+    },
+    "stats": {
+      "title": "Analyses"
+    },
+    "settings": {
+      "title": "Paramètres",
+      "selectCurrency": "Sélectionner la devise",
+      "changeLanguage": "Changer de langue"
+    }
+  },
+  "sheets": {
+    "actionMenu": {
+      "prompt": "Que souhaitez-vous faire ?",
+      "addTitle": "Ajouter",
+      "addDesc": "Nouvelle dépense ou revenu",
+      "planTitle": "Planifier",
+      "planDesc": "Programmer une transaction future"
+    }
+  },
+  "screens": {
+    "transactions": {
+      "add": "Ajouter une transaction",
+      "details": "Détails de la transaction",
+      "description": "Description",
+      "amount": "Montant"
+    },
+    "plannedTransactions": {
+      "title": "Détails de la planification",
+      "add": "Planifier une transaction",
+      "plannedAmount": "Montant planifié",
+      "frequency": "Fréquence",
+      "nextExecution": "Prochaine exécution",
+      "startDate": "Date de début",
+      "previousExecutions": "Exécutions précédentes",
+      "dangerZone": "Zone de danger",
+      "deletePlanned": "Supprimer la transaction planifiée",
+      "confirmDeleteTitle": "Supprimer la planification",
+      "confirmDeleteDesc": "Êtes-vous sûr de vouloir supprimer cette transaction planifiée ?",
+      "confirmExecuteTitle": "Exécuter maintenant",
+      "confirmExecuteDesc": "Voulez-vous enregistrer une exécution pour cette transaction planifiée dès maintenant ?",
+      "frequencies": {
+        "DAILY": "Quotidien",
+        "WEEKLY": "Hebdomadaire",
+        "MONTHLY": "Mensuel",
+        "YEARLY": "Annuel",
+        "RECURRING": "(Récurrent)",
+        "ONETIME": "(Unique)"
+      },
+      "noExecutions": "Aucune exécution enregistrée pour le moment",
+      "pausedStatus": "Suspendu"
+    }
+  }
+}

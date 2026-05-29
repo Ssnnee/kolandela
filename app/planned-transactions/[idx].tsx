@@ -9,13 +9,7 @@ import * as transactionService from '@/services/transactions';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
-
-const FREQ_LABEL: Record<string, string> = {
-  DAILY: 'Daily',
-  WEEKLY: 'Weekly',
-  MONTHLY: 'Monthly',
-  YEARLY: 'Yearly',
-};
+import { useTranslation } from '@/app/_context/LanguageContext';
 
 type DialogState = {
   title: string;
@@ -29,6 +23,7 @@ export default function PlannedTransactionDetailScreen() {
   const { idx } = useLocalSearchParams<{ idx: string }>();
   const { cardBg, borderColor, textColor, mutedColor, primaryColor, violetColor, redColor, isDark } = useThemeColors();
   const { format } = useCurrency();
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [dialog, setDialog] = useState<DialogState>(null);
 
@@ -46,7 +41,7 @@ export default function PlannedTransactionDetailScreen() {
   if (!ptx) {
     return (
       <View style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)', justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ color: textColor }}>Loading planned transaction details…</Text>
+        <Text style={{ color: textColor }}>{t('screens.plannedTransactions.loading')}</Text>
       </View>
     );
   }
@@ -57,16 +52,16 @@ export default function PlannedTransactionDetailScreen() {
 
   const handleDelete = () => {
     setDialog({
-      title: 'Delete Planned Transaction',
-      description: 'Are you sure you want to delete this planned transaction?',
-      confirmLabel: 'Delete',
+      title: t('global.dialogs.deletePlannedTitle'),
+      description: t('global.dialogs.deletePlannedDesc'),
+      confirmLabel: t('global.actions.delete'),
       destructive: true,
       onConfirm: async () => {
         try {
           await plannedTransactionService.softDelete(ptx.id);
           router.back();
         } catch {
-          setDialog({ title: 'Error', description: 'Could not delete planned transaction.' });
+          setDialog({ title: t('global.dialogs.error'), description: t('global.errors.deleteFailed') });
         }
       },
     });
@@ -74,15 +69,15 @@ export default function PlannedTransactionDetailScreen() {
 
   const handleExecute = async () => {
     setDialog({
-      title: 'Execute Now',
-      description: 'Do you want to record an execution for this planned transaction now?',
-      confirmLabel: 'Execute',
+      title: t('global.actions.executeNow'),
+      description: t('global.dialogs.executePlannedPrompt'),
+      confirmLabel: t('global.actions.executeNow'),
       onConfirm: async () => {
         try {
           await plannedTransactionService.execute(ptx.id, 'BANK');
-          setDialog({ title: 'Success', description: 'Transaction executed successfully.' });
+          setDialog({ title: t('global.dialogs.success'), description: t('global.dialogs.transactionExecuted') });
         } catch {
-          setDialog({ title: 'Error', description: 'Could not execute transaction.' });
+          setDialog({ title: t('global.dialogs.error'), description: t('global.errors.couldNotExecute') });
         }
       },
     });
@@ -92,7 +87,7 @@ export default function PlannedTransactionDetailScreen() {
     try {
       await plannedTransactionService.update(ptx.id, { isActive: !ptx.isActive });
     } catch {
-      setDialog({ title: 'Error', description: 'Could not update status.' });
+      setDialog({ title: t('global.dialogs.error'), description: t('global.errors.couldNotUpdateStatus') });
     }
   };
 
@@ -122,7 +117,7 @@ export default function PlannedTransactionDetailScreen() {
           style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: cardBg, borderWidth: 1, borderColor, alignItems: 'center', justifyContent: 'center' }}>
           <Ionicons name="chevron-back" size={20} color={textColor} />
         </TouchableOpacity>
-        <Text style={{ flex: 1, color: textColor, fontSize: 18, fontWeight: '700' }}>Planned Details</Text>
+        <Text style={{ flex: 1, color: textColor, fontSize: 18, fontWeight: '700' }}>{t('screens.plannedTransactions.title')}</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <TouchableOpacity
             onPress={() => router.push(`/planned-transactions/add?id=${ptx.id}`)}
@@ -143,7 +138,7 @@ export default function PlannedTransactionDetailScreen() {
             </View>
             {isOverdue && (
               <View style={{ backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 14, paddingVertical: 4, borderRadius: 12 }}>
-                <Text style={{ color: '#FFF', fontSize: 11, fontWeight: '700', letterSpacing: 0.5 }}>OVERDUE</Text>
+                <Text style={{ color: '#FFF', fontSize: 11, fontWeight: '700', letterSpacing: 0.5 }}>{t('screens.plannedTransactions.overdue')}</Text>
               </View>
             )}
           </View>
@@ -153,10 +148,10 @@ export default function PlannedTransactionDetailScreen() {
           </Text>
 
           <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 14, marginTop: 12, fontWeight: '500' }}>
-            {FREQ_LABEL[ptx.frequency]} · {ptx.recurring ? 'Recurring' : 'One-time'}
+            {t(`global.frequencies.${ptx.frequency}`)} · {ptx.recurring ? t('screens.plannedTransactions.recurring') : t('screens.plannedTransactions.oneTime')}
           </Text>
           <Text style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, marginTop: 2 }}>
-            Next: {ptx.isActive ? formattedNextDate : 'Paused'}
+            {t('screens.plannedTransactions.nextLabel')} {ptx.isActive ? formattedNextDate : t('screens.plannedTransactions.paused')}
           </Text>
         </View>
 
@@ -168,7 +163,7 @@ export default function PlannedTransactionDetailScreen() {
             disabled={!ptx.isActive}
             style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: ptx.isActive ? (isExpense ? primaryColor : violetColor) : 'rgba(131, 131, 156, 0.15)', borderRadius: 16, paddingVertical: 14, gap: 8, opacity: ptx.isActive ? 1 : 0.5 }}>
             <Ionicons name="flash-sharp" size={18} color={ptx.isActive ? 'white' : mutedColor} />
-            <Text style={{ color: ptx.isActive ? 'white' : mutedColor, fontSize: 14, fontWeight: '600' }}>Execute Now</Text>
+            <Text style={{ color: ptx.isActive ? 'white' : mutedColor, fontSize: 14, fontWeight: '600' }}>{t('global.actions.executeNow')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -177,7 +172,7 @@ export default function PlannedTransactionDetailScreen() {
             style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: cardBg, borderWidth: 1, borderColor, borderRadius: 16, paddingVertical: 14, gap: 8 }}>
             <Ionicons name={ptx.isActive ? 'pause-sharp' : 'play-sharp'} size={18} color={textColor} />
             <Text style={{ color: textColor, fontSize: 14, fontWeight: '600' }}>
-              {ptx.isActive ? 'Pause' : 'Resume'}
+              {ptx.isActive ? t('global.actions.pause') : t('global.actions.resume')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -188,7 +183,7 @@ export default function PlannedTransactionDetailScreen() {
             icon={<Text style={{ color: textColor, fontSize: 15, fontWeight: '600' }}>Aa</Text>}
             iconBg={isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.04)'}
           >
-            <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>Description</Text>
+            <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>{t('screens.transactions.description')}</Text>
             <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }}>{ptx.description}</Text>
           </DetailCard.Row>
 
@@ -198,10 +193,10 @@ export default function PlannedTransactionDetailScreen() {
             icon={<Ionicons name={(category?.icon as any) || 'grid'} size={20} color={category?.color || mutedColor} />}
             iconBg={category ? rgba(category.color, 0.15) : 'rgba(0,0,0,0.04)'}
           >
-            <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>Category</Text>
+            <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>{t('screens.transactions.category')}</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
               <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: category?.color || mutedColor }} />
-              <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }}>{category?.name || 'Uncategorized'}</Text>
+              <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }}>{category?.name || t('tabs.categories.uncategorized')}</Text>
             </View>
           </DetailCard.Row>
 
@@ -211,7 +206,7 @@ export default function PlannedTransactionDetailScreen() {
             icon={<Ionicons name="calendar-sharp" size={20} color={textColor} />}
             iconBg={isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.04)'}
           >
-            <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>Start date</Text>
+            <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>{t('screens.plannedTransactions.startDate')}</Text>
             <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }}>{formattedStartDate}</Text>
           </DetailCard.Row>
         </DetailCard.Container>
@@ -219,7 +214,7 @@ export default function PlannedTransactionDetailScreen() {
         {/* Execution History Section */}
         <View style={{ marginBottom: 24 }}>
           <Text style={{ color: mutedColor, fontSize: 12, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 12, marginLeft: 4 }}>
-            Execution History ({executions?.length || 0})
+            {t('screens.plannedTransactions.executionHistory')} ({executions?.length || 0})
           </Text>
 
           {executions && executions.length > 0 ? (
@@ -260,7 +255,7 @@ export default function PlannedTransactionDetailScreen() {
           ) : (
             <View style={{ backgroundColor: cardBg, borderRadius: 24, borderWidth: 1, borderColor, padding: 32, alignItems: 'center', justifyContent: 'center' }}>
               <Ionicons name="receipt-sharp" size={28} color={mutedColor} style={{ marginBottom: 8 }} />
-              <Text style={{ color: mutedColor, fontSize: 14 }}>No executions recorded yet</Text>
+              <Text style={{ color: mutedColor, fontSize: 14 }}>{t('screens.plannedTransactions.noExecutions')}</Text>
             </View>
           )}
         </View>
@@ -275,7 +270,7 @@ export default function PlannedTransactionDetailScreen() {
             chevronColor={redColor}
           >
             <Text style={{ color: redColor, fontSize: 16, fontWeight: '600' }}>
-              Delete planned transaction
+              {t('screens.plannedTransactions.deletePlanned')}
             </Text>
           </DetailCard.Row>
         </DetailCard.Container>

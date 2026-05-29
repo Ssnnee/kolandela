@@ -8,23 +8,18 @@ import * as categoryService from '@/services/categories';
 import { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors, useCurrency } from '@/components/home/useThemeColors';
+import { useTranslation } from '@/app/_context/LanguageContext';
 import { FormInput, FormPicker, CategoryPicker, DatePickerButton } from '@/components/forms';
 
 type TxType = 'INCOME' | 'EXPENSE';
 type PaymentMethod = 'CASH' | 'BANK' | 'MOBILE_MONEY' | 'OTHER';
-
-const PAYMENT_OPTIONS = [
-  { label: 'Bank', value: 'BANK' as PaymentMethod },
-  { label: 'Cash', value: 'CASH' as PaymentMethod },
-  { label: 'Mobile Money', value: 'MOBILE_MONEY' as PaymentMethod },
-  { label: 'Other', value: 'OTHER' as PaymentMethod },
-];
 
 export default function AddTransaction() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const insets = useSafeAreaInsets();
   const { textColor, mutedColor, primaryColor, violetColor, cardBg, borderColor, tabBg, isDark } = useThemeColors();
   const { currency } = useCurrency();
+  const { t } = useTranslation();
   const [dialog, setDialog] = useState<{ title: string; description: string } | null>(null);
 
   const formatAmount = (val: string) => val ? val.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '';
@@ -60,11 +55,18 @@ export default function AddTransaction() {
 
   const filteredCats = (cats ?? []).filter((c) => !c.isDeleted && c.type === type);
 
+  const paymentOptions = useMemo(() => [
+    { label: t('global.paymentOptions.BANK'), value: 'BANK' as PaymentMethod },
+    { label: t('global.paymentOptions.CASH'), value: 'CASH' as PaymentMethod },
+    { label: t('global.paymentOptions.MOBILE_MONEY'), value: 'MOBILE_MONEY' as PaymentMethod },
+    { label: t('global.paymentOptions.OTHER'), value: 'OTHER' as PaymentMethod },
+  ], [t]);
+
   const validate = () => {
     const e: Record<string, string> = {};
-    if (!description.trim()) e.description = 'Description is required';
-    if (!amount.trim() || isNaN(Number(amount)) || Number(amount) <= 0) e.amount = 'Enter a valid amount';
-    if (!categoryId) e.category = 'Select a category';
+    if (!description.trim()) e.description = t('global.validation.descriptionRequired');
+    if (!amount.trim() || isNaN(Number(amount)) || Number(amount) <= 0) e.amount = t('global.validation.enterValidAmount');
+    if (!categoryId) e.category = t('global.validation.selectCategory');
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -94,7 +96,7 @@ export default function AddTransaction() {
       }
       router.back();
     } catch (e) {
-      setDialog({ title: 'Error', description: 'Could not save transaction.' });
+      setDialog({ title: t('global.dialogs.error'), description: t('global.errors.couldNotSave') });
     } finally {
       setSaving(false);
     }
@@ -111,12 +113,12 @@ export default function AddTransaction() {
           style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: cardBg, borderWidth: 1, borderColor, alignItems: 'center', justifyContent: 'center' }}>
           <Ionicons name="close" size={20} color={textColor} />
         </TouchableOpacity>
-        <Text style={{ flex: 1, color: textColor, fontSize: 18, fontWeight: '700' }}>{id ? 'Edit Transaction' : 'New Transaction'}</Text>
+        <Text style={{ flex: 1, color: textColor, fontSize: 18, fontWeight: '700' }}>{id ? t('screens.transactions.edit') : t('screens.transactions.new')}</Text>
         <TouchableOpacity
           onPress={handleSave}
           disabled={saving}
           style={{ backgroundColor: accentColor, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 8, opacity: saving ? 0.6 : 1 }}>
-          <Text style={{ color: 'white', fontSize: 14, fontWeight: '700' }}>Save</Text>
+          <Text style={{ color: 'white', fontSize: 14, fontWeight: '700' }}>{t('global.actions.save')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -132,7 +134,7 @@ export default function AddTransaction() {
                 onPress={() => { setType(t); setCategoryId(null); }}
                 style={{ flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 11, backgroundColor: isActive ? color : 'transparent' }}>
                 <Text style={{ fontSize: 14, fontWeight: '700', color: isActive ? 'white' : mutedColor }}>
-                  {t === 'INCOME' ? 'Income' : 'Expense'}
+                  {t === 'INCOME' ? t('tabs.categories.tabIncome') : t('tabs.categories.tabExpenses')}
                 </Text>
               </TouchableOpacity>
             );
@@ -140,24 +142,24 @@ export default function AddTransaction() {
         </View>
 
         <FormInput
-          label="Description"
+          label={t('screens.transactions.description')}
           value={description}
           onChangeText={setDescription}
-          placeholder="e.g. Grocery shopping"
+          placeholder={t('global.placeholders.transactionDescription')}
           error={errors.description}
         />
 
         <FormInput
-          label={`Amount (${currency.symbol})`}
+          label={`${t('screens.transactions.amount')} (${currency.symbol})`}
           value={formatAmount(amount)}
           onChangeText={handleAmountChange}
-          placeholder="0"
+          placeholder={t('global.placeholders.amount')}
           keyboardType="numeric"
           error={errors.amount}
         />
 
         <DatePickerButton
-          label="Date"
+          label={t('screens.transactions.date')}
           date={date}
           onChange={setDate}
         />
@@ -170,8 +172,8 @@ export default function AddTransaction() {
         />
 
         <FormPicker
-          label="Payment method"
-          options={PAYMENT_OPTIONS}
+          label={t('screens.transactions.paymentMethod')}
+          options={paymentOptions}
           selected={paymentMethod}
           onSelect={setPaymentMethod}
         />

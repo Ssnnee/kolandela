@@ -8,13 +8,7 @@ import * as transactionService from '@/services/transactions';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
-
-const PAYMENT_LABELS: Record<string, string> = {
-  BANK: 'Bank transfer',
-  CASH: 'Cash',
-  MOBILE_MONEY: 'Mobile Money',
-  OTHER: 'Other',
-};
+import { useTranslation } from '@/app/_context/LanguageContext';
 
 const PAYMENT_ICONS: Record<string, string> = {
   BANK: 'card',
@@ -35,6 +29,7 @@ export default function TransactionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { cardBg, borderColor, textColor, mutedColor, primaryColor, violetColor, redColor, isDark } = useThemeColors();
   const { format } = useCurrency();
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [dialog, setDialog] = useState<DialogState>(null);
 
@@ -49,7 +44,7 @@ export default function TransactionDetailScreen() {
   if (!tx) {
     return (
       <View style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)', justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ color: textColor }}>Loading transaction details…</Text>
+        <Text style={{ color: textColor }}>{t('screens.transactions.loading')}</Text>
       </View>
     );
   }
@@ -60,16 +55,16 @@ export default function TransactionDetailScreen() {
 
   const handleDelete = () => {
     setDialog({
-      title: 'Delete Transaction',
-      description: 'Are you sure you want to delete this transaction?',
-      confirmLabel: 'Delete',
+      title: t('global.dialogs.deleteTransactionTitle'),
+      description: t('global.dialogs.deleteTransactionDesc'),
+      confirmLabel: t('global.actions.delete'),
       destructive: true,
       onConfirm: async () => {
         try {
           await transactionService.softDelete(tx.id);
           router.back();
         } catch {
-          setDialog({ title: 'Error', description: 'Could not delete transaction.' });
+          setDialog({ title: t('global.dialogs.error'), description: t('global.errors.couldNotDelete') });
         }
       },
     });
@@ -97,7 +92,7 @@ export default function TransactionDetailScreen() {
           style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: cardBg, borderWidth: 1, borderColor, alignItems: 'center', justifyContent: 'center' }}>
           <Ionicons name="chevron-back" size={20} color={textColor} />
         </TouchableOpacity>
-        <Text style={{ flex: 1, color: textColor, fontSize: 18, fontWeight: '700' }}>Transaction</Text>
+        <Text style={{ flex: 1, color: textColor, fontSize: 18, fontWeight: '700' }}>{t('screens.transactions.headerTitle')}</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <TouchableOpacity
             onPress={() => router.push(`/transactions/add?id=${tx.id}`)}
@@ -132,7 +127,7 @@ export default function TransactionDetailScreen() {
             icon={<Text style={{ color: textColor, fontSize: 15, fontWeight: '600' }}>Aa</Text>}
             iconBg={isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.04)'}
           >
-            <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>Description</Text>
+            <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>{t('screens.transactions.description')}</Text>
             <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }}>{tx.description}</Text>
           </DetailCard.Row>
 
@@ -142,10 +137,10 @@ export default function TransactionDetailScreen() {
             icon={<Ionicons name={(category?.icon as any) || 'grid'} size={20} color={category?.color || mutedColor} />}
             iconBg={category ? rgba(category.color, 0.15) : 'rgba(0,0,0,0.04)'}
           >
-            <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>Category</Text>
+            <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>{t('screens.transactions.category')}</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
               <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: category?.color || mutedColor }} />
-              <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }}>{category?.name || 'Uncategorized'}</Text>
+              <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }}>{category?.name || t('tabs.categories.uncategorized')}</Text>
             </View>
           </DetailCard.Row>
 
@@ -155,8 +150,8 @@ export default function TransactionDetailScreen() {
             icon={<Ionicons name={(PAYMENT_ICONS[tx.paymentMethod] as any) || 'card'} size={20} color={textColor} />}
             iconBg={isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.04)'}
           >
-            <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>Payment method</Text>
-            <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }}>{PAYMENT_LABELS[tx.paymentMethod] || tx.paymentMethod}</Text>
+            <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>{t('screens.transactions.paymentMethod')}</Text>
+            <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }}>{t(`global.paymentLabels.${tx.paymentMethod}`)}</Text>
           </DetailCard.Row>
         </DetailCard.Container>
 
@@ -169,7 +164,7 @@ export default function TransactionDetailScreen() {
               onPress={() => router.push(`/planned-transactions/${plannedTx.id}`)}
               showChevron
             >
-              <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>From planned</Text>
+              <Text style={{ color: mutedColor, fontSize: 12, marginBottom: 2 }}>{t('screens.transactions.fromPlanned')}</Text>
               <Text style={{ color: textColor, fontSize: 16, fontWeight: '600' }} numberOfLines={1}>
                 {plannedTx.description}
               </Text>
@@ -187,7 +182,7 @@ export default function TransactionDetailScreen() {
             chevronColor={redColor}
           >
             <Text style={{ color: redColor, fontSize: 16, fontWeight: '600' }}>
-              Delete transaction
+              {t('screens.transactions.deleteTransaction')}
             </Text>
           </DetailCard.Row>
         </DetailCard.Container>

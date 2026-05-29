@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { seedDatabase } from '@/db/seed';
 import ThemeProvider, { useTheme } from './_context/ThemeContext';
 import CurrencyProvider from './_context/CurrencyContext';
+import { LanguageProvider } from './_context/LanguageContext';
 import BottomSheetProvider from './_context/BottomSheetContext';
 import ScrollProvider from './_context/ScrollContext';
 import { View, Text, ActivityIndicator } from 'react-native';
@@ -43,6 +44,7 @@ function MigrationWrapper({ children }: { children: React.ReactNode }) {
 export default function RootLayout() {
   return (
     <ThemeProvider>
+      <LanguageProvider>
       <CurrencyProvider>
         <BottomSheetProvider>
         <ScrollProvider>
@@ -52,6 +54,7 @@ export default function RootLayout() {
         </ScrollProvider>
       </BottomSheetProvider>
       </CurrencyProvider>
+      </LanguageProvider>
     </ThemeProvider>
   );
 }

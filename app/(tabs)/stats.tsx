@@ -7,6 +7,7 @@ import { useMemo, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { BarChart, LineChart } from 'react-native-gifted-charts';
 import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
+import { useTranslation } from '@/app/_context/LanguageContext';
 import { useScrollHandler } from '@/lib/useScrollHandler';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -42,6 +43,7 @@ export default function StatsScreen() {
   const { textColor, mutedColor, primaryColor, violetColor, cardBg, borderColor, tabBg, isDark } =
     useThemeColors();
   const { format } = useCurrency();
+  const { t } = useTranslation();
 
   const { data: trans } = useLiveQuery(transactionService.getAll());
   const { data: cats } = useLiveQuery(categoryService.getAll());
@@ -185,10 +187,10 @@ export default function StatsScreen() {
       {/* ── Header ── */}
       <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 20 }}>
         <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>
-          Analysis
+          {t('tabs.stats.analysis')}
         </Text>
         <Text style={{ color: textColor, fontSize: 24, fontWeight: '800', letterSpacing: -0.5 }}>
-          Statistics
+          {t('tabs.stats.title')}
         </Text>
       </View>
 
@@ -202,13 +204,13 @@ export default function StatsScreen() {
           padding: 20,
         }}>
           <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 6 }}>
-            All-time net balance
+            {t('tabs.stats.allTimeNetBalance')}
           </Text>
           <Text style={{ color: allTimeNet >= 0 ? greenColor : redColor, fontSize: 32, fontWeight: '900', letterSpacing: -1.5 }}>
             {allTimeNet >= 0 ? '+' : ''}{format(allTimeNet)}
           </Text>
           <Text style={{ color: mutedColor, fontSize: 12, marginTop: 6 }}>
-            {savingsRate}% savings rate · {allTrans.length} transactions total
+            {t('tabs.stats.savingsAndTotal', { rate: savingsRate, count: allTrans.length })}
           </Text>
         </View>
 
@@ -217,7 +219,7 @@ export default function StatsScreen() {
           <View style={{ flex: 1, backgroundColor: cardBg, borderRadius: 16, borderWidth: 1, borderColor, padding: 16 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
               <View style={{ width: 7, height: 7, borderRadius: 3.5, backgroundColor: violetColor }} />
-              <Text style={{ color: mutedColor, fontSize: 10, fontWeight: '500', textTransform: 'uppercase', letterSpacing: 0.5 }}>Income</Text>
+              <Text style={{ color: mutedColor, fontSize: 10, fontWeight: '500', textTransform: 'uppercase', letterSpacing: 0.5 }}>{t('tabs.stats.income')}</Text>
             </View>
             <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}
               style={{ color: violetColor, fontSize: 16, fontWeight: '700' }}>
@@ -227,7 +229,7 @@ export default function StatsScreen() {
           <View style={{ flex: 1, backgroundColor: cardBg, borderRadius: 16, borderWidth: 1, borderColor, padding: 16 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
               <View style={{ width: 7, height: 7, borderRadius: 3.5, backgroundColor: primaryColor }} />
-              <Text style={{ color: mutedColor, fontSize: 10, fontWeight: '500', textTransform: 'uppercase', letterSpacing: 0.5 }}>Expenses</Text>
+              <Text style={{ color: mutedColor, fontSize: 10, fontWeight: '500', textTransform: 'uppercase', letterSpacing: 0.5 }}>{t('tabs.stats.expenses')}</Text>
             </View>
             <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}
               style={{ color: primaryColor, fontSize: 16, fontWeight: '700' }}>
@@ -240,7 +242,7 @@ export default function StatsScreen() {
       {/* ── Month Comparison ── */}
       <View style={{ marginHorizontal: 24, marginBottom: 16, backgroundColor: cardBg, borderRadius: 20, borderWidth: 1, borderColor, padding: 20 }}>
         <Text style={{ color: textColor, fontSize: 15, fontWeight: '700', marginBottom: 16 }}>
-          Month comparison
+          {t('tabs.stats.monthComparison')}
         </Text>
 
         {/* Column headers */}
@@ -260,9 +262,9 @@ export default function StatsScreen() {
         </View>
 
         {[
-          { label: 'Income', current: currentIncome, prev: prevIncome, change: incomeChange, isPositiveGood: true },
-          { label: 'Expenses', current: currentExpenses, prev: prevExpenses, change: expenseChange, isPositiveGood: false },
-          { label: 'Net', current: currentNet, prev: prevNet, change: netChange, isPositiveGood: true },
+          { label: t('tabs.stats.income'), current: currentIncome, prev: prevIncome, change: incomeChange, isPositiveGood: true },
+          { label: t('tabs.stats.expenses'), current: currentExpenses, prev: prevExpenses, change: expenseChange, isPositiveGood: false },
+          { label: t('tabs.stats.net'), current: currentNet, prev: prevNet, change: netChange, isPositiveGood: true },
         ].map((row, i) => (
           <View key={row.label} style={{
             flexDirection: 'row', alignItems: 'center', paddingVertical: 11,
@@ -288,7 +290,7 @@ export default function StatsScreen() {
       <View style={{ marginHorizontal: 24, marginBottom: 16, backgroundColor: cardBg, borderRadius: 20, borderWidth: 1, borderColor, padding: 20, overflow: 'hidden' }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
           <Text style={{ color: textColor, fontSize: 15, fontWeight: '700' }}>
-            {chartTab === 'bar' ? `${MONTHS[currentMonth]} by week` : '12-month trend'}
+            {chartTab === 'bar' ? t('tabs.stats.byWeek', { month: MONTHS[currentMonth] }) : t('tabs.stats.trend12m')}
           </Text>
           <View style={{ flexDirection: 'row', backgroundColor: tabBg, borderRadius: 10, padding: 3 }}>
             {(['line', 'bar'] as ChartTab[]).map((tab) => (
@@ -307,7 +309,7 @@ export default function StatsScreen() {
         </View>
 
         <View style={{ flexDirection: 'row', gap: 16, marginBottom: 16 }}>
-          {[{ label: 'Income', color: violetColor }, { label: 'Expenses', color: primaryColor }].map((l) => (
+          {[{ label: t('tabs.stats.income'), color: violetColor }, { label: t('tabs.stats.expenses'), color: primaryColor }].map((l) => (
             <View key={l.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
               <View style={{ width: 8, height: 8, borderRadius: 2, backgroundColor: l.color }} />
               <Text style={{ color: mutedColor, fontSize: 11 }}>{l.label}</Text>
@@ -364,7 +366,7 @@ export default function StatsScreen() {
       {topCategories.length > 0 && (
         <View style={{ marginHorizontal: 24, marginBottom: 16, backgroundColor: cardBg, borderRadius: 20, borderWidth: 1, borderColor, padding: 20 }}>
           <Text style={{ color: textColor, fontSize: 15, fontWeight: '700', marginBottom: 14 }}>
-            Top expense categories
+            {t('tabs.stats.topExpenseCategories')}
           </Text>
           {topCategories.map((cat, i) => (
             <View key={cat.name} style={{ marginBottom: i < topCategories.length - 1 ? 14 : 0 }}>
@@ -389,14 +391,14 @@ export default function StatsScreen() {
       {/* ── Quick Stats ── */}
       <View style={{ paddingHorizontal: 24, marginBottom: 8 }}>
         <Text style={{ color: textColor, fontSize: 15, fontWeight: '700', marginBottom: 12 }}>
-          Quick stats
+          {t('tabs.stats.quickStats')}
         </Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
           {[
-            { label: 'Avg expense', value: avgExpense > 0 ? format(avgExpense) : '—', icon: 'calculator-outline' as const },
-            { label: 'Biggest expense', value: biggestExpense > 0 ? format(biggestExpense) : '—', icon: 'arrow-up-circle-outline' as const },
-            { label: 'Savings rate', value: `${savingsRate}%`, icon: 'wallet-outline' as const },
-            { label: 'Most active day', value: mostActiveDay, icon: 'calendar-outline' as const },
+            { label: t('tabs.stats.avgExpense'), value: avgExpense > 0 ? format(avgExpense) : '—', icon: 'calculator-outline' as const },
+            { label: t('tabs.stats.biggestExpense'), value: biggestExpense > 0 ? format(biggestExpense) : '—', icon: 'arrow-up-circle-outline' as const },
+            { label: t('tabs.stats.savingsRate'), value: `${savingsRate}%`, icon: 'wallet-outline' as const },
+            { label: t('tabs.stats.mostActiveDay'), value: mostActiveDay, icon: 'calendar-outline' as const },
           ].map((stat) => (
             <View key={stat.label} style={{ width: '47.5%', backgroundColor: cardBg, borderRadius: 14, borderWidth: 1, borderColor, padding: 14 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 8 }}>

@@ -7,6 +7,7 @@ import { useState, useMemo } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useThemeColors } from '@/components/home/useThemeColors';
+import { useTranslation } from '@/app/_context/LanguageContext';
 import { MonthPicker, buildMonthOptions } from '@/components/home/MonthPicker';
 import { SummaryCards } from '@/components/home/SummaryCards';
 import { SpendProgress } from '@/components/home/SpendProgress';
@@ -18,6 +19,7 @@ type ListTab = 'transactions' | 'planned';
 
 export default function Index() {
   const { isDark, textColor, mutedColor, primaryColor, cardBg, tabBg } = useThemeColors();
+  const { t } = useTranslation();
   const { data: trans } = useLiveQuery(transactionService.getAll());
   const { data: plannedTrans } = useLiveQuery(plannedTransactionService.getAll());
   const scrollHandler = useScrollHandler();
@@ -94,7 +96,7 @@ export default function Index() {
       {/* Header */}
       <View style={{ paddingHorizontal: 24, paddingTop: 56, paddingBottom: 16 }}>
         <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>
-          Overview
+          {t('tabs.home.overview')}
         </Text>
         <Text style={{ color: textColor, fontSize: 24, fontWeight: '800', letterSpacing: -0.5 }}>
           {MONTHS[selectedMonth]} {selectedYear}
@@ -126,7 +128,7 @@ export default function Index() {
         {/* Section header */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
           <Text style={{ color: textColor, fontSize: 15, fontWeight: '700' }}>
-            {listTab === 'transactions' ? 'Recent' : 'Planned'}
+            {listTab === 'transactions' ? t('tabs.home.recentSection') : t('tabs.home.plannedSection')}
           </Text>
           <TouchableOpacity
             onPress={() =>
@@ -135,7 +137,7 @@ export default function Index() {
                 params: { month: selectedMonth, year: selectedYear },
               })
             }>
-            <Text style={{ color: primaryColor, fontSize: 12, fontWeight: '600' }}>See all</Text>
+            <Text style={{ color: primaryColor, fontSize: 12, fontWeight: '600' }}>{t('tabs.home.seeAll')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -144,8 +146,8 @@ export default function Index() {
           {(['transactions', 'planned'] as ListTab[]).map((tab) => {
             const isActive = listTab === tab;
             const label = tab === 'transactions'
-              ? 'Transactions'
-              : `Planned${monthlyPlanned.length > 0 ? ` (${monthlyPlanned.length})` : ''}`;
+              ? t('tabs.home.tabTransactions')
+              : `${t('tabs.home.tabPlanned')}${monthlyPlanned.length > 0 ? ` (${monthlyPlanned.length})` : ''}`;
             return (
               <TouchableOpacity
                 key={tab}
@@ -172,7 +174,7 @@ export default function Index() {
           recentTrans.length === 0 ? (
             <View style={{ alignItems: 'center', paddingVertical: 40 }}>
               <Ionicons name="receipt-outline" size={36} color={mutedColor} />
-              <Text style={{ color: mutedColor, fontSize: 13, marginTop: 10 }}>No transactions this month</Text>
+              <Text style={{ color: mutedColor, fontSize: 13, marginTop: 10 }}>{t('tabs.home.noTransactions')}</Text>
             </View>
           ) : (
             recentTrans.map((t) => (
@@ -193,7 +195,7 @@ export default function Index() {
           monthlyPlanned.length === 0 ? (
             <View style={{ alignItems: 'center', paddingVertical: 40 }}>
               <Ionicons name="calendar-outline" size={36} color={mutedColor} />
-              <Text style={{ color: mutedColor, fontSize: 13, marginTop: 10 }}>No planned transactions this month</Text>
+              <Text style={{ color: mutedColor, fontSize: 13, marginTop: 10 }}>{t('tabs.home.noPlanned')}</Text>
             </View>
           ) : (
             monthlyPlanned.map((p) => <PlannedTransactionCard key={p.id} item={p} />)

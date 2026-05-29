@@ -7,33 +7,13 @@ import { useState, useMemo } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useThemeColors, useCurrency } from '@/components/home/useThemeColors';
+import { useTranslation } from '@/app/_context/LanguageContext';
 import { FilterChips } from '@/components/home/FilterChips';
 import { PlannedTransactionCard } from '@/components/home/PlannedTransactionCard';
 
 type TypeFilter = 'ALL' | 'INCOME' | 'EXPENSE';
 type FreqFilter = 'ALL' | 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
 type StatusFilter = 'ALL' | 'OVERDUE' | 'ACTIVE' | 'INACTIVE';
-
-const TYPE_OPTIONS = [
-  { label: 'All', value: 'ALL' as TypeFilter },
-  { label: 'Income', value: 'INCOME' as TypeFilter },
-  { label: 'Expense', value: 'EXPENSE' as TypeFilter },
-];
-
-const FREQ_OPTIONS = [
-  { label: 'All frequencies', value: 'ALL' as FreqFilter },
-  { label: 'Daily', value: 'DAILY' as FreqFilter },
-  { label: 'Weekly', value: 'WEEKLY' as FreqFilter },
-  { label: 'Monthly', value: 'MONTHLY' as FreqFilter },
-  { label: 'Yearly', value: 'YEARLY' as FreqFilter },
-];
-
-const STATUS_OPTIONS = [
-  { label: 'All', value: 'ALL' as StatusFilter },
-  { label: 'Overdue', value: 'OVERDUE' as StatusFilter },
-  { label: 'Active', value: 'ACTIVE' as StatusFilter },
-  { label: 'Inactive', value: 'INACTIVE' as StatusFilter },
-];
 
 function isOverdue(p: PlannedTransaction): boolean {
   const nextDate = new Date(p.nextExecutionDate || p.startDate);
@@ -45,6 +25,7 @@ function isOverdue(p: PlannedTransaction): boolean {
 export default function PlannedTransactionsScreen() {
   const { cardBg, borderColor, textColor, mutedColor, primaryColor, violetColor, isDark } = useThemeColors();
   const { format } = useCurrency();
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
 
   const { data: planned } = useLiveQuery(plannedTransactionService.getAll());
@@ -53,6 +34,27 @@ export default function PlannedTransactionsScreen() {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('ALL');
   const [freqFilter, setFreqFilter] = useState<FreqFilter>('ALL');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
+
+  const typeOptions = useMemo(() => [
+    { label: t('global.filterLabels.all'), value: 'ALL' as TypeFilter },
+    { label: t('tabs.categories.tabIncome'), value: 'INCOME' as TypeFilter },
+    { label: t('tabs.categories.tabExpenses'), value: 'EXPENSE' as TypeFilter },
+  ], [t]);
+
+  const freqOptions = useMemo(() => [
+    { label: t('global.filterLabels.allFrequencies'), value: 'ALL' as FreqFilter },
+    { label: t('global.frequencies.DAILY'), value: 'DAILY' as FreqFilter },
+    { label: t('global.frequencies.WEEKLY'), value: 'WEEKLY' as FreqFilter },
+    { label: t('global.frequencies.MONTHLY'), value: 'MONTHLY' as FreqFilter },
+    { label: t('global.frequencies.YEARLY'), value: 'YEARLY' as FreqFilter },
+  ], [t]);
+
+  const statusOptions = useMemo(() => [
+    { label: t('global.filterLabels.all'), value: 'ALL' as StatusFilter },
+    { label: t('global.filterLabels.overdue'), value: 'OVERDUE' as StatusFilter },
+    { label: t('global.filterLabels.active'), value: 'ACTIVE' as StatusFilter },
+    { label: t('global.filterLabels.inactive'), value: 'INACTIVE' as StatusFilter },
+  ], [t]);
 
   const filtered = useMemo(() => {
     return (planned ?? [])
@@ -99,16 +101,16 @@ export default function PlannedTransactionsScreen() {
           <Ionicons name="chevron-back" size={20} color={textColor} />
         </TouchableOpacity>
         <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <Text style={{ color: textColor, fontSize: 18, fontWeight: '700' }}>Planned</Text>
+          <Text style={{ color: textColor, fontSize: 18, fontWeight: '700' }}>{t('screens.plannedTransactions.listTitle')}</Text>
           {overdueCount > 0 && (
             <View style={{ backgroundColor: 'rgba(255,59,48,0.12)', borderRadius: 100, paddingHorizontal: 8, paddingVertical: 2 }}>
-              <Text style={{ color: 'rgb(255,59,48)', fontSize: 11, fontWeight: '700' }}>{overdueCount} overdue</Text>
+              <Text style={{ color: 'rgb(255,59,48)', fontSize: 11, fontWeight: '700' }}>{t('screens.plannedTransactions.overdueCount', { count: overdueCount })}</Text>
             </View>
           )}
         </View>
         {hasActiveFilter && (
           <TouchableOpacity onPress={() => { setSearch(''); setTypeFilter('ALL'); setFreqFilter('ALL'); setStatusFilter('ALL'); }}>
-            <Text style={{ color: primaryColor, fontSize: 13, fontWeight: '600' }}>Clear</Text>
+            <Text style={{ color: primaryColor, fontSize: 13, fontWeight: '600' }}>{t('screens.transactions.clear')}</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -120,7 +122,7 @@ export default function PlannedTransactionsScreen() {
           <TextInput
             value={search}
             onChangeText={setSearch}
-            placeholder="Search planned…"
+            placeholder={t('global.placeholders.searchPlanned')}
             placeholderTextColor={mutedColor}
             style={{ flex: 1, height: 44, color: textColor, fontSize: 14 }}
           />
@@ -135,22 +137,22 @@ export default function PlannedTransactionsScreen() {
       {/* Filters */}
       <View style={{ gap: 8, marginBottom: 12 }}>
         <View style={{ paddingHorizontal: 20 }}>
-          <FilterChips options={STATUS_OPTIONS} selected={statusFilter} onSelect={setStatusFilter} />
+          <FilterChips options={statusOptions} selected={statusFilter} onSelect={setStatusFilter} />
         </View>
         <View style={{ paddingHorizontal: 20 }}>
-          <FilterChips options={TYPE_OPTIONS} selected={typeFilter} onSelect={setTypeFilter} />
+          <FilterChips options={typeOptions} selected={typeFilter} onSelect={setTypeFilter} />
         </View>
         <View style={{ paddingHorizontal: 20 }}>
-          <FilterChips options={FREQ_OPTIONS} selected={freqFilter} onSelect={setFreqFilter} />
+          <FilterChips options={freqOptions} selected={freqFilter} onSelect={setFreqFilter} />
         </View>
       </View>
 
       {/* Summary */}
       <View style={{ flexDirection: 'row', gap: 8, marginHorizontal: 20, marginBottom: 12 }}>
         {[
-          { label: 'Committed', value: committedExpenses, color: isDark ? 'rgb(255,121,102)' : 'rgb(255,100,80)' },
-          { label: 'Expected', value: expectedIncome, color: isDark ? 'rgb(173,123,255)' : 'rgb(140,90,220)' },
-          { label: 'Count', value: filtered.length, color: textColor, isCount: true },
+          { label: t('screens.plannedTransactions.committed'), value: committedExpenses, color: isDark ? 'rgb(255,121,102)' : 'rgb(255,100,80)' },
+          { label: t('screens.plannedTransactions.expected'), value: expectedIncome, color: isDark ? 'rgb(173,123,255)' : 'rgb(140,90,220)' },
+          { label: t('screens.plannedTransactions.count'), value: filtered.length, color: textColor, isCount: true },
         ].map((item) => (
           <View key={item.label} style={{
             flex: 1, borderRadius: 12, borderWidth: 1,
@@ -165,7 +167,7 @@ export default function PlannedTransactionsScreen() {
               <Text style={{ color: textColor, fontSize: 14, fontWeight: '700' }}>
                 {filtered.length}
                 {overdueCount > 0 && (
-                  <Text style={{ color: 'rgb(255,59,48)', fontSize: 11, fontWeight: '600' }}> · {overdueCount} late</Text>
+                  <Text style={{ color: 'rgb(255,59,48)', fontSize: 11, fontWeight: '600' }}>{t('screens.plannedTransactions.late', { count: overdueCount })}</Text>
                 )}
               </Text>
             ) : (
@@ -183,9 +185,9 @@ export default function PlannedTransactionsScreen() {
         {filtered.length === 0 ? (
           <View style={{ alignItems: 'center', paddingVertical: 60 }}>
             <Ionicons name="calendar-outline" size={40} color={mutedColor} />
-            <Text style={{ color: mutedColor, fontSize: 14, marginTop: 12 }}>No planned transactions found</Text>
+            <Text style={{ color: mutedColor, fontSize: 14, marginTop: 12 }}>{t('screens.plannedTransactions.emptyTitle')}</Text>
             {hasActiveFilter && (
-              <Text style={{ color: mutedColor, fontSize: 12, marginTop: 4 }}>Try adjusting your filters</Text>
+              <Text style={{ color: mutedColor, fontSize: 12, marginTop: 4 }}>{t('screens.plannedTransactions.emptyHint')}</Text>
             )}
           </View>
         ) : (

@@ -4,9 +4,11 @@ import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useThemeColors } from '@/components/home/useThemeColors';
+import { useTranslation } from '@/app/_context/LanguageContext';
 
 export const AddActionSheet = forwardRef<any, {}>((_props, ref) => {
   const { textColor, mutedColor, primaryColor, violetColor, isDark } = useThemeColors();
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const slideAnim = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
@@ -91,7 +93,7 @@ export const AddActionSheet = forwardRef<any, {}>((_props, ref) => {
                 marginLeft: 4,
                 letterSpacing: -0.2,
               }}>
-              What would you like to do?
+              {t('sheets.actionMenu.prompt')}
             </Text>
 
             {/* Grid Container */}
@@ -122,10 +124,10 @@ export const AddActionSheet = forwardRef<any, {}>((_props, ref) => {
                   <Ionicons name="add-sharp" size={24} color="white" />
                 </View>
                 <Text style={{ color: primaryColor, fontSize: 17, fontWeight: '600', marginBottom: 4 }}>
-                  Add
+                  {t('sheets.actionMenu.addTitle')}
                 </Text>
                 <Text style={{ color: mutedColor, fontSize: 12, fontWeight: '400', lineHeight: 16 }}>
-                  New expense or income
+                  {t('sheets.actionMenu.addDesc')}
                 </Text>
               </TouchableOpacity>
 
@@ -154,10 +156,10 @@ export const AddActionSheet = forwardRef<any, {}>((_props, ref) => {
                   <Ionicons name="calendar-sharp" size={18} color="white" />
                 </View>
                 <Text style={{ color: violetColor, fontSize: 17, fontWeight: '600', marginBottom: 4 }}>
-                  Plan
+                  {t('sheets.actionMenu.planTitle')}
                 </Text>
                 <Text style={{ color: mutedColor, fontSize: 12, fontWeight: '400', lineHeight: 16 }}>
-                  Schedule future transaction
+                  {t('sheets.actionMenu.planDesc')}
                 </Text>
               </TouchableOpacity>
 

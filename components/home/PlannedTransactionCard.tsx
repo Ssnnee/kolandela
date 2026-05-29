@@ -6,11 +6,12 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as plannedTransactionService from '@/services/plannedTransactions';
 import * as transactionService from '@/services/transactions';
 import { useThemeColors, useCurrency, rgba } from './useThemeColors';
+import { useTranslation } from '@/app/_context/LanguageContext';
 import { AlertDialog } from '@/components/AlertDialog';
 import type { PlannedTransaction } from '@/db/schema';
 
 const FREQ_LABEL: Record<string, string> = {
-  DAILY: 'Daily', WEEKLY: 'Weekly', MONTHLY: 'Monthly', YEARLY: 'Yearly',
+  DAILY: 'DAILY', WEEKLY: 'WEEKLY', MONTHLY: 'MONTHLY', YEARLY: 'YEARLY',
 };
 
 const THRESHOLD_DAYS: Record<string, number> = {
@@ -46,6 +47,7 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
   const { textColor, mutedColor, primaryColor, violetColor, cardBg, borderColor, isDark } =
     useThemeColors();
   const { format } = useCurrency();
+  const { t } = useTranslation();
 
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -96,7 +98,7 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 3 }}>
           <View style={{ backgroundColor: accentDim, borderRadius: 100, paddingHorizontal: 8, paddingVertical: 2 }}>
             <Text style={{ color: accentColor, fontSize: 10, fontWeight: '600' }}>
-              {FREQ_LABEL[item.frequency]}
+              {t(`global.frequencies.${FREQ_LABEL[item.frequency]}`)}
             </Text>
           </View>
           {item.nextExecutionDate && (
@@ -148,9 +150,9 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
       <AlertDialog
         visible={showConfirm}
         onOpenChange={(v) => { if (!v) setShowConfirm(false); }}
-        title="Execute Now"
-        description={`Record an execution for "${item.description}"?`}
-        confirmLabel="Execute"
+        title={t('global.actions.executeNow')}
+        description={t('global.dialogs.executeConfirmDesc', { description: item.description })}
+        confirmLabel={t('global.actions.executeNow')}
         onConfirm={confirmExecute}
       />
     </>
