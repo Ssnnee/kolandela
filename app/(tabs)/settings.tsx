@@ -1,9 +1,11 @@
-import { View, Text, ScrollView, TouchableOpacity, Switch, Modal, Pressable } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { rgba, useThemeColors, useCurrency } from '@/components/home/useThemeColors';
-import { CURRENCIES } from '@/constants/currency';
 import { AlertDialog } from '@/components/AlertDialog';
+import { DetailCard } from '@/components/DetailCard';
+import { CurrencyPicker } from '@/components/forms/CurrencyPicker';
+import { ThemePicker } from '@/components/forms/ThemePicker';
 import { useTheme } from '@/app/_context/ThemeContext';
 import { useState } from 'react';
 import { useScrollHandler } from '@/lib/useScrollHandler';
@@ -82,28 +84,7 @@ function SettingsRow({
   );
 }
 
-function SettingsGroup({ children }: { children: React.ReactNode }) {
-  const { cardBg, borderColor } = useThemeColors();
-  return (
-    <View style={{
-      marginHorizontal: 16,
-      backgroundColor: cardBg,
-      borderRadius: 18,
-      borderWidth: 1,
-      borderColor,
-      overflow: 'hidden',
-    }}>
-      {children}
-    </View>
-  );
-}
 
-function Divider() {
-  const { borderColor } = useThemeColors();
-  return (
-    <View style={{ height: 1, backgroundColor: borderColor, marginLeft: 64 }} />
-  );
-}
 
 // ── Main Screen ───────────────────────────────────────────────────────────────
 
@@ -116,10 +97,11 @@ type DialogState = {
 } | null;
 
 export default function SettingsScreen() {
-  const { textColor, mutedColor, primaryColor, cardBg, borderColor, isDark } = useThemeColors();
-  const { currency, setCurrency } = useCurrency();
+  const { textColor, mutedColor, primaryColor, isDark } = useThemeColors();
+  const { currency } = useCurrency();
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
-  const { resolvedTheme, setTheme, theme } = useTheme();
+  const [showThemePicker, setShowThemePicker] = useState(false);
+  const { resolvedTheme, theme } = useTheme();
   const insets = useSafeAreaInsets();
   const scrollHandler = useScrollHandler();
   const [dialog, setDialog] = useState<DialogState>(null);
@@ -154,11 +136,6 @@ export default function SettingsScreen() {
   const themeLabel =
     theme === 'system' ? 'System' : theme === 'dark' ? 'Dark' : 'Light';
 
-  const cycleTheme = () => {
-    const next = theme === 'system' ? 'light' : theme === 'light' ? 'dark' : 'system';
-    setTheme(next);
-  };
-
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}
@@ -178,13 +155,13 @@ export default function SettingsScreen() {
 
       {/* ── Appearance ── */}
       <SectionLabel label="Appearance" />
-      <SettingsGroup>
+      <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
         <SettingsRow
           icon={resolvedTheme === 'dark' ? 'moon' : 'sunny'}
           iconColor={primaryColor}
           label="Theme"
           sublabel={themeLabel}
-          onPress={cycleTheme}
+          onPress={() => setShowThemePicker(true)}
           right={
             <View style={{
               backgroundColor: rgba(primaryColor, 0.1), borderRadius: 100,
@@ -194,29 +171,29 @@ export default function SettingsScreen() {
             </View>
           }
         />
-      </SettingsGroup>
+      </DetailCard.Container>
 
       {/* ── Preferences ── */}
       <SectionLabel label="Preferences" />
-      <SettingsGroup>
+      <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
         <SettingsRow
           icon="language-outline"
           label="Language"
           sublabel="English"
           onPress={() => setDialog({ title: 'Coming soon', description: 'More languages will be supported soon.' })}
         />
-        <Divider />
+        <DetailCard.Divider />
         <SettingsRow
           icon="cash-outline"
           label="Currency"
           sublabel={`${currency.code} — ${currency.symbol}`}
           onPress={() => setShowCurrencyPicker(true)}
         />
-      </SettingsGroup>
+      </DetailCard.Container>
 
       {/* ── Data ── */}
       <SectionLabel label="Data" />
-      <SettingsGroup>
+      <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
         <SettingsRow
           icon="download-outline"
           iconColor={isDark ? 'rgb(0,250,217)' : 'rgb(0,200,175)'}
@@ -224,7 +201,7 @@ export default function SettingsScreen() {
           sublabel="Save your data as CSV or JSON"
           onPress={handleExport}
         />
-        <Divider />
+        <DetailCard.Divider />
         <SettingsRow
           icon="cloud-upload-outline"
           iconColor={isDark ? 'rgb(173,123,255)' : 'rgb(140,90,220)'}
@@ -232,11 +209,11 @@ export default function SettingsScreen() {
           sublabel="Restore from a previous export"
           onPress={handleImport}
         />
-      </SettingsGroup>
+      </DetailCard.Container>
 
       {/* ── About ── */}
       <SectionLabel label="About" />
-      <SettingsGroup>
+      <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
         <SettingsRow
           icon="logo-github"
           iconColor={isDark ? 'rgb(229,229,229)' : 'rgb(40,40,55)'}
@@ -244,7 +221,7 @@ export default function SettingsScreen() {
           sublabel="View on GitHub"
           onPress={() => Linking.openURL(GITHUB_URL)}
         />
-        <Divider />
+        <DetailCard.Divider />
         {/*
         <SettingsRow
           icon="cafe-outline"
@@ -261,11 +238,11 @@ export default function SettingsScreen() {
             <Text style={{ color: mutedColor, fontSize: 12 }}>v{APP_VERSION}</Text>
           }
         />
-      </SettingsGroup>
+      </DetailCard.Container>
 
       {/* ── Danger zone ── */}
       <SectionLabel label="Danger zone" />
-      <SettingsGroup>
+      <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
         <SettingsRow
           icon="trash-outline"
           label="Delete all data"
@@ -273,7 +250,7 @@ export default function SettingsScreen() {
           onPress={handleDeleteAllData}
           danger
         />
-      </SettingsGroup>
+      </DetailCard.Container>
 
       {/* ── Footer ── */}
       <Text style={{
@@ -283,51 +260,8 @@ export default function SettingsScreen() {
         Made with ♥ · Kolandela v{APP_VERSION}
       </Text>
 
-      <Modal
-        visible={showCurrencyPicker}
-        transparent
-        onRequestClose={() => setShowCurrencyPicker(false)}
-      >
-        <Pressable
-          style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'center', alignItems: 'center' }}
-          onPress={() => setShowCurrencyPicker(false)}
-        >
-          <Pressable
-            style={{
-              width: 280, backgroundColor: cardBg, borderRadius: 20,
-              borderWidth: 1, borderColor, padding: 8,
-            }}
-            onPress={() => {}}
-          >
-            <Text style={{ color: textColor, fontSize: 17, fontWeight: '700', textAlign: 'center', paddingVertical: 12 }}>
-              Select currency
-            </Text>
-            {CURRENCIES.map((c) => (
-              <TouchableOpacity
-                key={c.code}
-                onPress={() => {
-                  setCurrency(c);
-                  setShowCurrencyPicker(false);
-                }}
-                activeOpacity={0.7}
-                style={{
-                  flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-                  paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12,
-                  backgroundColor: c.code === currency.code ? rgba(primaryColor, 0.1) : 'transparent',
-                }}
-              >
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                  <Text style={{ color: textColor, fontSize: 18 }}>{c.symbol}</Text>
-                  <Text style={{ color: textColor, fontSize: 15, fontWeight: '500' }}>{c.code}</Text>
-                </View>
-                {c.code === currency.code && (
-                  <Ionicons name="checkmark-circle" size={20} color={primaryColor} />
-                )}
-              </TouchableOpacity>
-            ))}
-          </Pressable>
-        </Pressable>
-      </Modal>
+      <CurrencyPicker visible={showCurrencyPicker} onClose={() => setShowCurrencyPicker(false)} />
+      <ThemePicker visible={showThemePicker} onClose={() => setShowThemePicker(false)} />
 
       <AlertDialog
         visible={dialog !== null}
