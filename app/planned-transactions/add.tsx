@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as plannedTransactionService from '@/services/plannedTransactions';
 import * as categoryService from '@/services/categories';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors, useCurrency } from '@/components/home/useThemeColors';
 import { useTranslation } from '@/app/_context/LanguageContext';
@@ -132,16 +132,16 @@ export default function AddPlannedTransaction() {
       <ScrollView contentContainerStyle={{ padding: 20 }} keyboardShouldPersistTaps="handled">
         {/* Type toggle */}
         <View style={{ flexDirection: 'row', backgroundColor: tabBg, borderRadius: 14, padding: 4, marginBottom: 24 }}>
-          {(['EXPENSE', 'INCOME'] as TxType[]).map((t) => {
-            const isActive = type === t;
-            const color = t === 'INCOME' ? violetColor : primaryColor;
+          {(['EXPENSE', 'INCOME'] as TxType[]).map((mode) => {
+            const isActive = type === mode;
+            const color = mode === 'INCOME' ? violetColor : primaryColor;
             return (
               <TouchableOpacity
-                key={t}
-                onPress={() => { setType(t); setCategoryId(null); }}
+                key={mode}
+                onPress={() => { setType(mode); setCategoryId(null); }}
                 style={{ flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 11, backgroundColor: isActive ? color : 'transparent' }}>
                 <Text style={{ fontSize: 14, fontWeight: '700', color: isActive ? 'white' : mutedColor }}>
-                  {t === 'INCOME' ? t('tabs.categories.tabIncome') : t('tabs.categories.tabExpenses')}
+                  {mode === 'INCOME' ? t('tabs.categories.tabIncome') : t('tabs.categories.tabExpenses')}
                 </Text>
               </TouchableOpacity>
             );
