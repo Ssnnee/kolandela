@@ -13,35 +13,80 @@
     "status": {
       "active": "Actif",
       "inactive": "Inactif",
-      "loading": "Chargement en cours...",
-      "overdue": "En retard"
+      "loading": "Chargement..."
     },
     "errors": {
       "generic": "Une erreur est survenue",
       "deleteFailed": "Impossible de supprimer la transaction planifiée.",
-      "updateFailed": "Impossible de mettre à jour le statut.",
-      "executeFailed": "Impossible d'exécuter la transaction."
+      "couldNotSave": "Impossible d'enregistrer la transaction.",
+      "couldNotSavePlanned": "Impossible d'enregistrer la transaction planifiée.",
+      "couldNotDelete": "Impossible de supprimer la transaction.",
+      "couldNotExecute": "Impossible d'exécuter la transaction.",
+      "couldNotUpdateStatus": "Impossible de mettre à jour le statut."
     },
-    "success": {
-      "executed": "Transaction exécutée avec succès."
-    }
-  },
-  "tabs": {
-    "home": {
-      "title": "Accueil",
-      "recentTransactions": "Transactions récentes"
+    "validation": {
+      "descriptionRequired": "La description est obligatoire",
+      "enterValidAmount": "Saisissez un montant valide",
+      "selectCategory": "Sélectionnez une catégorie"
     },
-    "categories": {
-      "title": "Catégories",
-      "uncategorized": "Sans catégorie"
+    "paymentLabels": {
+      "BANK": "Virement bancaire",
+      "CASH": "Espèces",
+      "MOBILE_MONEY": "Mobile Money",
+      "OTHER": "Autre"
     },
-    "stats": {
-      "title": "Analyses"
+    "paymentOptions": {
+      "BANK": "Banque",
+      "CASH": "Espèces",
+      "MOBILE_MONEY": "Mobile Money",
+      "OTHER": "Autre"
     },
-    "settings": {
-      "title": "Paramètres",
-      "selectCurrency": "Sélectionner la devise",
-      "changeLanguage": "Changer de langue"
+    "filterLabels": {
+      "all": "Tout",
+      "allMethods": "Tous les moyens",
+      "allCategories": "Toutes les catégories",
+      "allFrequencies": "Toutes les fréquences",
+      "overdue": "En retard",
+      "active": "Actif",
+      "inactive": "Inactif"
+    },
+    "placeholders": {
+      "transactionDescription": "ex. Courses alimentaires",
+      "plannedDescription": "ex. Abonnement Netflix",
+      "amount": "0",
+      "searchTransactions": "Rechercher une transaction…",
+      "searchPlanned": "Rechercher un planning…"
+    },
+    "frequencies": {
+      "DAILY": "Quotidien",
+      "WEEKLY": "Hebdomadaire",
+      "MONTHLY": "Mensuel",
+      "YEARLY": "Annuel"
+    },
+    "dialogs": {
+      "comingSoon": "Bientôt disponible",
+      "error": "Erreur",
+      "done": "Terminé",
+      "deleteAllData": "Supprimer toutes les données",
+      "deleteAllDataDesc": "Cette action supprimera définitivement vos transactions, transactions planifiées et catégories personnalisées. Cette opération est irréversible.",
+      "deleteEverything": "Tout supprimer",
+      "allDataDeleted": "Toutes les données ont été supprimées.",
+      "somethingWentWrong": "Une erreur est survenue lors de la suppression des données.",
+      "exportComingSoon": "L'exportation sera disponible dans une prochaine mise à jour.",
+      "importComingSoon": "L'importation sera disponible dans une prochaine mise à jour.",
+      "executeConfirmDesc": "Enregistrer une exécution pour « {{description}} » ?",
+      "executePlannedPrompt": "Souhaitez-vous enregistrer une exécution pour cette transaction planifiée dès maintenant ?",
+      "success": "Succès",
+      "transactionExecuted": "Transaction exécutée avec succès.",
+      "deleteTransactionTitle": "Supprimer la transaction",
+      "deleteTransactionDesc": "Êtes-vous sûr de vouloir supprimer cette transaction ?",
+      "deletePlannedTitle": "Supprimer la planification",
+      "deletePlannedDesc": "Êtes-vous sûr de vouloir supprimer cette transaction planifiée ?"
+    },
+    "theme": {
+      "system": "Système",
+      "dark": "Sombre",
+      "light": "Clair"
     }
   },
   "sheets": {
@@ -53,15 +98,110 @@
       "planDesc": "Programmer une transaction future"
     }
   },
+  "tabs": {
+    "home": {
+      "title": "Accueil",
+      "overview": "Aperçu",
+      "recentSection": "Récent",
+      "plannedSection": "Planifié",
+      "seeAll": "Voir tout",
+      "tabTransactions": "Transactions",
+      "tabPlanned": "Planifié",
+      "noTransactions": "Aucune transaction ce mois-ci",
+      "noPlanned": "Aucune planification ce mois-ci",
+      "recentTransactions": "Transactions récentes",
+      "overspent": "Dépassement",
+      "remaining": "Restant",
+      "deficit": "Déficit",
+      "saved": "{{rate}}% économisé",
+      "ofIncome": "des revenus",
+      "income": "Revenus",
+      "expenses": "Dépenses",
+      "spentThisMonth": "Dépensé ce mois-ci",
+      "spent": "Dépensé",
+      "plusPlanned": "+Planifié",
+      "of": "sur"
+    },
+    "categories": {
+      "title": "Catégories",
+      "breakdown": "Répartition",
+      "tabExpenses": "Dépenses",
+      "tabIncome": "Revenus",
+      "totalSpent": "Total dépensé",
+      "totalReceived": "Total reçu",
+      "byCategory": "Par catégorie",
+      "noExpenses": "Aucune dépense ce mois-ci",
+      "noIncome": "Aucun revenu ce mois-ci",
+      "uncategorized": "Sans catégorie"
+    },
+    "stats": {
+      "title": "Statistiques",
+      "analysis": "Analyses",
+      "allTimeNetBalance": "Solde net global",
+      "savingsAndTotal": "Taux d'épargne {{rate}}% · {{count}} transactions au total",
+      "income": "Revenus",
+      "expenses": "Dépenses",
+      "monthComparison": "Comparaison mensuelle",
+      "net": "Net",
+      "byWeek": "{{month}} par semaine",
+      "trend12m": "Tendance sur 12 mois",
+      "topExpenseCategories": "Principales catégories de dépenses",
+      "quickStats": "Stats rapides",
+      "avgExpense": "Dépense moy.",
+      "biggestExpense": "Plus grosse dépense",
+      "savingsRate": "Taux d'épargne",
+      "mostActiveDay": "Jour le plus actif"
+    },
+    "settings": {
+      "title": "Paramètres",
+      "headerLabel": "Application",
+      "sectionAppearance": "Apparence",
+      "theme": "Thème",
+      "sectionPreferences": "Préférences",
+      "language": "Langue",
+      "english": "Anglais",
+      "selectCurrency": "Sélectionner la devise",
+      "changeLanguage": "Changer de langue",
+      "currency": "Devise",
+      "sectionData": "Données",
+      "exportData": "Exporter les données",
+      "exportSublabel": "Sauvegarder vos données au format CSV ou JSON",
+      "importData": "Importer des données",
+      "importSublabel": "Restaurer depuis une sauvegarde précédente",
+      "sectionAbout": "À propos",
+      "sourceCode": "Code source",
+      "viewOnGitHub": "Voir sur GitHub",
+      "version": "Version",
+      "sectionDanger": "Zone de danger",
+      "deleteAllData": "Supprimer toutes les données",
+      "deleteAllDataSublabel": "Supprime définitivement l'ensemble des transactions et catégories",
+      "footer": "Fait avec ♥ · Kolandela v{{version}}"
+    }
+  },
   "screens": {
     "transactions": {
       "add": "Ajouter une transaction",
       "details": "Détails de la transaction",
       "description": "Description",
-      "amount": "Montant"
+      "amount": "Montant",
+      "listTitle": "Transactions",
+      "edit": "Modifier la transaction",
+      "new": "Nouvelle transaction",
+      "headerTitle": "Transaction",
+      "date": "Date",
+      "paymentMethod": "Moyen de paiement",
+      "fromPlanned": "Depuis la planification",
+      "deleteTransaction": "Supprimer la transaction",
+      "loading": "Chargement des détails de la transaction…",
+      "emptyTitle": "Aucune transaction trouvée",
+      "emptyHint": "Essayez d'ajuster vos filtres",
+      "allCategories": "Toutes les catégories",
+      "allMethods": "Tous les moyens",
+      "clear": "Effacer",
+      "category": "Catégorie"
     },
     "plannedTransactions": {
-      "title": "Détails de la planification",
+      "title": "Détails du planning",
       "add": "Planifier une transaction",
       "plannedAmount": "Montant planifié",
       "frequency": "Fréquence",
@@ -69,21 +209,28 @@
       "startDate": "Date de début",
       "previousExecutions": "Exécutions précédentes",
       "dangerZone": "Zone de danger",
-      "deletePlanned": "Supprimer la transaction planifiée",
-      "confirmDeleteTitle": "Supprimer la planification",
-      "confirmDeleteDesc": "Êtes-vous sûr de vouloir supprimer cette transaction planifiée ?",
-      "confirmExecuteTitle": "Exécuter maintenant",
-      "confirmExecuteDesc": "Voulez-vous enregistrer une exécution pour cette transaction planifiée dès maintenant ?",
-      "frequencies": {
-        "DAILY": "Quotidien",
-        "WEEKLY": "Hebdomadaire",
-        "MONTHLY": "Mensuel",
-        "YEARLY": "Annuel",
-        "RECURRING": "(Récurrent)",
-        "ONETIME": "(Unique)"
-      },
+      "listTitle": "Planifié",
+      "edit": "Modifier le planning",
+      "new": "Nouvelle planification",
+      "recurring": "Récurrent",
+      "recurringSublabel": "Passe automatiquement au cycle suivant après chaque exécution",
+      "oneTime": "Ponctuel",
+      "nextLabel": "Prochain :",
+      "paused": "Suspendu",
+      "overdue": "EN RETARD",
+      "overdueCount": "{{count}} en retard",
+      "executionHistory": "Historique des exécutions",
       "noExecutions": "Aucune exécution enregistrée pour le moment",
-      "pausedStatus": "Suspendu"
+      "deletePlanned": "Supprimer la planification",
+      "loading": "Chargement des détails de la planification…",
+      "emptyTitle": "Aucune planification trouvée",
+      "emptyHint": "Essayez d'ajuster vos filtres",
+      "allFrequencies": "Toutes les fréquences",
+      "committed": "Engagé",
+      "expected": "Attendu",
+      "count": "Total",
+      "late": "· {{count}} en retard",
+      "none": "Aucun"
     }
   }
 }
