@@ -173,12 +173,14 @@ export default function AddPlannedTransaction() {
           error={errors.category}
         />
 
-        <FormPicker
-          label="Frequency"
-          options={FREQ_OPTIONS}
-          selected={frequency}
-          onSelect={setFrequency}
-        />
+        {recurring && (
+          <FormPicker
+            label="Frequency"
+            options={FREQ_OPTIONS}
+            selected={frequency}
+            onSelect={setFrequency}
+          />
+        )}
 
         <FormToggle
           label="Recurring"
