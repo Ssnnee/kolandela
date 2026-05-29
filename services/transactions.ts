@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { transactions, categories } from '@/db/schema';
+import { transactions, categories, plannedTransactions } from '@/db/schema';
 import { eq, desc, and } from 'drizzle-orm';
 import type { NewTransaction } from '@/db/schema';
 import type { SQLiteUpdateSetSource } from 'drizzle-orm/sqlite-core';
@@ -17,9 +17,11 @@ export function getByIdWithCategory(id: string) {
     .select({
       transaction: transactions,
       category: categories,
+      plannedTransaction: plannedTransactions,
     })
     .from(transactions)
     .leftJoin(categories, eq(transactions.categoryId, categories.id))
+    .leftJoin(plannedTransactions, eq(transactions.plannedTransactionId, plannedTransactions.id))
     .where(eq(transactions.id, id));
 }
 

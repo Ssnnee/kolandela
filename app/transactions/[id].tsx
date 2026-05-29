@@ -5,7 +5,6 @@ import { DetailCard } from '@/components/DetailCard';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as transactionService from '@/services/transactions';
-import * as plannedTransactionService from '@/services/plannedTransactions';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
@@ -45,11 +44,7 @@ export default function TransactionDetailScreen() {
 
   const tx = results?.[0]?.transaction;
   const category = results?.[0]?.category;
-
-  const { data: plannedResults } = useLiveQuery(
-    plannedTransactionService.getById(tx?.plannedTransactionId ?? '')
-  );
-  const plannedTx = plannedResults?.[0];
+  const plannedTx = results?.[0]?.plannedTransaction;
 
   if (!tx) {
     return (
