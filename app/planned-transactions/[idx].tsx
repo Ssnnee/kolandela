@@ -129,11 +129,6 @@ export default function PlannedTransactionDetailScreen() {
             style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: cardBg, borderWidth: 1, borderColor, alignItems: 'center', justifyContent: 'center' }}>
             <Ionicons name="pencil-outline" size={18} color={textColor} />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleDelete}
-            style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: cardBg, borderWidth: 1, borderColor, alignItems: 'center', justifyContent: 'center' }}>
-            <Ionicons name="trash-outline" size={18} color={redColor} />
-          </TouchableOpacity>
         </View>
       </View>
 
