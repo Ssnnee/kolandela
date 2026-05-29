@@ -27,6 +27,9 @@ export default function AddTransaction() {
   const { currency } = useCurrency();
   const [dialog, setDialog] = useState<{ title: string; description: string } | null>(null);
 
+  const formatAmount = (val: string) => val ? val.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '';
+  const handleAmountChange = (text: string) => setAmount(text.replace(/\s/g, ''));
+
   const { data: cats } = useLiveQuery(categoryService.getAll());
   const { data: txList } = useLiveQuery(
     transactionService.getById(id ?? '')
@@ -146,8 +149,8 @@ export default function AddTransaction() {
 
         <FormInput
           label={`Amount (${currency.symbol})`}
-          value={amount}
-          onChangeText={setAmount}
+          value={formatAmount(amount)}
+          onChangeText={handleAmountChange}
           placeholder="0"
           keyboardType="numeric"
           error={errors.amount}

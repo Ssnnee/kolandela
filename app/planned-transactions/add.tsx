@@ -27,6 +27,9 @@ export default function AddPlannedTransaction() {
   const { currency } = useCurrency();
   const [dialog, setDialog] = useState<{ title: string; description: string } | null>(null);
 
+  const formatAmount = (val: string) => val ? val.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '';
+  const handleAmountChange = (text: string) => setAmount(text.replace(/\s/g, ''));
+
   const { data: cats } = useLiveQuery(categoryService.getAll());
   const { data: plannedList } = useLiveQuery(
     plannedTransactionService.getById(id ?? '')
@@ -153,8 +156,8 @@ export default function AddPlannedTransaction() {
 
         <FormInput
           label={`Amount (${currency.symbol})`}
-          value={amount}
-          onChangeText={setAmount}
+          value={formatAmount(amount)}
+          onChangeText={handleAmountChange}
           placeholder="0"
           keyboardType="numeric"
           error={errors.amount}
