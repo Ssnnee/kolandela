@@ -1,4 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as transactionService from '@/services/transactions';
 import * as plannedTransactionService from '@/services/plannedTransactions';
@@ -87,14 +88,14 @@ export default function Index() {
   );
 
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 120 }}
-      {...scrollHandler}>
+    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 120 }}
+        {...scrollHandler}>
 
-      {/* Header */}
-      <View style={{ paddingHorizontal: 24, paddingTop: 56, paddingBottom: 16 }}>
+        {/* Header */}
+        <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 16 }}>
         <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>
           {t('tabs.home.overview')}
         </Text>
@@ -202,6 +203,7 @@ export default function Index() {
           )
         )}
       </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }

@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as transactionService from '@/services/transactions';
 import * as categoryService from '@/services/categories';
@@ -38,7 +38,6 @@ function DeltaBadge({ change, isPositiveGood = true }: { change: number; isPosit
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function StatsScreen() {
-  const insets = useSafeAreaInsets();
   const scrollHandler = useScrollHandler();
   const { textColor, mutedColor, primaryColor, violetColor, cardBg, borderColor, tabBg, isDark } =
     useThemeColors();
@@ -178,11 +177,11 @@ export default function StatsScreen() {
   }, [currentMonthTrans, currentMonth, currentYear, primaryColor, violetColor, mutedColor]);
 
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 120, paddingTop: insets.top }}
-      {...scrollHandler}>
+    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 120 }}
+        {...scrollHandler}>
 
       {/* ── Header ── */}
       <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 20 }}>
@@ -414,6 +413,7 @@ export default function StatsScreen() {
         </View>
       </View>
 
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }

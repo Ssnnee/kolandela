@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { rgba, useThemeColors, useCurrency } from '@/components/home/useThemeColors';
 import { AlertDialog } from '@/components/AlertDialog';
@@ -106,7 +106,6 @@ export default function SettingsScreen() {
   const [showLanguagePicker, setShowLanguagePicker] = useState(false);
   const { resolvedTheme, theme } = useTheme();
   const { language, t } = useTranslation();
-  const insets = useSafeAreaInsets();
   const scrollHandler = useScrollHandler();
   const [dialog, setDialog] = useState<DialogState>(null);
 
@@ -141,11 +140,11 @@ export default function SettingsScreen() {
     theme === 'system' ? t('global.theme.system') : theme === 'dark' ? t('global.theme.dark') : t('global.theme.light');
 
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 120, paddingTop: insets.top }}
-      {...scrollHandler}>
+    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 120 }}
+        {...scrollHandler}>
 
       {/* ── Header ── */}
       <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 24 }}>
@@ -277,8 +276,8 @@ export default function SettingsScreen() {
         destructive={dialog?.destructive}
         onConfirm={dialog?.onConfirm}
       />
-    </ScrollView>
-
+      </ScrollView>
+    </SafeAreaView>
 
   );
 }

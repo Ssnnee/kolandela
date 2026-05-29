@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as categoryService from '@/services/categories';
 import * as transactionService from '@/services/transactions';
@@ -21,7 +21,6 @@ export default function CategoriesScreen() {
   const { textColor, mutedColor, cardBg, borderColor, tabBg, isDark } = useThemeColors();
   const { format } = useCurrency();
   const { t } = useTranslation();
-  const insets = useSafeAreaInsets();
   const scrollHandler = useScrollHandler();
 
   const { data: cats } = useLiveQuery(categoryService.getAll());
@@ -90,11 +89,11 @@ export default function CategoriesScreen() {
             : '🎯 Great control this month';
 
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 120, paddingTop: insets.top }}
-      {...scrollHandler}>
+    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 120 }}
+        {...scrollHandler}>
 
       <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 16 }}>
         <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>
@@ -236,6 +235,7 @@ export default function CategoriesScreen() {
           </>
         )}
       </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
