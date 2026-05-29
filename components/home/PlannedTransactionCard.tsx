@@ -6,6 +6,7 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as plannedTransactionService from '@/services/plannedTransactions';
 import * as transactionService from '@/services/transactions';
 import { useThemeColors, useCurrency, rgba } from './useThemeColors';
+import { AlertDialog } from '@/components/AlertDialog';
 import type { PlannedTransaction } from '@/db/schema';
 
 const FREQ_LABEL: Record<string, string> = {
@@ -46,13 +47,13 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
     useThemeColors();
   const { format } = useCurrency();
 
-  const [optimisticChecked, setOptimisticChecked] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const { data: executions } = useLiveQuery(
     transactionService.getByPlannedTransaction(item.id),
   );
   const hasExecuted = (executions?.length ?? 0) > 0;
-  const checked = optimisticChecked || isChecked(hasExecuted, item);
+  const checked = isChecked(hasExecuted, item);
 
   const isExpense = item.type === 'EXPENSE';
   const overdue = isOverdue(item);
@@ -66,19 +67,20 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
 
   const handleExecute = () => {
     if (checked) return;
-    setOptimisticChecked(true);
-    setTimeout(async () => {
-      try {
-        await plannedTransactionService.execute(item.id, 'BANK');
-      } catch (e) {
-        console.error('Execute error:', e);
-      }
-      setOptimisticChecked(false);
-    }, 3000);
+    setShowConfirm(true);
+  };
+
+  const confirmExecute = async () => {
+    try {
+      await plannedTransactionService.execute(item.id, 'BANK');
+    } catch (e) {
+      console.error('Execute error:', e);
+    }
+    setShowConfirm(false);
   };
 
   return (
-    <TouchableOpacity
+    <><TouchableOpacity
       onPress={() => router.push(`/planned-transactions/${item.id}`)}
       activeOpacity={0.75}
       style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: cardBg, borderRadius: 16, padding: 14, marginBottom: 8, borderWidth: 1, borderColor: overdue ? 'rgba(255,59,48,0.35)' : borderColor }}>
@@ -141,6 +143,16 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
           <Ionicons name="ellipse" size={12} color={accentDim} />
         )}
       </TouchableOpacity>
-    </TouchableOpacity>
+      </TouchableOpacity>
+
+      <AlertDialog
+        visible={showConfirm}
+        onOpenChange={(v) => { if (!v) setShowConfirm(false); }}
+        title="Execute Now"
+        description={`Record an execution for "${item.description}"?`}
+        confirmLabel="Execute"
+        onConfirm={confirmExecute}
+      />
+    </>
   );
 }
