@@ -10,7 +10,7 @@ interface CurrencyPickerProps {
 }
 
 export function CurrencyPicker({ visible, onClose }: CurrencyPickerProps) {
-  const { textColor, primaryColor, cardBg, borderColor } = useThemeColors();
+  const { textColor, primaryColor, mutedColor, cardBg, borderColor } = useThemeColors();
   const { currency, setCurrency } = useCurrency();
   const { t } = useTranslation();
 
@@ -24,26 +24,43 @@ export function CurrencyPicker({ visible, onClose }: CurrencyPickerProps) {
           <Text style={{ color: textColor, fontSize: 17, fontWeight: '700', textAlign: 'center', paddingVertical: 12 }}>
             {t('tabs.settings.selectCurrency')}
           </Text>
-          {CURRENCIES.map((c) => (
-            <TouchableOpacity
-              key={c.code}
-              onPress={() => { setCurrency(c); onClose(); }}
-              activeOpacity={0.7}
-              style={{
-                flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-                paddingVertical: 14, paddingHorizontal: 16, borderRadius: 12,
-                backgroundColor: c.code === currency.code ? rgba(primaryColor, 0.1) : 'transparent',
-              }}
-            >
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                <Text style={{ color: textColor, fontSize: 18 }}>{c.symbol}</Text>
-                <Text style={{ color: textColor, fontSize: 15, fontWeight: '500' }}>{c.code}</Text>
-              </View>
-              {c.code === currency.code && (
-                <Ionicons name="checkmark-circle" size={20} color={primaryColor} />
-              )}
-            </TouchableOpacity>
-          ))}
+          {CURRENCIES.map((c) => {
+            const isSelected = c.code === currency.code;
+            return (
+              <TouchableOpacity
+                key={c.code}
+                onPress={() => { setCurrency(c); onClose(); }}
+                activeOpacity={0.7}
+                style={{
+                  flexDirection: 'row', alignItems: 'center',
+                  paddingVertical: 12, paddingHorizontal: 16, borderRadius: 12,
+                  backgroundColor: isSelected ? rgba(primaryColor, 0.1) : 'transparent',
+                  gap: 12,
+                }}
+              >
+                <View style={{
+                  width: 34, height: 34, borderRadius: 9,
+                  backgroundColor: isSelected ? rgba(primaryColor, 0.1) : rgba(textColor, 0.08),
+                  alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <Text style={{ color: isSelected ? primaryColor : textColor, fontSize: 15, fontWeight: '700' }}>
+                    {c.symbol}
+                  </Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: isSelected ? primaryColor : textColor, fontSize: 15, fontWeight: '500' }}>
+                    {c.code}
+                  </Text>
+                  <Text style={{ color: mutedColor, fontSize: 12, marginTop: 1 }}>
+                    {c.symbol} — {c.locale}
+                  </Text>
+                </View>
+                {isSelected && (
+                  <Ionicons name="checkmark-circle" size={20} color={primaryColor} />
+                )}
+              </TouchableOpacity>
+            );
+          })}
         </Pressable>
       </Pressable>
     </Modal>
