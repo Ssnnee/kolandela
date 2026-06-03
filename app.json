@@ -8,10 +8,6 @@
     "scheme": "kolandela",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.kolandela"
-    },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
@@ -21,7 +17,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.kolandela"
+      "package": "com.sne.kolandela"
     },
     "web": {
       "output": "static",
@@ -45,6 +41,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "b350148b-b7e6-44e7-be31-ecf7582eb27a"
+      }
     }
   }
 }
