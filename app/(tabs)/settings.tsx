@@ -10,7 +10,6 @@ import { LanguagePicker } from '@/components/forms/LanguagePicker';
 import { useTheme } from '@/app/_context/ThemeContext';
 import { useTranslation } from '@/app/_context/LanguageContext';
 import { useState } from 'react';
-import { useScrollHandler } from '@/lib/useScrollHandler';
 import * as transactionService from '@/services/transactions';
 import * as plannedTransactionService from '@/services/plannedTransactions';
 import * as categoryService from '@/services/categories';
@@ -106,7 +105,6 @@ export default function SettingsScreen() {
   const [showLanguagePicker, setShowLanguagePicker] = useState(false);
   const { resolvedTheme, theme } = useTheme();
   const { language, t } = useTranslation();
-  const scrollHandler = useScrollHandler();
   const [dialog, setDialog] = useState<DialogState>(null);
 
   const handleDeleteAllData = () => {
@@ -144,7 +142,7 @@ export default function SettingsScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
-        {...scrollHandler}>
+>
 
       {/* ── Header ── */}
       <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 24 }}>

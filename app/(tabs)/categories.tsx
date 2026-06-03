@@ -7,7 +7,6 @@ import { useState, useMemo } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
 import { useTranslation } from '@/app/_context/LanguageContext';
-import { useScrollHandler } from '@/lib/useScrollHandler';
 import { MonthPicker, buildMonthOptions } from '@/components/home/MonthPicker';
 import { router } from 'expo-router';
 
@@ -21,8 +20,6 @@ export default function CategoriesScreen() {
   const { textColor, mutedColor, cardBg, borderColor, tabBg, isDark } = useThemeColors();
   const { format } = useCurrency();
   const { t } = useTranslation();
-  const scrollHandler = useScrollHandler();
-
   const { data: cats } = useLiveQuery(categoryService.getAll());
   const { data: trans } = useLiveQuery(transactionService.getAll());
 
@@ -93,7 +90,7 @@ export default function CategoriesScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
-        {...scrollHandler}>
+>
 
       <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 16 }}>
         <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>

@@ -10,7 +10,6 @@ import ThemeProvider, { useTheme } from './_context/ThemeContext';
 import CurrencyProvider from './_context/CurrencyContext';
 import { LanguageProvider } from './_context/LanguageContext';
 import BottomSheetProvider from './_context/BottomSheetContext';
-import ScrollProvider from './_context/ScrollContext';
 import { View, Text, ActivityIndicator } from 'react-native';
 
 function MigrationWrapper({ children }: { children: React.ReactNode }) {
@@ -47,11 +46,9 @@ export default function RootLayout() {
       <LanguageProvider>
       <CurrencyProvider>
         <BottomSheetProvider>
-        <ScrollProvider>
           <MigrationWrapper>
             <RootNavigator />
           </MigrationWrapper>
-        </ScrollProvider>
       </BottomSheetProvider>
       </CurrencyProvider>
       </LanguageProvider>

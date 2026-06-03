@@ -3,7 +3,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as transactionService from '@/services/transactions';
 import * as plannedTransactionService from '@/services/plannedTransactions';
-import { useScrollHandler } from '@/lib/useScrollHandler';
 import { useState, useMemo } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -23,8 +22,6 @@ export default function Index() {
   const { t } = useTranslation();
   const { data: trans } = useLiveQuery(transactionService.getAll());
   const { data: plannedTrans } = useLiveQuery(plannedTransactionService.getAll());
-  const scrollHandler = useScrollHandler();
-
   const now = new Date();
   const [selectedDate, setSelectedDate] = useState<Date>(now);
   const [listTab, setListTab] = useState<ListTab>('transactions');
@@ -92,7 +89,7 @@ export default function Index() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
-        {...scrollHandler}>
+>
 
         {/* Header */}
         <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 16 }}>

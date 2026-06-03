@@ -8,7 +8,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { BarChart, LineChart } from 'react-native-gifted-charts';
 import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
 import { useTranslation } from '@/app/_context/LanguageContext';
-import { useScrollHandler } from '@/lib/useScrollHandler';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -38,7 +37,6 @@ function DeltaBadge({ change, isPositiveGood = true }: { change: number; isPosit
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function StatsScreen() {
-  const scrollHandler = useScrollHandler();
   const { textColor, mutedColor, primaryColor, violetColor, cardBg, borderColor, tabBg, isDark } =
     useThemeColors();
   const { format } = useCurrency();
@@ -181,7 +179,7 @@ export default function StatsScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
-        {...scrollHandler}>
+>
 
       {/* ── Header ── */}
       <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 20 }}>
