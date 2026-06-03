@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="arrowGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1A8F8A" />
+      <stop offset="100%" stop-color="#6FE4BE" />
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(0, -10)">
+    <rect x="160" y="80" width="48" height="230" fill="#FC6B5B" />
+
+    <polygon points="250,200 340,310 290,310 215,220" fill="#52B7A3" />
+
+    <line x1="195" y1="210" x2="305" y2="40" stroke="#52B7A3" stroke-width="9" stroke-dasharray="14 14" stroke-linecap="round" />
+
+    <path d="M 145 310 L 225 185 L 250 220 L 325 103" fill="none" stroke="black" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" />
+
+    <path d="M 145 310 L 225 185 L 250 220 L 325 103" fill="none" stroke="url(#arrowGrad)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" />
+
+    <polygon points="350,65 312,95 338,111" fill="#6FE4BE" />
+  </g>
+
+  <text x="250" y="420" font-family="system-ui, -apple-system, 'Montserrat', 'Segoe UI', sans-serif" font-size="56" font-weight="600" fill="#4A4A4A" text-anchor="middle" letter-spacing="1">Kolandéla</text>
+</svg>
+
