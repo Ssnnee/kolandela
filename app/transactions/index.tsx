@@ -16,7 +16,7 @@ type PaymentFilter = 'ALL' | 'CASH' | 'BANK' | 'MOBILE_MONEY' | 'OTHER';
 
 export default function TransactionsScreen() {
   const params = useLocalSearchParams<{ month?: string; year?: string }>();
-  const { cardBg, borderColor, textColor, mutedColor, primaryColor, violetColor, isDark } = useThemeColors();
+  const { cardBg, borderColor, textColor, mutedColor, primaryColor, isDark } = useThemeColors();
   const { format } = useCurrency();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();

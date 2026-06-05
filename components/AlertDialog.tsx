@@ -48,6 +48,7 @@ export function AlertDialog({
         Animated.timing(opacity, { toValue: 0, duration: 150, useNativeDriver: true }),
       ]).start();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible]);
 
   const handleCancel = () => {

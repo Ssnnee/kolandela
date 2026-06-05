@@ -95,7 +95,7 @@ export default function AddTransaction() {
         });
       }
       router.back();
-    } catch (e) {
+    } catch {
       setDialog({ title: t('global.dialogs.error'), description: t('global.errors.couldNotSave') });
     } finally {
       setSaving(false);

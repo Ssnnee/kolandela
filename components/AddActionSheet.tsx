@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useThemeColors } from '@/components/home/useThemeColors';
 import { useTranslation } from '@/app/_context/LanguageContext';
 
-export const AddActionSheet = forwardRef<any, {}>((_props, ref) => {
+export const AddActionSheet = forwardRef<any, object>((_props, ref) => {
   const { textColor, mutedColor, primaryColor, violetColor, isDark } = useThemeColors();
   const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
@@ -170,5 +170,7 @@ export const AddActionSheet = forwardRef<any, {}>((_props, ref) => {
     </Modal>
   );
 });
+
+AddActionSheet.displayName = 'AddActionSheet';
 
 export default AddActionSheet;

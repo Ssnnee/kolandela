@@ -102,7 +102,7 @@ export default function AddPlannedTransaction() {
         });
       }
       router.back();
-    } catch (e) {
+    } catch {
       setDialog({ title: t('global.dialogs.error'), description: t('global.errors.couldNotSavePlanned') });
     } finally {
       setSaving(false);

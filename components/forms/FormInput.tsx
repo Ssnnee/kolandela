@@ -7,7 +7,7 @@ interface FormInputProps extends TextInputProps {
 }
 
 export function FormInput({ label, error, ...props }: FormInputProps) {
-  const { textColor, mutedColor, cardBg, borderColor, isDark } = useThemeColors();
+  const { textColor, mutedColor, cardBg, borderColor } = useThemeColors();
 
   return (
     <View style={{ marginBottom: 16 }}>

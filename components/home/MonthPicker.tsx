@@ -54,6 +54,7 @@ export function MonthPicker({
         scrollRef.current?.scrollTo({ x: Math.max(0, offset), animated: false });
       }, 50);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -168,8 +168,6 @@ export function DatePickerModal({
   const isFutureMonth = (y: number, m: number) =>
     y > todayY || (y === todayY && m > todayM);
 
-  const canGoNext = allowFuture || !isFutureMonth(year, month === 11 ? year + 1 : year, month === 11 ? 0 : month + 1);
-
   // Simpler: just check if next month is future
   const nextYear = month === 11 ? year + 1 : year;
   const nextMonth = month === 11 ? 0 : month + 1;

@@ -23,7 +23,7 @@ function isOverdue(p: PlannedTransaction): boolean {
 }
 
 export default function PlannedTransactionsScreen() {
-  const { cardBg, borderColor, textColor, mutedColor, primaryColor, violetColor, isDark } = useThemeColors();
+  const { cardBg, borderColor, textColor, mutedColor, primaryColor, isDark } = useThemeColors();
   const { format } = useCurrency();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();

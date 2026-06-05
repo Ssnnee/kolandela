@@ -75,14 +75,14 @@ export default function StatsScreen() {
       const d = new Date(t.transactionDate);
       return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
     }),
-    [allTrans]
+    [allTrans, currentMonth, currentYear]
   );
   const prevMonthTrans = useMemo(
     () => allTrans.filter((t) => {
       const d = new Date(t.transactionDate);
       return d.getMonth() === prevMonth && d.getFullYear() === prevYear;
     }),
-    [allTrans]
+    [allTrans, prevMonth, prevYear]
   );
 
   const currentIncome = currentMonthTrans.filter((t) => t.type === 'INCOME').reduce((s, t) => s + t.amount, 0);
