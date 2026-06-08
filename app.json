@@ -4,7 +4,7 @@
     "slug": "kolandela",
     "version": "0.0.1",
     "orientation": "portrait",
-    "icon": "./assets/images/kolandela-logo-white-bg.png",
+    "icon": "./assets/logo-white.png",
     "scheme": "kolandela",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -28,7 +28,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/kolandela-logo.png",
+          "image": "./assets/logo-white.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
@@ -36,7 +36,8 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true,
