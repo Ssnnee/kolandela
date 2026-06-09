@@ -9,9 +9,11 @@ interface DatePickerButtonProps {
   date: Date;
   onChange: (date: Date) => void;
   error?: string;
+  allowFuture?: boolean;
+  allowPast?: boolean;
 }
 
-export function DatePickerButton({ label, date, onChange, error }: DatePickerButtonProps) {
+export function DatePickerButton({ label, date, onChange, error, allowFuture, allowPast }: DatePickerButtonProps) {
   const { textColor, mutedColor, cardBg, borderColor } = useThemeColors();
   const [visible, setVisible] = useState(false);
 
@@ -37,7 +39,8 @@ export function DatePickerButton({ label, date, onChange, error }: DatePickerBut
         visible={visible}
         date={date}
         onSelect={onChange}
-        allowFuture={false}
+        {...(allowFuture !== undefined && { allowFuture })}
+        {...(allowPast !== undefined && { allowPast })}
         onClose={() => setVisible(false)}
       />
     </View>

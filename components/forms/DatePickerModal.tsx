@@ -23,6 +23,8 @@ interface DatePickerModalProps {
   onClose: () => void;
   /** Allow selecting future dates. Defaults to true. */
   allowFuture?: boolean;
+  /** Allow selecting past dates. Defaults to true. */
+  allowPast?: boolean;
 }
 
 interface PortalDropdownProps {
@@ -143,7 +145,7 @@ function PortalDropdown({
 }
 
 export function DatePickerModal({
-  visible, date, onSelect, onClose, allowFuture = true,
+  visible, date, onSelect, onClose, allowFuture = true, allowPast = true,
 }: DatePickerModalProps) {
   const { textColor, mutedColor, primaryColor, cardBg, borderColor } = useThemeColors();
 
@@ -168,24 +170,37 @@ export function DatePickerModal({
   const isFutureMonth = (y: number, m: number) =>
     y > todayY || (y === todayY && m > todayM);
 
+  const isPastMonth = (y: number, m: number) =>
+    y < todayY || (y === todayY && m < todayM);
+
   // Simpler: just check if next month is future
   const nextYear = month === 11 ? year + 1 : year;
   const nextMonth = month === 11 ? 0 : month + 1;
   const canGoNextMonth = allowFuture || !isFutureMonth(nextYear, nextMonth);
 
+  const prevYear = month === 0 ? year - 1 : year;
+  const prevMonth = month === 0 ? 11 : month - 1;
+  const canGoPrevMonth = allowPast || !isPastMonth(prevYear, prevMonth);
+
   const setMonth = (m: number) => {
     if (!allowFuture && isFutureMonth(year, m)) return;
+    if (!allowPast && isPastMonth(year, m)) return;
     onSelect(new Date(year, m, clampDay(year, m)));
   };
   const setYear = (y: number) => {
     if (!allowFuture && y > todayY) return;
-    // if new year + current month is future, clamp to current month
-    const clampedMonth = (!allowFuture && isFutureMonth(y, month)) ? todayM : month;
+    if (!allowPast && y < todayY) return;
+    const clampedMonth =
+      (!allowFuture && isFutureMonth(y, month)) ? todayM :
+      (!allowPast && isPastMonth(y, month)) ? todayM : month;
     onSelect(new Date(y, clampedMonth, clampDay(y, clampedMonth)));
   };
 
   const handleDayPress = (day: number) => {
-    if (!allowFuture && new Date(year, month, day) > TODAY) return;
+    const dateToCheck = new Date(year, month, day);
+    const todayStart = new Date(todayY, todayM, todayD);
+    if (!allowFuture && dateToCheck > TODAY) return;
+    if (!allowPast && dateToCheck < todayStart) return;
     onSelect(new Date(year, month, day));
     onClose();
   };
@@ -195,13 +210,13 @@ export function DatePickerModal({
   const monthItems = MONTHS_FULL.map((label, i) => ({
     label,
     value: i,
-    disabled: !allowFuture && isFutureMonth(year, i),
+    disabled: (!allowFuture && isFutureMonth(year, i)) || (!allowPast && isPastMonth(year, i)),
   }));
 
   const yearItems = YEAR_RANGE.map(y => ({
     label: String(y),
     value: y,
-    disabled: !allowFuture && y > todayY,
+    disabled: (!allowFuture && y > todayY) || (!allowPast && y < todayY),
   }));
 
   return (
@@ -225,7 +240,11 @@ export function DatePickerModal({
 
             {/* Header */}
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-              <TouchableOpacity onPress={() => onSelect(new Date(year, month - 1, 1))} hitSlop={8}>
+              <TouchableOpacity
+                onPress={() => canGoPrevMonth && onSelect(new Date(prevYear, prevMonth, 1))}
+                hitSlop={8}
+                style={{ opacity: canGoPrevMonth ? 1 : 0.3 }}
+                disabled={!canGoPrevMonth}>
                 <Ionicons name="chevron-back" size={20} color={textColor} />
               </TouchableOpacity>
 
@@ -280,21 +299,22 @@ export function DatePickerModal({
                 const isToday = day === todayD && month === todayM && year === todayY;
                 const isSelected = day === date.getDate() && month === date.getMonth() && year === date.getFullYear();
                 const isFuture = !allowFuture && new Date(year, month, day) > TODAY;
+                const isPast = !allowPast && new Date(year, month, day) < new Date(todayY, todayM, todayD);
 
                 return (
                   <TouchableOpacity
                     key={`d-${day}`}
                     onPress={() => handleDayPress(day)}
-                    activeOpacity={isFuture ? 1 : 0.7}
-                    disabled={isFuture}
+                    activeOpacity={isFuture || isPast ? 1 : 0.7}
+                    disabled={isFuture || isPast}
                     style={{
                       width: CELL_SIZE,
                       height: CELL_SIZE,
                       alignItems: 'center',
                       justifyContent: 'center',
-                      opacity: isFuture ? 0.3 : 1,
+                      opacity: isFuture || isPast ? 0.3 : 1,
                     }}>
-                    {(isSelected || isToday) && !isFuture && (
+                    {(isSelected || isToday) && !isFuture && !isPast && (
                       <View style={{
                         position: 'absolute',
                         width: CELL_SIZE - 4,
@@ -304,7 +324,7 @@ export function DatePickerModal({
                       }} />
                     )}
                     <Text style={{
-                      color: isSelected && !isFuture ? '#fff' : isToday ? primaryColor : textColor,
+                      color: isSelected && !isFuture && !isPast ? '#fff' : isToday ? primaryColor : textColor,
                       fontSize: 14,
                       fontWeight: isSelected || isToday ? '700' : '400',
                     }}>
