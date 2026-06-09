@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useTheme } from '@/app/_context/ThemeContext';
@@ -30,12 +31,15 @@ function tabLabel(routeName: string, t: (path: string) => string): string {
   return map[routeName] ?? routeName;
 }
 
+const TAB_CONTENT_HEIGHT = 56; // px of visible tab content above inset
+
 export function TabBar({ state, navigation }: BottomTabBarProps) {
   const { resolvedTheme } = useTheme();
   const { openBottomSheet } = useBottomSheet();
   const { t } = useTranslation();
-  const isDark = resolvedTheme === 'dark';
+  const insets = useSafeAreaInsets();
 
+  const isDark = resolvedTheme === 'dark';
   const primaryColor = isDark ? 'rgb(255, 121, 102)' : 'rgb(255, 100, 80)';
   const mutedColor = 'rgb(131, 131, 156)';
 
@@ -63,7 +67,7 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
   return (
     <View
       style={{
-        height: 80,
+        height: TAB_CONTENT_HEIGHT + insets.bottom,
         position: 'absolute',
         bottom: 0,
         left: 0,
@@ -72,18 +76,28 @@ export function TabBar({ state, navigation }: BottomTabBarProps) {
         borderTopWidth: 1,
         borderTopColor: isDark ? 'rgb(46, 46, 58)' : 'rgb(220, 220, 232)',
       }}>
-      <View className="flex-1 flex-row items-center justify-around px-2 pt-2 pb-6">
+      <View
+        style={{ paddingBottom: insets.bottom }}
+        className="flex-1 flex-row items-center justify-around px-2 pt-2">
         {LEFT_ROUTES.map(renderTab)}
         <TouchableOpacity
           onPress={openBottomSheet}
           activeOpacity={0.7}
-          className="flex-1 items-center gap-1 py-1"
+          className="flex-1 flex-col items-center justify-center gap-1" // Added flex-col and justify-center
           accessibilityLabel="Add new"
           accessibilityRole="button">
-          <View className="bg-primary/10 border-primary/25 h-8 w-8 items-center justify-center rounded-full border">
-            <Ionicons name="add" size={22} color={primaryColor} />
+          <View className="bg-primary/10 border-primary/25 h-9 w-9 items-center justify-center rounded-full border">
+            {/* Centered perfectly inside the circle */}
+            <Ionicons
+              name="add"
+              size={22}
+              color={primaryColor}
+              style={{ transform: [{ translateY: 0.5 }] }} // Optional: Nudge slightly if font metrics skew it
+            />
           </View>
-          <Text className="text-primary text-xs font-medium">{t('global.actions.add')}</Text>
+          <Text className="text-primary text-xs font-medium include-font-padding-false textAlignVertical-center">
+            {t('global.actions.add')}
+          </Text>
         </TouchableOpacity>
         {RIGHT_ROUTES.map(renderTab)}
       </View>
