@@ -1,0 +1,24 @@
+name: Feature request
+description: Suggest an idea for Kolandéla
+type: 'enhancement'
+body:
+
+  - type: markdown
+    attributes:
+      value: |
+        Before requesting: search [existing feature requests](https://github.com/ssnnee/kolandela/issues?q=state%3Aopen%20type%3AEnhancement).
+
+  - type: textarea
+    attributes:
+      label: "Problem"
+      description: "Describe the problem to be solved. Include references to other projects or apps if relevant."
+      placeholder: "No smurf icons available. Smurfs are useful because ..."
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: "Expected behavior"
+      description: "Describe what the new feature or behavior would look like. How does it solve the problem?"
+    validations:
+      required: true
