@@ -169,6 +169,7 @@ export default function AddPlannedTransaction() {
           label={t('screens.plannedTransactions.startDate')}
           date={startDate}
           onChange={setStartDate}
+          allowPast={false}
         />
 
         <CategoryPicker

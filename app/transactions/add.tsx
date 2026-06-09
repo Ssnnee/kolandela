@@ -162,6 +162,7 @@ export default function AddTransaction() {
           label={t('screens.transactions.date')}
           date={date}
           onChange={setDate}
+          allowFuture={false}
         />
 
         <CategoryPicker
