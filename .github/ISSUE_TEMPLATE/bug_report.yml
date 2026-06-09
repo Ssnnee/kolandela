@@ -1,6 +1,7 @@
 name: Bug Report
 description: Report a bug in Kolandéla
-type: 'bug'
+labels:
+  - bug
 body:
 
   - type: markdown
@@ -10,7 +11,7 @@ body:
         - Search [existing issues](https://github.com/ssnnee/kolandela/issues?q=is%3Aissue) (including [closed](https://github.com/ssnnee/kolandela/issues?q=is%3Aissue+is%3Aclosed)).
         - Include screenshots or a screen recording if the bug is visual.
         - Usage or "How to" questions will be closed — use [Discussions](https://github.com/ssnnee/kolandela/discussions) instead.
-        - And please do not let us discuss with your AI, we have our own. So please, try to write it yourserf.
+        - And please do not let us discuss with your AI, we have our own. So please, try to write it yourself.
   - type: textarea
     attributes:
       label: "Problem"
