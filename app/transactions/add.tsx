@@ -35,7 +35,7 @@ export default function AddTransaction() {
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
   const [categoryId, setCategoryId] = useState<string | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('BANK');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('CASH');
   const [date, setDate] = useState(new Date());
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
