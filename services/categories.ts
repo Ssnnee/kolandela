@@ -5,7 +5,7 @@ import type { NewCategory } from '@/db/schema';
 import type { SQLiteUpdateSetSource } from 'drizzle-orm/sqlite-core';
 
 export function getAll() {
-  return db.select().from(categories);
+  return db.select().from(categories).where(eq(categories.isDeleted, false));
 }
 
 export function getById(id: string) {

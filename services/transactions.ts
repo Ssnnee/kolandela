@@ -5,7 +5,7 @@ import type { NewTransaction } from '@/db/schema';
 import type { SQLiteUpdateSetSource } from 'drizzle-orm/sqlite-core';
 
 export function getAll() {
-  return db.select().from(transactions);
+  return db.select().from(transactions).where(eq(transactions.isDeleted, false));
 }
 
 export function getById(id: string) {

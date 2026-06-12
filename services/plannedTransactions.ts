@@ -5,7 +5,7 @@ import type { NewPlannedTransaction } from '@/db/schema';
 import type { SQLiteUpdateSetSource } from 'drizzle-orm/sqlite-core';
 
 export function getAll() {
-  return db.select().from(plannedTransactions);
+  return db.select().from(plannedTransactions).where(eq(plannedTransactions.isDeleted, false));
 }
 
 export function getById(id: string) {
