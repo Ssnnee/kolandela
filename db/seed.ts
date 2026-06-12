@@ -22,7 +22,10 @@ const DEFAULT_CATEGORIES = [
 export async function seedDatabase() {
   try {
     for (const cat of DEFAULT_CATEGORIES) {
-      await db.insert(categories).values(cat).onConflictDoNothing();
+      await db.insert(categories).values(cat).onConflictDoUpdate({
+        target: [categories.name, categories.type],
+        set: { isDeleted: false, deletedAt: null },
+      });
     }
   } catch (error) {
     console.error('Seed error:', error);

@@ -13,6 +13,7 @@ import { useState } from 'react';
 import * as transactionService from '@/services/transactions';
 import * as plannedTransactionService from '@/services/plannedTransactions';
 import * as categoryService from '@/services/categories';
+import { seedDatabase } from '@/db/seed';
 import * as Linking from 'expo-linking';
 
 const APP_VERSION = '0.0.1';
@@ -118,6 +119,7 @@ export default function SettingsScreen() {
           await transactionService.deleteAll();
           await plannedTransactionService.deleteAll();
           await categoryService.deleteAll();
+          await seedDatabase();
           setDialog({ title: t('global.dialogs.done'), description: t('global.dialogs.allDataDeleted') });
         } catch {
           setDialog({ title: t('global.dialogs.error'), description: t('global.dialogs.somethingWentWrong') });
