@@ -7,6 +7,7 @@ import * as transactionService from '@/services/transactions';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useThemeColors, useCurrency } from '@/components/home/useThemeColors';
+import { CategoryDetailSkeleton } from '@/components/CategoryDetailSkeleton';
 
 export default function CategoryDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -25,9 +26,7 @@ export default function CategoryDetailScreen() {
 
   if (!category) {
     return (
-      <View style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)', justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ color: textColor }}>Loading category details…</Text>
-      </View>
+      <CategoryDetailSkeleton />
     );
   }
 
