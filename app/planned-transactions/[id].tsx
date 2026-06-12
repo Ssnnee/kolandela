@@ -10,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
 import { useTranslation } from '@/app/_context/LanguageContext';
+import { PlannedTransactionDetailSkeleton } from '@/components/PlannedTransactionDetailSkeleton';
 
 type DialogState = {
   title: string;
@@ -20,7 +21,7 @@ type DialogState = {
 } | null;
 
 export default function PlannedTransactionDetailScreen() {
-  const { idx } = useLocalSearchParams<{ idx: string }>();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const { cardBg, borderColor, textColor, mutedColor, primaryColor, violetColor, redColor, isDark } = useThemeColors();
   const { format } = useCurrency();
   const { t } = useTranslation();
@@ -28,21 +29,19 @@ export default function PlannedTransactionDetailScreen() {
   const [dialog, setDialog] = useState<DialogState>(null);
 
   const { data: results } = useLiveQuery(
-    plannedTransactionService.getByIdWithCategory(idx ?? '')
+    plannedTransactionService.getByIdWithCategory(id ?? '')
   );
 
   const ptx = results?.[0]?.plannedTransaction;
   const category = results?.[0]?.category;
 
   const { data: executions } = useLiveQuery(
-    transactionService.getByPlannedTransaction(idx ?? '')
+    transactionService.getByPlannedTransaction(id ?? '')
   );
 
   if (!ptx) {
     return (
-      <View style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)', justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ color: textColor }}>{t('screens.plannedTransactions.loading')}</Text>
-      </View>
+      <PlannedTransactionDetailSkeleton />
     );
   }
 
@@ -219,7 +218,7 @@ export default function PlannedTransactionDetailScreen() {
 
           {executions && executions.length > 0 ? (
             <DetailCard.Container>
-              {executions.map((exec, idx) => {
+              {executions.map((exec, id) => {
                 const formattedExecDate = new Date(exec.transactionDate).toLocaleDateString('en-GB', {
                   day: 'numeric',
                   month: 'long',
@@ -245,7 +244,7 @@ export default function PlannedTransactionDetailScreen() {
                         <Ionicons name="chevron-forward-sharp" size={16} color={mutedColor} />
                       </View>
                     </TouchableOpacity>
-                    {idx < executions.length - 1 && (
+                    {id < executions.length - 1 && (
                       <DetailCard.Divider />
                     )}
                   </View>

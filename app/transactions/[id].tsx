@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
 import { useTranslation } from '@/app/_context/LanguageContext';
+import { TransactionDetailSkeleton } from '@/components/TransactionDetailSkeleton';
 
 const PAYMENT_ICONS: Record<string, string> = {
   BANK: 'card',
@@ -43,9 +44,7 @@ export default function TransactionDetailScreen() {
 
   if (!tx) {
     return (
-      <View style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)', justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ color: textColor }}>{t('screens.transactions.loading')}</Text>
-      </View>
+      <TransactionDetailSkeleton />
     );
   }
 
