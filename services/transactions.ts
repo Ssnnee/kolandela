@@ -81,5 +81,7 @@ export async function softDelete(id: string) {
 }
 
 export async function deleteAll() {
-  await db.delete(transactions);
+  await db
+    .update(transactions)
+    .set({ isDeleted: true, deletedAt: new Date() });
 }

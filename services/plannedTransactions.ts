@@ -52,7 +52,9 @@ export async function update(id: string, data: SQLiteUpdateSetSource<typeof plan
 }
 
 export async function deleteAll() {
-  await db.delete(plannedTransactions);
+  await db
+    .update(plannedTransactions)
+    .set({ isDeleted: true, deletedAt: new Date(), isActive: false });
 }
 
 export async function softDelete(id: string) {
