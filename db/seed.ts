@@ -6,9 +6,10 @@ const DEFAULT_CATEGORIES = [
   { name: 'Food', color: 'rgb(255,121,102)', icon: 'fast-food-outline', type: 'EXPENSE' as const, isDefault: true },
   { name: 'Transport', color: 'rgb(173,123,255)', icon: 'car-outline', type: 'EXPENSE' as const, isDefault: true },
   { name: 'Housing', color: 'rgb(0,250,217)', icon: 'home-outline', type: 'EXPENSE' as const, isDefault: true },
-  { name: 'Health', color: 'rgb(255,59,48)', icon: 'medkit-outline', type: 'EXPENSE' as const, isDefault: true },
+  { name: 'Communication', color: 'rgb(0,122,255)', icon: 'chatbubble-outline', type: 'EXPENSE' as const, isDefault: true },
   { name: 'Entertainment', color: 'rgb(255,196,0)', icon: 'game-controller-outline', type: 'EXPENSE' as const, isDefault: true },
   { name: 'Shopping', color: 'rgb(201,168,255)', icon: 'bag-outline', type: 'EXPENSE' as const, isDefault: true },
+  { name: 'Health', color: 'rgb(255,59,48)', icon: 'medkit-outline', type: 'EXPENSE' as const, isDefault: true },
   { name: 'Education', color: 'rgb(100,210,255)', icon: 'school-outline', type: 'EXPENSE' as const, isDefault: true },
   { name: 'Other', color: 'rgb(131,131,156)', icon: 'ellipsis-horizontal-outline', type: 'EXPENSE' as const, isDefault: true },
   // INCOME
