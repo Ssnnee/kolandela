@@ -21,7 +21,7 @@ import { seedDatabase } from '@/db/seed';
 import * as Linking from 'expo-linking';
 
 const APP_VERSION = '0.0.1';
-const GITHUB_URL = 'https://github.com/ssnnee/kolandela';
+const GITHUB_URL_ISSUES = 'https://github.com/ssnnee/kolandela/issues';
 // const BUY_COFFEE_URL = 'https://buymeacoffee.com/yourusername';
 
 // ── Reusable row components ───────────────────────────────────────────────────
@@ -304,8 +304,8 @@ export default function SettingsScreen() {
             icon="logo-github"
             iconColor={isDark ? 'rgb(229,229,229)' : 'rgb(40,40,55)'}
             label={t('tabs.settings.sourceCode')}
-            sublabel={t('tabs.settings.viewOnGitHub')}
-            onPress={() => Linking.openURL(GITHUB_URL)}
+            sublabel={t('tabs.settings.reportBug')}
+            onPress={() => Linking.openURL(GITHUB_URL_ISSUES)}
           />
           <DetailCard.Divider />
           {/*
