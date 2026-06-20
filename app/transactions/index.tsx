@@ -81,7 +81,7 @@ export default function TransactionsScreen() {
     [filtered]
   );
 
-  const hasActiveFilter = typeFilter !== 'ALL' || categoryFilter !== null || paymentFilter !== 'ALL' || search.trim() !== '' || monthScope !== null;
+  const hasActiveFilter = typeFilter !== 'ALL' || categoryFilter !== null || paymentFilter !== 'ALL' || search.trim() !== '';
 
   return (
     <View style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)', paddingTop: insets.top }}>
