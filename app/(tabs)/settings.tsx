@@ -19,8 +19,9 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system/legacy';
 import { seedDatabase } from '@/db/seed';
 import * as Linking from 'expo-linking';
+import Constants from 'expo-constants';
 
-const APP_VERSION = '0.0.1';
+const APP_VERSION = Constants.expoConfig?.version ?? '0.0.1';
 const GITHUB_URL_ISSUES = 'https://github.com/ssnnee/kolandela/issues';
 // const BUY_COFFEE_URL = 'https://buymeacoffee.com/yourusername';
 
