@@ -1,6 +1,6 @@
 import { db } from '@/db';
 import { plannedTransactions, categories, transactions } from '@/db/schema';
-import { eq, desc, leftJoin } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import type { NewPlannedTransaction } from '@/db/schema';
 import type { SQLiteUpdateSetSource } from 'drizzle-orm/sqlite-core';
 

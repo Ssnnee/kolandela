@@ -30,5 +30,5 @@ export async function update(id: string, data: SQLiteUpdateSetSource<typeof cate
 export async function deleteAll() {
   await db
     .update(categories)
-    .set({ isDeleted: true, deletedAt: new Date(), isActive: false });
+    .set({ isDeleted: true, deletedAt: new Date() });
 }
