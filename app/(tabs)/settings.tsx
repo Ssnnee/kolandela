@@ -7,12 +7,16 @@ import { DetailCard } from '@/components/DetailCard';
 import { CurrencyPicker } from '@/components/forms/CurrencyPicker';
 import { ThemePicker } from '@/components/forms/ThemePicker';
 import { LanguagePicker } from '@/components/forms/LanguagePicker';
+import { ExportPicker } from '@/components/forms/ExportPicker';
 import { useTheme } from '@/app/_context/ThemeContext';
 import { useTranslation } from '@/app/_context/LanguageContext';
 import { useState } from 'react';
 import * as transactionService from '@/services/transactions';
 import * as plannedTransactionService from '@/services/plannedTransactions';
 import * as categoryService from '@/services/categories';
+import * as exportImportService from '@/services/exportImport';
+import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system/legacy';
 import { seedDatabase } from '@/db/seed';
 import * as Linking from 'expo-linking';
 
@@ -104,6 +108,7 @@ export default function SettingsScreen() {
   const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
   const [showThemePicker, setShowThemePicker] = useState(false);
   const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+  const [showExportPicker, setShowExportPicker] = useState(false);
   const { resolvedTheme, theme } = useTheme();
   const { language, t } = useTranslation();
   const [dialog, setDialog] = useState<DialogState>(null);
@@ -129,11 +134,89 @@ export default function SettingsScreen() {
   };
 
   const handleExport = () => {
-    setDialog({ title: t('global.dialogs.comingSoon'), description: t('global.dialogs.exportComingSoon') });
+    setShowExportPicker(true);
   };
 
-  const handleImport = () => {
-    setDialog({ title: t('global.dialogs.comingSoon'), description: t('global.dialogs.importComingSoon') });
+  const handleSelectExportFormat = async (format: 'JSON' | 'CSV') => {
+    try {
+      if (format === 'JSON') {
+        await exportImportService.exportToJSON();
+      } else {
+        await exportImportService.exportToCSV();
+      }
+    } catch (err: any) {
+      setDialog({
+        title: t('global.dialogs.error'),
+        description: err?.message || t('global.dialogs.somethingWentWrong'),
+      });
+    }
+  };
+
+  const handleRestoreContent = (jsonString: string) => {
+    try {
+      const data = JSON.parse(jsonString);
+      if (
+        !data ||
+        typeof data.version !== 'number' ||
+        !Array.isArray(data.categories) ||
+        !Array.isArray(data.transactions) ||
+        !Array.isArray(data.plannedTransactions) ||
+        !Array.isArray(data.plannedTransactionExecutions)
+      ) {
+        setDialog({
+          title: t('global.dialogs.importErrorInvalid'),
+          description: t('global.dialogs.importErrorInvalidDesc'),
+        });
+        return;
+      }
+    } catch {
+      setDialog({
+        title: t('global.dialogs.importErrorInvalid'),
+        description: t('global.dialogs.importErrorInvalidDesc'),
+      });
+      return;
+    }
+
+    setDialog({
+      title: t('global.dialogs.importConfirmTitle'),
+      description: t('global.dialogs.importConfirmDesc'),
+      confirmLabel: t('global.dialogs.importConfirmButton'),
+      destructive: true,
+      onConfirm: async () => {
+        try {
+          await exportImportService.importFromJSON(jsonString);
+          setDialog({
+            title: t('global.dialogs.importSuccess'),
+            description: t('global.dialogs.importSuccessDesc'),
+          });
+        } catch (err: any) {
+          setDialog({
+            title: t('global.dialogs.error'),
+            description: err?.message || t('global.dialogs.somethingWentWrong'),
+          });
+        }
+      },
+    });
+  };
+
+  const handleImport = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: 'application/json',
+        copyToCacheDirectory: true,
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const fileUri = result.assets[0].uri;
+        const fileContent = await FileSystem.readAsStringAsync(fileUri, { encoding: 'utf8' });
+        handleRestoreContent(fileContent);
+      }
+    } catch (err: any) {
+      setDialog({
+        title: t('global.dialogs.error'),
+        description: err?.message || t('global.dialogs.somethingWentWrong'),
+      });
+    }
   };
 
   const themeLabel =
@@ -144,88 +227,88 @@ export default function SettingsScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
->
+      >
 
-      {/* ── Header ── */}
-      <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 24 }}>
-        <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>
-          {t('tabs.settings.headerLabel')}
-        </Text>
-        <Text style={{ color: textColor, fontSize: 24, fontWeight: '800', letterSpacing: -0.5 }}>
-          {t('tabs.settings.title')}
-        </Text>
-      </View>
+        {/* ── Header ── */}
+        <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 24 }}>
+          <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>
+            {t('tabs.settings.headerLabel')}
+          </Text>
+          <Text style={{ color: textColor, fontSize: 24, fontWeight: '800', letterSpacing: -0.5 }}>
+            {t('tabs.settings.title')}
+          </Text>
+        </View>
 
-      {/* ── Appearance ── */}
-      <SectionLabel label={t('tabs.settings.sectionAppearance')} />
-      <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
-        <SettingsRow
-          icon={resolvedTheme === 'dark' ? 'moon' : 'sunny'}
-          iconColor={primaryColor}
-          label={t('tabs.settings.theme')}
-          sublabel={themeLabel}
-          onPress={() => setShowThemePicker(true)}
-          right={
-            <View style={{
-              backgroundColor: rgba(primaryColor, 0.1), borderRadius: 100,
-              paddingHorizontal: 10, paddingVertical: 4,
-            }}>
-              <Text style={{ color: primaryColor, fontSize: 12, fontWeight: '600' }}>{themeLabel}</Text>
-            </View>
-          }
-        />
-      </DetailCard.Container>
+        {/* ── Appearance ── */}
+        <SectionLabel label={t('tabs.settings.sectionAppearance')} />
+        <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
+          <SettingsRow
+            icon={resolvedTheme === 'dark' ? 'moon' : 'sunny'}
+            iconColor={primaryColor}
+            label={t('tabs.settings.theme')}
+            sublabel={themeLabel}
+            onPress={() => setShowThemePicker(true)}
+            right={
+              <View style={{
+                backgroundColor: rgba(primaryColor, 0.1), borderRadius: 100,
+                paddingHorizontal: 10, paddingVertical: 4,
+              }}>
+                <Text style={{ color: primaryColor, fontSize: 12, fontWeight: '600' }}>{themeLabel}</Text>
+              </View>
+            }
+          />
+        </DetailCard.Container>
 
-      {/* ── Preferences ── */}
-      <SectionLabel label={t('tabs.settings.sectionPreferences')} />
-      <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
-        <SettingsRow
-          icon="language-outline"
-          label={t('tabs.settings.language')}
-          sublabel={language === 'en' ? t('tabs.settings.english') : 'Français'}
-          onPress={() => setShowLanguagePicker(true)}
-        />
-        <DetailCard.Divider />
-        <SettingsRow
-          icon="cash-outline"
-          label={t('tabs.settings.currency')}
-          sublabel={`${currency.code} — ${currency.symbol}`}
-          onPress={() => setShowCurrencyPicker(true)}
-        />
-      </DetailCard.Container>
+        {/* ── Preferences ── */}
+        <SectionLabel label={t('tabs.settings.sectionPreferences')} />
+        <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
+          <SettingsRow
+            icon="language-outline"
+            label={t('tabs.settings.language')}
+            sublabel={language === 'en' ? t('tabs.settings.english') : 'Français'}
+            onPress={() => setShowLanguagePicker(true)}
+          />
+          <DetailCard.Divider />
+          <SettingsRow
+            icon="cash-outline"
+            label={t('tabs.settings.currency')}
+            sublabel={`${currency.code} — ${currency.symbol}`}
+            onPress={() => setShowCurrencyPicker(true)}
+          />
+        </DetailCard.Container>
 
-      {/* ── Data ── */}
-      <SectionLabel label={t('tabs.settings.sectionData')} />
-      <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
-        <SettingsRow
-          icon="download-outline"
-          iconColor={isDark ? 'rgb(0,250,217)' : 'rgb(0,200,175)'}
-          label={t('tabs.settings.exportData')}
-          sublabel={t('tabs.settings.exportSublabel')}
-          onPress={handleExport}
-        />
-        <DetailCard.Divider />
-        <SettingsRow
-          icon="cloud-upload-outline"
-          iconColor={isDark ? 'rgb(173,123,255)' : 'rgb(140,90,220)'}
-          label={t('tabs.settings.importData')}
-          sublabel={t('tabs.settings.importSublabel')}
-          onPress={handleImport}
-        />
-      </DetailCard.Container>
+        {/* ── Data ── */}
+        <SectionLabel label={t('tabs.settings.sectionData')} />
+        <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
+          <SettingsRow
+            icon="download-outline"
+            iconColor={isDark ? 'rgb(0,250,217)' : 'rgb(0,200,175)'}
+            label={t('tabs.settings.exportData')}
+            sublabel={t('tabs.settings.exportSublabel')}
+            onPress={handleExport}
+          />
+          <DetailCard.Divider />
+          <SettingsRow
+            icon="cloud-upload-outline"
+            iconColor={isDark ? 'rgb(173,123,255)' : 'rgb(140,90,220)'}
+            label={t('tabs.settings.importData')}
+            sublabel={t('tabs.settings.importSublabel')}
+            onPress={handleImport}
+          />
+        </DetailCard.Container>
 
-      {/* ── About ── */}
-      <SectionLabel label={t('tabs.settings.sectionAbout')} />
-      <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
-        <SettingsRow
-          icon="logo-github"
-          iconColor={isDark ? 'rgb(229,229,229)' : 'rgb(40,40,55)'}
-          label={t('tabs.settings.sourceCode')}
-          sublabel={t('tabs.settings.viewOnGitHub')}
-          onPress={() => Linking.openURL(GITHUB_URL)}
-        />
-        <DetailCard.Divider />
-        {/*
+        {/* ── About ── */}
+        <SectionLabel label={t('tabs.settings.sectionAbout')} />
+        <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
+          <SettingsRow
+            icon="logo-github"
+            iconColor={isDark ? 'rgb(229,229,229)' : 'rgb(40,40,55)'}
+            label={t('tabs.settings.sourceCode')}
+            sublabel={t('tabs.settings.viewOnGitHub')}
+            onPress={() => Linking.openURL(GITHUB_URL)}
+          />
+          <DetailCard.Divider />
+          {/*
         <SettingsRow
           icon="cafe-outline"
           label="Buy me a coffee"
@@ -233,49 +316,50 @@ export default function SettingsScreen() {
           onPress={() => Linking.openURL(BUY_COFFEE_URL)}
         />
         <Divider />*/}
-        <SettingsRow
-          icon="information-circle-outline"
-          label={t('tabs.settings.version')}
-          sublabel={`Kolandela v${APP_VERSION}`}
-          right={
-            <Text style={{ color: mutedColor, fontSize: 12 }}>v{APP_VERSION}</Text>
-          }
+          <SettingsRow
+            icon="information-circle-outline"
+            label={t('tabs.settings.version')}
+            sublabel={`Kolandela v${APP_VERSION}`}
+            right={
+              <Text style={{ color: mutedColor, fontSize: 12 }}>v{APP_VERSION}</Text>
+            }
+          />
+        </DetailCard.Container>
+
+        {/* ── Danger zone ── */}
+        <SectionLabel label={t('tabs.settings.sectionDanger')} />
+        <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
+          <SettingsRow
+            icon="trash-outline"
+            label={t('tabs.settings.deleteAllData')}
+            sublabel={t('tabs.settings.deleteAllDataSublabel')}
+            onPress={handleDeleteAllData}
+            danger
+          />
+        </DetailCard.Container>
+
+        {/* ── Footer ── */}
+        <Text style={{
+          color: mutedColor, fontSize: 11, textAlign: 'center',
+          marginTop: 32, marginBottom: 8,
+        }}>
+          {t('tabs.settings.footer', { version: APP_VERSION })}
+        </Text>
+
+        <LanguagePicker visible={showLanguagePicker} onClose={() => setShowLanguagePicker(false)} />
+        <CurrencyPicker visible={showCurrencyPicker} onClose={() => setShowCurrencyPicker(false)} />
+        <ThemePicker visible={showThemePicker} onClose={() => setShowThemePicker(false)} />
+        <ExportPicker visible={showExportPicker} onClose={() => setShowExportPicker(false)} onSelect={handleSelectExportFormat} />
+
+        <AlertDialog
+          visible={dialog !== null}
+          onOpenChange={() => setDialog(null)}
+          title={dialog?.title ?? ''}
+          description={dialog?.description}
+          confirmLabel={dialog?.confirmLabel}
+          destructive={dialog?.destructive}
+          onConfirm={dialog?.onConfirm}
         />
-      </DetailCard.Container>
-
-      {/* ── Danger zone ── */}
-      <SectionLabel label={t('tabs.settings.sectionDanger')} />
-      <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
-        <SettingsRow
-          icon="trash-outline"
-          label={t('tabs.settings.deleteAllData')}
-          sublabel={t('tabs.settings.deleteAllDataSublabel')}
-          onPress={handleDeleteAllData}
-          danger
-        />
-      </DetailCard.Container>
-
-      {/* ── Footer ── */}
-      <Text style={{
-        color: mutedColor, fontSize: 11, textAlign: 'center',
-        marginTop: 32, marginBottom: 8,
-      }}>
-        {t('tabs.settings.footer', { version: APP_VERSION })}
-      </Text>
-
-      <LanguagePicker visible={showLanguagePicker} onClose={() => setShowLanguagePicker(false)} />
-      <CurrencyPicker visible={showCurrencyPicker} onClose={() => setShowCurrencyPicker(false)} />
-      <ThemePicker visible={showThemePicker} onClose={() => setShowThemePicker(false)} />
-
-      <AlertDialog
-        visible={dialog !== null}
-        onOpenChange={() => setDialog(null)}
-        title={dialog?.title ?? ''}
-        description={dialog?.description}
-        confirmLabel={dialog?.confirmLabel}
-        destructive={dialog?.destructive}
-        onConfirm={dialog?.onConfirm}
-      />
       </ScrollView>
     </SafeAreaView>
 
