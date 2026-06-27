@@ -9,6 +9,7 @@ import { BarChart, LineChart } from 'react-native-gifted-charts';
 import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
 import { useTranslation } from '@/app/_context/LanguageContext';
 import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import { SwipeDetector } from '@/components/SwipeDetector';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -104,10 +105,11 @@ export default function StatsScreen() {
     return exp.length > 0 ? Math.round(exp.reduce((s, t) => s + t.amount, 0) / exp.length) : 0;
   }, [allTrans]);
 
-  const biggestExpense = useMemo(
-    () => allTrans.filter((t) => t.type === 'EXPENSE').reduce((max, t) => t.amount > max ? t.amount : max, 0),
-    [allTrans]
-  );
+  const biggestExpenseTx = useMemo(() => {
+    const expenses = allTrans.filter((t) => t.type === 'EXPENSE');
+    return expenses.length > 0 ? expenses.reduce((a, b) => a.amount > b.amount ? a : b) : undefined;
+  }, [allTrans]);
+  const biggestExpense = biggestExpenseTx?.amount ?? 0;
 
   // Most active day of week
   const mostActiveDay = useMemo(() => {
@@ -409,18 +411,31 @@ export default function StatsScreen() {
             { label: t('tabs.stats.biggestExpense'), value: biggestExpense > 0 ? format(biggestExpense) : '—', icon: 'arrow-up-circle-outline' as const },
             { label: t('tabs.stats.savingsRate'), value: `${savingsRate}%`, icon: 'wallet-outline' as const },
             { label: t('tabs.stats.mostActiveDay'), value: mostActiveDay, icon: 'calendar-outline' as const },
-          ].map((stat) => (
-            <View key={stat.label} style={{ width: '47.5%', backgroundColor: cardBg, borderRadius: 14, borderWidth: 1, borderColor, padding: 14 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 8 }}>
-                <Ionicons name={stat.icon} size={13} color={mutedColor} />
-                <Text style={{ color: mutedColor, fontSize: 11 }}>{stat.label}</Text>
+          ].map((stat) => {
+            const card = (
+              <>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 8 }}>
+                  <Ionicons name={stat.icon} size={13} color={mutedColor} />
+                  <Text style={{ color: mutedColor, fontSize: 11 }}>{stat.label}</Text>
+                </View>
+                <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}
+                  style={{ color: textColor, fontSize: 16, fontWeight: '700' }}>
+                  {stat.value}
+                </Text>
+              </>
+            );
+            const isBiggest = stat.label === t('tabs.stats.biggestExpense') && biggestExpenseTx;
+            return isBiggest ? (
+              <TouchableOpacity key={stat.label} onPress={() => router.push(`/transactions/${biggestExpenseTx!.id}`)} activeOpacity={0.7}
+                style={{ width: '47.5%', backgroundColor: cardBg, borderRadius: 14, borderWidth: 1, borderColor, padding: 14 }}>
+                {card}
+              </TouchableOpacity>
+            ) : (
+              <View key={stat.label} style={{ width: '47.5%', backgroundColor: cardBg, borderRadius: 14, borderWidth: 1, borderColor, padding: 14 }}>
+                {card}
               </View>
-              <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}
-                style={{ color: textColor, fontSize: 16, fontWeight: '700' }}>
-                {stat.value}
-              </Text>
-            </View>
-          ))}
+            );
+          })}
         </View>
       </View>
 
