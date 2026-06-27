@@ -9,6 +9,8 @@ import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeCol
 import { useTranslation } from '@/app/_context/LanguageContext';
 import { MonthPicker, buildMonthOptions } from '@/components/home/MonthPicker';
 import { router } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
+import { SwipeDetector } from '@/components/SwipeDetector';
 
 const MONTHS = [
   'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
@@ -79,8 +81,27 @@ export default function CategoriesScreen() {
 
   const spentPct = totalIncome > 0 ? Math.round((totalExpenses / totalIncome) * 100) : 0;
 
+  const navigation = useNavigation<any>();
+
+  const handleSwipeLeft = () => {
+    if (tab === 'EXPENSE') {
+      setTab('INCOME');
+    } else {
+      navigation.navigate('stats');
+    }
+  };
+
+  const handleSwipeRight = () => {
+    if (tab === 'INCOME') {
+      setTab('EXPENSE');
+    } else {
+      navigation.navigate('index');
+    }
+  };
+
   return (
-    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
+    <SwipeDetector onSwipeLeft={handleSwipeLeft} onSwipeRight={handleSwipeRight}>
+      <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
@@ -222,5 +243,6 @@ export default function CategoriesScreen() {
         </View>
       </ScrollView>
     </SafeAreaView>
+    </SwipeDetector>
   );
 }

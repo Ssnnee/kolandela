@@ -12,6 +12,8 @@ import { LanguageProvider } from './_context/LanguageContext';
 import BottomSheetProvider from './_context/BottomSheetContext';
 import { View, Text, ActivityIndicator } from 'react-native';
 
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 function MigrationWrapper({ children }: { children: React.ReactNode }) {
   const { success, error } = useMigrations(db, migrations);
   const { resolvedTheme } = useTheme();
@@ -42,17 +44,19 @@ function MigrationWrapper({ children }: { children: React.ReactNode }) {
 
 export default function RootLayout() {
   return (
-    <ThemeProvider>
-      <LanguageProvider>
-      <CurrencyProvider>
-        <BottomSheetProvider>
-          <MigrationWrapper>
-            <RootNavigator />
-          </MigrationWrapper>
-      </BottomSheetProvider>
-      </CurrencyProvider>
-      </LanguageProvider>
-    </ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider>
+        <LanguageProvider>
+        <CurrencyProvider>
+          <BottomSheetProvider>
+            <MigrationWrapper>
+              <RootNavigator />
+            </MigrationWrapper>
+        </BottomSheetProvider>
+        </CurrencyProvider>
+        </LanguageProvider>
+      </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }
 

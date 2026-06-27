@@ -10,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors, useCurrency } from '@/components/home/useThemeColors';
 import { useTranslation } from '@/app/_context/LanguageContext';
 import { FormInput, FormPicker, CategoryPicker, DatePickerButton } from '@/components/forms';
+import { SwipeDetector } from '@/components/SwipeDetector';
 
 type TxType = 'INCOME' | 'EXPENSE';
 type PaymentMethod = 'CASH' | 'BANK' | 'MOBILE_MONEY' | 'OTHER';
@@ -104,8 +105,23 @@ export default function AddTransaction() {
 
   const accentColor = type === 'INCOME' ? violetColor : primaryColor;
 
+  const handleSwipeLeft = () => {
+    if (type === 'EXPENSE') {
+      setType('INCOME');
+      setCategoryId(null);
+    }
+  };
+
+  const handleSwipeRight = () => {
+    if (type === 'INCOME') {
+      setType('EXPENSE');
+      setCategoryId(null);
+    }
+  };
+
   return (
-    <View style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)', paddingTop: insets.top }}>
+    <SwipeDetector onSwipeLeft={handleSwipeLeft} onSwipeRight={handleSwipeRight}>
+      <View style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)', paddingTop: insets.top }}>
       {/* Header */}
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 16, gap: 12 }}>
         <TouchableOpacity
@@ -187,5 +203,6 @@ export default function AddTransaction() {
         description={dialog?.description}
       />
     </View>
+    </SwipeDetector>
   );
 }

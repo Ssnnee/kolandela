@@ -8,6 +8,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { BarChart, LineChart } from 'react-native-gifted-charts';
 import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
 import { useTranslation } from '@/app/_context/LanguageContext';
+import { useNavigation } from '@react-navigation/native';
+import { SwipeDetector } from '@/components/SwipeDetector';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -174,8 +176,19 @@ export default function StatsScreen() {
     return result;
   }, [currentMonthTrans, currentMonth, currentYear, primaryColor, violetColor, mutedColor]);
 
+  const navigation = useNavigation<any>();
+
+  const handleSwipeLeft = () => {
+    navigation.navigate('settings');
+  };
+
+  const handleSwipeRight = () => {
+    navigation.navigate('categories');
+  };
+
   return (
-    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
+    <SwipeDetector onSwipeLeft={handleSwipeLeft} onSwipeRight={handleSwipeRight}>
+      <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
@@ -413,5 +426,6 @@ export default function StatsScreen() {
 
       </ScrollView>
     </SafeAreaView>
+    </SwipeDetector>
   );
 }

@@ -13,6 +13,8 @@ import { SummaryCards } from '@/components/home/SummaryCards';
 import { SpendProgress } from '@/components/home/SpendProgress';
 import { TransactionCard } from '@/components/home/TransactionCard';
 import { PlannedTransactionCard } from '@/components/home/PlannedTransactionCard';
+import { useNavigation } from '@react-navigation/native';
+import { SwipeDetector } from '@/components/SwipeDetector';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 type ListTab = 'transactions' | 'planned';
@@ -84,8 +86,25 @@ export default function Index() {
     [monthlyTrans]
   );
 
+  const navigation = useNavigation<any>();
+
+  const handleSwipeLeft = () => {
+    if (listTab === 'transactions') {
+      setListTab('planned');
+    } else {
+      navigation.navigate('categories');
+    }
+  };
+
+  const handleSwipeRight = () => {
+    if (listTab === 'planned') {
+      setListTab('transactions');
+    }
+  };
+
   return (
-    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
+    <SwipeDetector onSwipeLeft={handleSwipeLeft} onSwipeRight={handleSwipeRight}>
+      <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
@@ -202,5 +221,6 @@ export default function Index() {
       </View>
       </ScrollView>
     </SafeAreaView>
+    </SwipeDetector>
   );
 }

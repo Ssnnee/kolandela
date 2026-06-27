@@ -10,6 +10,8 @@ import { LanguagePicker } from '@/components/forms/LanguagePicker';
 import { ExportPicker } from '@/components/forms/ExportPicker';
 import { useTheme } from '@/app/_context/ThemeContext';
 import { useTranslation } from '@/app/_context/LanguageContext';
+import { useNavigation } from '@react-navigation/native';
+import { SwipeDetector } from '@/components/SwipeDetector';
 import { useState } from 'react';
 import * as transactionService from '@/services/transactions';
 import * as plannedTransactionService from '@/services/plannedTransactions';
@@ -223,8 +225,15 @@ export default function SettingsScreen() {
   const themeLabel =
     theme === 'system' ? t('global.theme.system') : theme === 'dark' ? t('global.theme.dark') : t('global.theme.light');
 
+  const navigation = useNavigation<any>();
+
+  const handleSwipeRight = () => {
+    navigation.navigate('stats');
+  };
+
   return (
-    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
+    <SwipeDetector onSwipeRight={handleSwipeRight}>
+      <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
@@ -363,6 +372,7 @@ export default function SettingsScreen() {
         />
       </ScrollView>
     </SafeAreaView>
+    </SwipeDetector>
 
   );
 }
