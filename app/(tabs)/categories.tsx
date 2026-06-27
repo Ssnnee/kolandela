@@ -1,9 +1,9 @@
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Animated, LayoutAnimation } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as categoryService from '@/services/categories';
 import * as transactionService from '@/services/transactions';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
 import { useTranslation } from '@/app/_context/LanguageContext';
@@ -83,9 +83,27 @@ export default function CategoriesScreen() {
 
   const navigation = useNavigation<any>();
 
+  const [containerWidth, setContainerWidth] = useState(0);
+  const tabWidth = (containerWidth - 8) / 2;
+  const animatedValue = useRef(new Animated.Value(tab === 'INCOME' ? 1 : 0)).current;
+
+  useEffect(() => {
+    Animated.spring(animatedValue, {
+      toValue: tab === 'INCOME' ? 1 : 0,
+      useNativeDriver: true,
+      tension: 140,
+      friction: 14,
+    }).start();
+  }, [tab, animatedValue]);
+
+  const changeTab = (newTab: Tab) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setTab(newTab);
+  };
+
   const handleSwipeLeft = () => {
     if (tab === 'EXPENSE') {
-      setTab('INCOME');
+      changeTab('INCOME');
     } else {
       navigation.navigate('stats');
     }
@@ -93,7 +111,7 @@ export default function CategoriesScreen() {
 
   const handleSwipeRight = () => {
     if (tab === 'INCOME') {
-      setTab('EXPENSE');
+      changeTab('EXPENSE');
     } else {
       navigation.navigate('index');
     }
@@ -124,21 +142,43 @@ export default function CategoriesScreen() {
         />
 
         {/* Tab switcher */}
-        <View style={{ flexDirection: 'row', backgroundColor: tabBg, borderRadius: 14, padding: 4, marginHorizontal: 24, marginBottom: 20 }}>
+        <View 
+          onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
+          style={{ flexDirection: 'row', backgroundColor: tabBg, borderRadius: 14, padding: 4, marginHorizontal: 24, marginBottom: 20, position: 'relative' }}
+        >
+          {containerWidth > 0 && (
+            <Animated.View
+              style={{
+                position: 'absolute',
+                top: 4,
+                bottom: 4,
+                left: 4,
+                width: tabWidth,
+                borderRadius: 11,
+                backgroundColor: isDark ? 'rgb(26,26,34)' : 'rgb(255,255,255)',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: isDark ? 0.3 : 0.08,
+                shadowRadius: 3,
+                elevation: 2,
+                transform: [{
+                  translateX: animatedValue.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, tabWidth]
+                  })
+                }]
+              }}
+            />
+          )}
           {(['EXPENSE', 'INCOME'] as Tab[]).map((mode) => {
             const isActive = tab === mode;
             return (
               <TouchableOpacity
                 key={mode}
-                onPress={() => setTab(mode)}
+                onPress={() => changeTab(mode)}
                 style={{
                   flex: 1, paddingVertical: 9, alignItems: 'center', borderRadius: 11,
-                  backgroundColor: isActive ? (isDark ? 'rgb(26,26,34)' : 'rgb(255,255,255)') : 'transparent',
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 1 },
-                  shadowOpacity: isActive ? (isDark ? 0.3 : 0.08) : 0,
-                  shadowRadius: 3,
-                  elevation: isActive ? 2 : 0,
+                  backgroundColor: 'transparent',
                 }}>
                 <Text style={{ fontSize: 13, fontWeight: isActive ? '700' : '500', color: isActive ? textColor : mutedColor }}>
                   {mode === 'EXPENSE' ? t('tabs.categories.tabExpenses') : t('tabs.categories.tabIncome')}

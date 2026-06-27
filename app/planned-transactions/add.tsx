@@ -1,11 +1,11 @@
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Animated, LayoutAnimation } from 'react-native';
 import { AlertDialog } from '@/components/AlertDialog';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as plannedTransactionService from '@/services/plannedTransactions';
 import * as categoryService from '@/services/categories';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors, useCurrency } from '@/components/home/useThemeColors';
 import { useTranslation } from '@/app/_context/LanguageContext';
@@ -112,17 +112,34 @@ export default function AddPlannedTransaction() {
 
   const accentColor = type === 'INCOME' ? violetColor : primaryColor;
 
+  const [containerWidth, setContainerWidth] = useState(0);
+  const tabWidth = (containerWidth - 8) / 2;
+  const animatedValue = useRef(new Animated.Value(type === 'INCOME' ? 1 : 0)).current;
+
+  useEffect(() => {
+    Animated.spring(animatedValue, {
+      toValue: type === 'INCOME' ? 1 : 0,
+      useNativeDriver: true,
+      tension: 140,
+      friction: 14,
+    }).start();
+  }, [type, animatedValue]);
+
+  const changeType = (newType: TxType) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setType(newType);
+    setCategoryId(null);
+  };
+
   const handleSwipeLeft = () => {
     if (type === 'EXPENSE') {
-      setType('INCOME');
-      setCategoryId(null);
+      changeType('INCOME');
     }
   };
 
   const handleSwipeRight = () => {
     if (type === 'INCOME') {
-      setType('EXPENSE');
-      setCategoryId(null);
+      changeType('EXPENSE');
     }
   };
 
@@ -147,15 +164,57 @@ export default function AddPlannedTransaction() {
 
       <ScrollView contentContainerStyle={{ padding: 20 }} keyboardShouldPersistTaps="handled">
         {/* Type toggle */}
-        <View style={{ flexDirection: 'row', backgroundColor: tabBg, borderRadius: 14, padding: 4, marginBottom: 24 }}>
+        <View 
+          onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
+          style={{ flexDirection: 'row', backgroundColor: tabBg, borderRadius: 14, padding: 4, marginBottom: 24, position: 'relative' }}
+        >
+          {containerWidth > 0 && (
+            <>
+              <Animated.View
+                style={{
+                  position: 'absolute',
+                  top: 4,
+                  bottom: 4,
+                  left: 4,
+                  width: tabWidth,
+                  borderRadius: 11,
+                  backgroundColor: primaryColor,
+                  opacity: animatedValue.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+                  transform: [{
+                    translateX: animatedValue.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0, tabWidth]
+                    })
+                  }]
+                }}
+              />
+              <Animated.View
+                style={{
+                  position: 'absolute',
+                  top: 4,
+                  bottom: 4,
+                  left: 4,
+                  width: tabWidth,
+                  borderRadius: 11,
+                  backgroundColor: violetColor,
+                  opacity: animatedValue,
+                  transform: [{
+                    translateX: animatedValue.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0, tabWidth]
+                    })
+                  }]
+                }}
+              />
+            </>
+          )}
           {(['EXPENSE', 'INCOME'] as TxType[]).map((mode) => {
             const isActive = type === mode;
-            const color = mode === 'INCOME' ? violetColor : primaryColor;
             return (
               <TouchableOpacity
                 key={mode}
-                onPress={() => { setType(mode); setCategoryId(null); }}
-                style={{ flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 11, backgroundColor: isActive ? color : 'transparent' }}>
+                onPress={() => changeType(mode)}
+                style={{ flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 11, backgroundColor: 'transparent' }}>
                 <Text style={{ fontSize: 14, fontWeight: '700', color: isActive ? 'white' : mutedColor }}>
                   {mode === 'INCOME' ? t('tabs.categories.tabIncome') : t('tabs.categories.tabExpenses')}
                 </Text>
