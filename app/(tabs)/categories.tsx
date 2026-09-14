@@ -9,7 +9,7 @@ import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeCol
 import { useTranslation } from '@/app/_context/LanguageContext';
 import { MonthPicker, buildMonthOptions } from '@/components/home/MonthPicker';
 import { router } from 'expo-router';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "expo-router/react-navigation";
 import { SwipeDetector } from '@/components/SwipeDetector';
 
 const MONTHS = [

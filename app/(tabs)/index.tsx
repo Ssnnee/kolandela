@@ -13,7 +13,7 @@ import { SummaryCards } from '@/components/home/SummaryCards';
 import { SpendProgress } from '@/components/home/SpendProgress';
 import { TransactionCard } from '@/components/home/TransactionCard';
 import { PlannedTransactionCard } from '@/components/home/PlannedTransactionCard';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "expo-router/react-navigation";
 import { SwipeDetector } from '@/components/SwipeDetector';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

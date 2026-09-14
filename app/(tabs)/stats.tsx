@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { BarChart, LineChart } from 'react-native-gifted-charts';
 import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
 import { useTranslation } from '@/app/_context/LanguageContext';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "expo-router/react-navigation";
 import { router } from 'expo-router';
 import { SwipeDetector } from '@/components/SwipeDetector';
 

@@ -10,7 +10,7 @@ import { LanguagePicker } from '@/components/forms/LanguagePicker';
 import { ExportPicker } from '@/components/forms/ExportPicker';
 import { useTheme } from '@/app/_context/ThemeContext';
 import { useTranslation } from '@/app/_context/LanguageContext';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "expo-router/react-navigation";
 import { SwipeDetector } from '@/components/SwipeDetector';
 import { useState } from 'react';
 import * as transactionService from '@/services/transactions';
