@@ -34,17 +34,24 @@ pnpm start
 Then scan the QR code with the Expo Go app on your phone or follow the
 instructions in the terminal.
 
+## Installation
+### android
+Choose a [realease](https://github.com/Ssnnee/kolandela/releases/) version and
+install the APK file.
+
+### iOS
+I don't support iPhone yet, but, since it's an Expo app, the app should run
+properly if you manage to install it.
+
 ## Features
 
-- Add expenses
-- Add income
-- Add categories
-- Plan expenses
-- Plan income
-- View expenses
-- View income
-- View categories
-- View statistics
+- add transactions;
+- plan transactions;
+- manage them;
+- view some statistics, graphs, and comparisons;
+- export and import your data;
+- switch theme (light and dark mode support);
+- chose your currency (it does not perform currency conversion).
 
 ## Technologies and Librairies
 
