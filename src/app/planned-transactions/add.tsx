@@ -37,7 +37,7 @@ export default function AddPlannedTransaction() {
   const [amount, setAmount] = useState('');
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [frequency, setFrequency] = useState<Frequency>('MONTHLY');
-  const [recurring, setRecurring] = useState(true);
+  const [recurring, setRecurring] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
@@ -146,138 +146,138 @@ export default function AddPlannedTransaction() {
   return (
     <SwipeDetector onSwipeLeft={handleSwipeLeft} onSwipeRight={handleSwipeRight}>
       <View style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)', paddingTop: insets.top }}>
-      {/* Header */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 16, gap: 12 }}>
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: cardBg, borderWidth: 1, borderColor, alignItems: 'center', justifyContent: 'center' }}>
-          <Ionicons name="close" size={20} color={textColor} />
-        </TouchableOpacity>
-        <Text style={{ flex: 1, color: textColor, fontSize: 18, fontWeight: '700' }}>{id ? t('screens.plannedTransactions.edit') : t('screens.plannedTransactions.new')}</Text>
-        <TouchableOpacity
-          onPress={handleSave}
-          disabled={saving}
-          style={{ backgroundColor: accentColor, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 8, opacity: saving ? 0.6 : 1 }}>
-          <Text style={{ color: 'white', fontSize: 14, fontWeight: '700' }}>{t('global.actions.save')}</Text>
-        </TouchableOpacity>
-      </View>
-
-      <ScrollView contentContainerStyle={{ padding: 20 }} keyboardShouldPersistTaps="handled">
-        {/* Type toggle */}
-        <View 
-          onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
-          style={{ flexDirection: 'row', backgroundColor: tabBg, borderRadius: 14, padding: 4, marginBottom: 24, position: 'relative' }}
-        >
-          {containerWidth > 0 && (
-            <>
-              <Animated.View
-                style={{
-                  position: 'absolute',
-                  top: 4,
-                  bottom: 4,
-                  left: 4,
-                  width: tabWidth,
-                  borderRadius: 11,
-                  backgroundColor: primaryColor,
-                  opacity: animatedValue.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
-                  transform: [{
-                    translateX: animatedValue.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [0, tabWidth]
-                    })
-                  }]
-                }}
-              />
-              <Animated.View
-                style={{
-                  position: 'absolute',
-                  top: 4,
-                  bottom: 4,
-                  left: 4,
-                  width: tabWidth,
-                  borderRadius: 11,
-                  backgroundColor: violetColor,
-                  opacity: animatedValue,
-                  transform: [{
-                    translateX: animatedValue.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [0, tabWidth]
-                    })
-                  }]
-                }}
-              />
-            </>
-          )}
-          {(['EXPENSE', 'INCOME'] as TxType[]).map((mode) => {
-            const isActive = type === mode;
-            return (
-              <TouchableOpacity
-                key={mode}
-                onPress={() => changeType(mode)}
-                style={{ flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 11, backgroundColor: 'transparent' }}>
-                <Text style={{ fontSize: 14, fontWeight: '700', color: isActive ? 'white' : mutedColor }}>
-                  {mode === 'INCOME' ? t('tabs.categories.tabIncome') : t('tabs.categories.tabExpenses')}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
+        {/* Header */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 16, gap: 12 }}>
+          <TouchableOpacity
+            onPress={() => router.back()}
+            style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: cardBg, borderWidth: 1, borderColor, alignItems: 'center', justifyContent: 'center' }}>
+            <Ionicons name="close" size={20} color={textColor} />
+          </TouchableOpacity>
+          <Text style={{ flex: 1, color: textColor, fontSize: 18, fontWeight: '700' }}>{id ? t('screens.plannedTransactions.edit') : t('screens.plannedTransactions.new')}</Text>
+          <TouchableOpacity
+            onPress={handleSave}
+            disabled={saving}
+            style={{ backgroundColor: accentColor, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 8, opacity: saving ? 0.6 : 1 }}>
+            <Text style={{ color: 'white', fontSize: 14, fontWeight: '700' }}>{t('global.actions.save')}</Text>
+          </TouchableOpacity>
         </View>
 
-        <FormInput
-          label={t('screens.transactions.description')}
-          value={description}
-          onChangeText={setDescription}
-          placeholder={t('global.placeholders.plannedDescription')}
-          error={errors.description}
-        />
+        <ScrollView contentContainerStyle={{ padding: 20 }} keyboardShouldPersistTaps="handled">
+          {/* Type toggle */}
+          <View
+            onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
+            style={{ flexDirection: 'row', backgroundColor: tabBg, borderRadius: 14, padding: 4, marginBottom: 24, position: 'relative' }}
+          >
+            {containerWidth > 0 && (
+              <>
+                <Animated.View
+                  style={{
+                    position: 'absolute',
+                    top: 4,
+                    bottom: 4,
+                    left: 4,
+                    width: tabWidth,
+                    borderRadius: 11,
+                    backgroundColor: primaryColor,
+                    opacity: animatedValue.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+                    transform: [{
+                      translateX: animatedValue.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, tabWidth]
+                      })
+                    }]
+                  }}
+                />
+                <Animated.View
+                  style={{
+                    position: 'absolute',
+                    top: 4,
+                    bottom: 4,
+                    left: 4,
+                    width: tabWidth,
+                    borderRadius: 11,
+                    backgroundColor: violetColor,
+                    opacity: animatedValue,
+                    transform: [{
+                      translateX: animatedValue.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, tabWidth]
+                      })
+                    }]
+                  }}
+                />
+              </>
+            )}
+            {(['EXPENSE', 'INCOME'] as TxType[]).map((mode) => {
+              const isActive = type === mode;
+              return (
+                <TouchableOpacity
+                  key={mode}
+                  onPress={() => changeType(mode)}
+                  style={{ flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 11, backgroundColor: 'transparent' }}>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: isActive ? 'white' : mutedColor }}>
+                    {mode === 'INCOME' ? t('tabs.categories.tabIncome') : t('tabs.categories.tabExpenses')}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
 
-        <FormInput
-          label={`${t('screens.transactions.amount')} (${currency.symbol})`}
-          value={formatAmount(amount)}
-          onChangeText={handleAmountChange}
-          placeholder={t('global.placeholders.amount')}
-          keyboardType="numeric"
-          error={errors.amount}
-        />
-
-        <DatePickerButton
-          label={t('screens.plannedTransactions.startDate')}
-          date={startDate}
-          onChange={setStartDate}
-          allowPast={false}
-        />
-
-        <CategoryPicker
-          categories={filteredCats}
-          selected={categoryId}
-          onSelect={setCategoryId}
-          error={errors.category}
-        />
-
-        {recurring && (
-          <FormPicker
-            label={t('screens.plannedTransactions.frequency')}
-            options={freqOptions}
-            selected={frequency}
-            onSelect={setFrequency}
+          <FormInput
+            label={t('screens.transactions.description')}
+            value={description}
+            onChangeText={setDescription}
+            placeholder={t('global.placeholders.plannedDescription')}
+            error={errors.description}
           />
-        )}
 
-        <FormToggle
-          label={t('screens.plannedTransactions.recurring')}
-          sublabel={t('screens.plannedTransactions.recurringSublabel')}
-          value={recurring}
-          onValueChange={setRecurring}
+          <FormInput
+            label={`${t('screens.transactions.amount')} (${currency.symbol})`}
+            value={formatAmount(amount)}
+            onChangeText={handleAmountChange}
+            placeholder={t('global.placeholders.amount')}
+            keyboardType="numeric"
+            error={errors.amount}
+          />
+
+          <DatePickerButton
+            label={t('screens.plannedTransactions.startDate')}
+            date={startDate}
+            onChange={setStartDate}
+            allowPast={false}
+          />
+
+          <CategoryPicker
+            categories={filteredCats}
+            selected={categoryId}
+            onSelect={setCategoryId}
+            error={errors.category}
+          />
+
+          {recurring && (
+            <FormPicker
+              label={t('screens.plannedTransactions.frequency')}
+              options={freqOptions}
+              selected={frequency}
+              onSelect={setFrequency}
+            />
+          )}
+
+          <FormToggle
+            label={t('screens.plannedTransactions.recurring')}
+            sublabel={t('screens.plannedTransactions.recurringSublabel')}
+            value={recurring}
+            onValueChange={setRecurring}
+          />
+        </ScrollView>
+
+        <AlertDialog
+          visible={dialog !== null}
+          onOpenChange={() => setDialog(null)}
+          title={dialog?.title ?? ''}
+          description={dialog?.description}
         />
-      </ScrollView>
-
-      <AlertDialog
-        visible={dialog !== null}
-        onOpenChange={() => setDialog(null)}
-        title={dialog?.title ?? ''}
-        description={dialog?.description}
-      />
-    </View>
+      </View>
     </SwipeDetector>
   );
 }
