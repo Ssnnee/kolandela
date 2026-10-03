@@ -1,9 +1,17 @@
-import { View, Text, ScrollView, TouchableOpacity, Animated, LayoutAnimation } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Animated,
+  LayoutAnimation,
+  useAnimatedValue
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as categoryService from '@/services/categories';
 import * as transactionService from '@/services/transactions';
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors, useCurrency, rgba } from '@/src/components/home/useThemeColors';
 import { useTranslation } from '@/src/context/LanguageContext';
@@ -85,7 +93,7 @@ export default function CategoriesScreen() {
 
   const [containerWidth, setContainerWidth] = useState(0);
   const tabWidth = (containerWidth - 8) / 2;
-  const animatedValue = useRef(new Animated.Value(tab === 'INCOME' ? 1 : 0)).current;
+  const animatedValue = useAnimatedValue(tab === 'INCOME' ? 1 : 0)
 
   useEffect(() => {
     Animated.spring(animatedValue, {

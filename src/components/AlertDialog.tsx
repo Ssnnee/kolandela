@@ -1,5 +1,14 @@
-import { useRef, useEffect } from 'react';
-import { Modal, Pressable, Animated, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useEffect } from 'react';
+import {
+  Modal,
+  Pressable,
+  Animated,
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  useAnimatedValue
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors } from '@/src/components/home/useThemeColors';
 
@@ -27,9 +36,9 @@ export function AlertDialog({
   onConfirm,
 }: AlertDialogProps) {
   const { textColor, mutedColor, primaryColor, cardBg, borderColor, isDark } = useThemeColors();
-  const scale = useRef(new Animated.Value(0.95)).current;
-  const translateY = useRef(new Animated.Value(15)).current;
-  const opacity = useRef(new Animated.Value(0)).current;
+  const scale = useAnimatedValue(0.95);
+  const translateY = useAnimatedValue(15);
+  const opacity = useAnimatedValue(0);
 
   useEffect(() => {
     if (visible) {

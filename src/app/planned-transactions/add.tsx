@@ -1,11 +1,19 @@
-import { View, Text, ScrollView, TouchableOpacity, Animated, LayoutAnimation } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Animated,
+  LayoutAnimation,
+  useAnimatedValue
+} from 'react-native';
 import { AlertDialog } from '@/src/components/AlertDialog';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as plannedTransactionService from '@/services/plannedTransactions';
 import * as categoryService from '@/services/categories';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors, useCurrency } from '@/src/components/home/useThemeColors';
 import { useTranslation } from '@/src/context/LanguageContext';
@@ -41,20 +49,19 @@ export default function AddPlannedTransaction() {
   const [startDate, setStartDate] = useState(new Date());
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
-  const [hasPrefilled, setHasPrefilled] = useState(false);
+  // const [hasPrefilled, setHasPrefilled] = useState(false);
+  const [prevEditingId, setPrevEditingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (editingPlanned && !hasPrefilled) {
-      setType(editingPlanned.type);
-      setDescription(editingPlanned.description);
-      setAmount(editingPlanned.amount.toString());
-      setCategoryId(editingPlanned.categoryId);
-      setFrequency(editingPlanned.frequency);
-      setRecurring(editingPlanned.recurring);
-      setStartDate(new Date(editingPlanned.startDate));
-      setHasPrefilled(true);
-    }
-  }, [editingPlanned, hasPrefilled]);
+  if (editingPlanned && editingPlanned.id !== prevEditingId) {
+    setPrevEditingId(editingPlanned.id)
+    setType(editingPlanned.type);
+    setDescription(editingPlanned.description);
+    setAmount(editingPlanned.amount.toString());
+    setCategoryId(editingPlanned.categoryId);
+    setFrequency(editingPlanned.frequency);
+    setRecurring(editingPlanned.recurring);
+    setStartDate(new Date(editingPlanned.startDate));
+  }
 
   const filteredCats = (cats ?? []).filter((c) => !c.isDeleted && c.type === type);
 
@@ -114,7 +121,7 @@ export default function AddPlannedTransaction() {
 
   const [containerWidth, setContainerWidth] = useState(0);
   const tabWidth = (containerWidth - 8) / 2;
-  const animatedValue = useRef(new Animated.Value(type === 'INCOME' ? 1 : 0)).current;
+  const animatedValue = useAnimatedValue(type === 'INCOME' ? 1 : 0);
 
   useEffect(() => {
     Animated.spring(animatedValue, {

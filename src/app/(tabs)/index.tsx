@@ -1,9 +1,17 @@
-import { View, Text, ScrollView, TouchableOpacity, Animated, LayoutAnimation } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Animated,
+  LayoutAnimation,
+  useAnimatedValue
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as transactionService from '@/services/transactions';
 import * as plannedTransactionService from '@/services/plannedTransactions';
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useThemeColors } from '@/src/components/home/useThemeColors';
@@ -90,7 +98,7 @@ export default function Index() {
 
   const [containerWidth, setContainerWidth] = useState(0);
   const tabWidth = (containerWidth - 8) / 2;
-  const animatedValue = useRef(new Animated.Value(listTab === 'planned' ? 1 : 0)).current;
+  const animatedValue = useAnimatedValue(listTab === 'planned' ? 1 : 0);
 
   useEffect(() => {
     Animated.spring(animatedValue, {

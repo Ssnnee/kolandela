@@ -1,11 +1,19 @@
-import { View, Text, ScrollView, TouchableOpacity, Animated, LayoutAnimation } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Animated,
+  LayoutAnimation,
+  useAnimatedValue
+} from 'react-native';
 import { AlertDialog } from '@/src/components/AlertDialog';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as transactionService from '@/services/transactions';
 import * as categoryService from '@/services/categories';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useThemeColors, useCurrency } from '@/src/components/home/useThemeColors';
 import { useTranslation } from '@/src/context/LanguageContext';
@@ -40,19 +48,18 @@ export default function AddTransaction() {
   const [date, setDate] = useState(new Date());
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
-  const [hasPrefilled, setHasPrefilled] = useState(false);
+  // const [hasPrefilled, setHasPrefilled] = useState(false);
+  const [prevEditingId, setPrevEditingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (editingTx && !hasPrefilled) {
-      setType(editingTx.type);
-      setDescription(editingTx.description);
-      setAmount(editingTx.amount.toString());
-      setCategoryId(editingTx.categoryId);
-      setPaymentMethod(editingTx.paymentMethod);
-      setDate(new Date(editingTx.transactionDate));
-      setHasPrefilled(true);
-    }
-  }, [editingTx, hasPrefilled]);
+  if (editingTx && editingTx.id !== prevEditingId) {
+    setPrevEditingId(editingTx.id)
+    setType(editingTx.type);
+    setDescription(editingTx.description);
+    setAmount(editingTx.amount.toString());
+    setCategoryId(editingTx.categoryId);
+    setPaymentMethod(editingTx.paymentMethod);
+    setDate(new Date(editingTx.transactionDate));
+  }
 
   const filteredCats = (cats ?? []).filter((c) => !c.isDeleted && c.type === type);
 
@@ -107,7 +114,7 @@ export default function AddTransaction() {
 
   const [containerWidth, setContainerWidth] = useState(0);
   const tabWidth = (containerWidth - 8) / 2;
-  const animatedValue = useRef(new Animated.Value(type === 'INCOME' ? 1 : 0)).current;
+  const animatedValue = useAnimatedValue(type === 'INCOME' ? 1 : 0);
 
   useEffect(() => {
     Animated.spring(animatedValue, {
