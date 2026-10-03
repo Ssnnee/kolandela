@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Modal, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useThemeColors, rgba } from '@/components/home/useThemeColors';
-import { useTranslation } from '@/app/_context/LanguageContext';
+import { useThemeColors, rgba } from '@/src/components/home/useThemeColors';
+import { useTranslation } from '@/src/context/LanguageContext';
 import type { LanguageCode } from '@/app/_i18n';
 
 const LANGUAGES: { code: LanguageCode; labelKey: string; native: string }[] = [

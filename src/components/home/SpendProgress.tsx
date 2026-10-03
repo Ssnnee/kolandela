@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native';
 import { useThemeColors, useCurrency, rgba } from './useThemeColors';
-import { useTranslation } from '@/app/_context/LanguageContext';
+import { useTranslation } from '@/src/context/LanguageContext';
 
 export function SpendProgress({
   income,

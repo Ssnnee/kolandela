@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useThemeColors } from '@/components/home/useThemeColors';
+import { useThemeColors } from '@/src/components/home/useThemeColors';
 
 export function SettingsRow({
   icon,

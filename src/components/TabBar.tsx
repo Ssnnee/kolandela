@@ -3,9 +3,9 @@ import { View, TouchableOpacity, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { useTheme } from '@/app/_context/ThemeContext';
-import { useBottomSheet } from '@/app/_context/BottomSheetContext';
-import { useTranslation } from '@/app/_context/LanguageContext';
+import { useTheme } from '@/src/context/ThemeContext';
+import { useBottomSheet } from '@/src/context/BottomSheetContext';
+import { useTranslation } from '@/src/context/LanguageContext';
 
 const TAB_ICONS: Record<string,
   {

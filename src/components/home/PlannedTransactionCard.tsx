@@ -6,8 +6,8 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as plannedTransactionService from '@/services/plannedTransactions';
 import * as transactionService from '@/services/transactions';
 import { useThemeColors, useCurrency, rgba } from './useThemeColors';
-import { useTranslation } from '@/app/_context/LanguageContext';
-import { AlertDialog } from '@/components/AlertDialog';
+import { useTranslation } from '@/src/context/LanguageContext';
+import { AlertDialog } from '@/src/components/AlertDialog';
 import type { PlannedTransaction } from '@/db/schema';
 
 const FREQ_LABEL: Record<string, string> = {
@@ -145,7 +145,7 @@ export function PlannedTransactionCard({ item }: { item: PlannedTransaction }) {
           <Ionicons name="ellipse" size={12} color={accentDim} />
         )}
       </TouchableOpacity>
-      </TouchableOpacity>
+    </TouchableOpacity>
 
       <AlertDialog
         visible={showConfirm}

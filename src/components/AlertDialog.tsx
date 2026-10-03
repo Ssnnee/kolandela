@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { Modal, Pressable, Animated, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useThemeColors } from '@/components/home/useThemeColors';
+import { useThemeColors } from '@/src/components/home/useThemeColors';
 
 interface AlertDialogProps {
   visible: boolean;
@@ -48,7 +48,7 @@ export function AlertDialog({
         Animated.timing(opacity, { toValue: 0, duration: 150, useNativeDriver: true }),
       ]).start();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible]);
 
   const handleCancel = () => {
@@ -62,7 +62,7 @@ export function AlertDialog({
 
   const hasConfirm = !!confirmLabel;
   const actionColor = destructive ? 'rgb(255,59,48)' : primaryColor;
-  
+
   // Stack buttons vertically if either label is longer than 8 characters
   const isStacked = hasConfirm && ((confirmLabel?.length ?? 0) > 8 || (cancelLabel?.length ?? 0) > 8);
 

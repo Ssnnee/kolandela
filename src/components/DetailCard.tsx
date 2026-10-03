@@ -1,6 +1,6 @@
 import { View, TouchableOpacity } from 'react-native';
 import type { ViewStyle, StyleProp } from 'react-native';
-import { useThemeColors } from '@/components/home/useThemeColors';
+import { useThemeColors } from '@/src/components/home/useThemeColors';
 import { Ionicons } from '@expo/vector-icons';
 
 type ContainerProps = {

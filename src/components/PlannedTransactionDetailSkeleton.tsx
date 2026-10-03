@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { View, ScrollView, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useThemeColors } from '@/components/home/useThemeColors';
-import { DetailCard } from '@/components/DetailCard';
+import { useThemeColors } from '@/src/components/home/useThemeColors';
+import { DetailCard } from '@/src/components/DetailCard';
 
 export function PlannedTransactionDetailSkeleton() {
   const { isDark, borderColor } = useThemeColors();

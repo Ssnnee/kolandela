@@ -3,8 +3,8 @@ import { View, Text, TouchableOpacity, Modal, Pressable, Animated } from 'react-
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useThemeColors } from '@/components/home/useThemeColors';
-import { useTranslation } from '@/app/_context/LanguageContext';
+import { useThemeColors } from '@/src/components/home/useThemeColors';
+import { useTranslation } from '@/src/context/LanguageContext';
 
 export const AddActionSheet = forwardRef<any, object>((_props, ref) => {
   const { textColor, mutedColor, primaryColor, violetColor, isDark } = useThemeColors();

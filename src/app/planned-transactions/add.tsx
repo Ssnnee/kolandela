@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity, Animated, LayoutAnimation } from 'react-native';
-import { AlertDialog } from '@/components/AlertDialog';
+import { AlertDialog } from '@/src/components/AlertDialog';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
@@ -7,10 +7,10 @@ import * as plannedTransactionService from '@/services/plannedTransactions';
 import * as categoryService from '@/services/categories';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { useThemeColors, useCurrency } from '@/components/home/useThemeColors';
-import { useTranslation } from '@/app/_context/LanguageContext';
-import { FormInput, FormPicker, FormToggle, CategoryPicker, DatePickerButton } from '@/components/forms';
-import { SwipeDetector } from '@/components/SwipeDetector';
+import { useThemeColors, useCurrency } from '@/src/components/home/useThemeColors';
+import { useTranslation } from '@/src/context/LanguageContext';
+import { FormInput, FormPicker, FormToggle, CategoryPicker, DatePickerButton } from '@/src/components/forms';
+import { SwipeDetector } from '@/src/components/SwipeDetector';
 
 type TxType = 'INCOME' | 'EXPENSE';
 type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
@@ -37,7 +37,7 @@ export default function AddPlannedTransaction() {
   const [amount, setAmount] = useState('');
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [frequency, setFrequency] = useState<Frequency>('MONTHLY');
-  const [recurring, setRecurring] = useState(false);
+  const [recurring, setRecurring] = useState(true);
   const [startDate, setStartDate] = useState(new Date());
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);

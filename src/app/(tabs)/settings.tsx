@@ -1,17 +1,17 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { rgba, useThemeColors, useCurrency } from '@/components/home/useThemeColors';
-import { AlertDialog } from '@/components/AlertDialog';
-import { DetailCard } from '@/components/DetailCard';
-import { CurrencyPicker } from '@/components/forms/CurrencyPicker';
-import { ThemePicker } from '@/components/forms/ThemePicker';
-import { LanguagePicker } from '@/components/forms/LanguagePicker';
-import { ExportPicker } from '@/components/forms/ExportPicker';
-import { useTheme } from '@/app/_context/ThemeContext';
-import { useTranslation } from '@/app/_context/LanguageContext';
+import { rgba, useThemeColors, useCurrency } from '@/src/components/home/useThemeColors';
+import { AlertDialog } from '@/src/components/AlertDialog';
+import { DetailCard } from '@/src/components/DetailCard';
+import { CurrencyPicker } from '@/src/components/forms/CurrencyPicker';
+import { ThemePicker } from '@/src/components/forms/ThemePicker';
+import { LanguagePicker } from '@/src/components/forms/LanguagePicker';
+import { ExportPicker } from '@/src/components/forms/ExportPicker';
+import { useTheme } from '@/src/context/ThemeContext';
+import { useTranslation } from '@/src/context/LanguageContext';
 import { useNavigation } from "expo-router/react-navigation";
-import { SwipeDetector } from '@/components/SwipeDetector';
+import { SwipeDetector } from '@/src/components/SwipeDetector';
 import { useState } from 'react';
 import * as transactionService from '@/services/transactions';
 import * as plannedTransactionService from '@/services/plannedTransactions';
@@ -234,91 +234,91 @@ export default function SettingsScreen() {
   return (
     <SwipeDetector onSwipeRight={handleSwipeRight}>
       <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 120 }}
-      >
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 120 }}
+        >
 
-        {/* ── Header ── */}
-        <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 24 }}>
-          <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>
-            {t('tabs.settings.headerLabel')}
-          </Text>
-          <Text style={{ color: textColor, fontSize: 24, fontWeight: '800', letterSpacing: -0.5 }}>
-            {t('tabs.settings.title')}
-          </Text>
-        </View>
+          {/* ── Header ── */}
+          <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 24 }}>
+            <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>
+              {t('tabs.settings.headerLabel')}
+            </Text>
+            <Text style={{ color: textColor, fontSize: 24, fontWeight: '800', letterSpacing: -0.5 }}>
+              {t('tabs.settings.title')}
+            </Text>
+          </View>
 
-        {/* ── Appearance ── */}
-        <SectionLabel label={t('tabs.settings.sectionAppearance')} />
-        <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
-          <SettingsRow
-            icon={resolvedTheme === 'dark' ? 'moon' : 'sunny'}
-            iconColor={primaryColor}
-            label={t('tabs.settings.theme')}
-            sublabel={themeLabel}
-            onPress={() => setShowThemePicker(true)}
-            right={
-              <View style={{
-                backgroundColor: rgba(primaryColor, 0.1), borderRadius: 100,
-                paddingHorizontal: 10, paddingVertical: 4,
-              }}>
-                <Text style={{ color: primaryColor, fontSize: 12, fontWeight: '600' }}>{themeLabel}</Text>
-              </View>
-            }
-          />
-        </DetailCard.Container>
+          {/* ── Appearance ── */}
+          <SectionLabel label={t('tabs.settings.sectionAppearance')} />
+          <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
+            <SettingsRow
+              icon={resolvedTheme === 'dark' ? 'moon' : 'sunny'}
+              iconColor={primaryColor}
+              label={t('tabs.settings.theme')}
+              sublabel={themeLabel}
+              onPress={() => setShowThemePicker(true)}
+              right={
+                <View style={{
+                  backgroundColor: rgba(primaryColor, 0.1), borderRadius: 100,
+                  paddingHorizontal: 10, paddingVertical: 4,
+                }}>
+                  <Text style={{ color: primaryColor, fontSize: 12, fontWeight: '600' }}>{themeLabel}</Text>
+                </View>
+              }
+            />
+          </DetailCard.Container>
 
-        {/* ── Preferences ── */}
-        <SectionLabel label={t('tabs.settings.sectionPreferences')} />
-        <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
-          <SettingsRow
-            icon="language-outline"
-            label={t('tabs.settings.language')}
-            sublabel={language === 'en' ? t('tabs.settings.english') : 'Français'}
-            onPress={() => setShowLanguagePicker(true)}
-          />
-          <DetailCard.Divider />
-          <SettingsRow
-            icon="cash-outline"
-            label={t('tabs.settings.currency')}
-            sublabel={`${currency.code} — ${currency.symbol}`}
-            onPress={() => setShowCurrencyPicker(true)}
-          />
-        </DetailCard.Container>
+          {/* ── Preferences ── */}
+          <SectionLabel label={t('tabs.settings.sectionPreferences')} />
+          <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
+            <SettingsRow
+              icon="language-outline"
+              label={t('tabs.settings.language')}
+              sublabel={language === 'en' ? t('tabs.settings.english') : 'Français'}
+              onPress={() => setShowLanguagePicker(true)}
+            />
+            <DetailCard.Divider />
+            <SettingsRow
+              icon="cash-outline"
+              label={t('tabs.settings.currency')}
+              sublabel={`${currency.code} — ${currency.symbol}`}
+              onPress={() => setShowCurrencyPicker(true)}
+            />
+          </DetailCard.Container>
 
-        {/* ── Data ── */}
-        <SectionLabel label={t('tabs.settings.sectionData')} />
-        <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
-          <SettingsRow
-            icon="download-outline"
-            iconColor={isDark ? 'rgb(0,250,217)' : 'rgb(0,200,175)'}
-            label={t('tabs.settings.exportData')}
-            sublabel={t('tabs.settings.exportSublabel')}
-            onPress={handleExport}
-          />
-          <DetailCard.Divider />
-          <SettingsRow
-            icon="cloud-upload-outline"
-            iconColor={isDark ? 'rgb(173,123,255)' : 'rgb(140,90,220)'}
-            label={t('tabs.settings.importData')}
-            sublabel={t('tabs.settings.importSublabel')}
-            onPress={handleImport}
-          />
-        </DetailCard.Container>
+          {/* ── Data ── */}
+          <SectionLabel label={t('tabs.settings.sectionData')} />
+          <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
+            <SettingsRow
+              icon="download-outline"
+              iconColor={isDark ? 'rgb(0,250,217)' : 'rgb(0,200,175)'}
+              label={t('tabs.settings.exportData')}
+              sublabel={t('tabs.settings.exportSublabel')}
+              onPress={handleExport}
+            />
+            <DetailCard.Divider />
+            <SettingsRow
+              icon="cloud-upload-outline"
+              iconColor={isDark ? 'rgb(173,123,255)' : 'rgb(140,90,220)'}
+              label={t('tabs.settings.importData')}
+              sublabel={t('tabs.settings.importSublabel')}
+              onPress={handleImport}
+            />
+          </DetailCard.Container>
 
-        {/* ── About ── */}
-        <SectionLabel label={t('tabs.settings.sectionAbout')} />
-        <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
-          <SettingsRow
-            icon="logo-github"
-            iconColor={isDark ? 'rgb(229,229,229)' : 'rgb(40,40,55)'}
-            label={t('tabs.settings.sourceCode')}
-            sublabel={t('tabs.settings.reportBug')}
-            onPress={() => Linking.openURL(GITHUB_URL_ISSUES)}
-          />
-          <DetailCard.Divider />
-          {/*
+          {/* ── About ── */}
+          <SectionLabel label={t('tabs.settings.sectionAbout')} />
+          <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
+            <SettingsRow
+              icon="logo-github"
+              iconColor={isDark ? 'rgb(229,229,229)' : 'rgb(40,40,55)'}
+              label={t('tabs.settings.sourceCode')}
+              sublabel={t('tabs.settings.reportBug')}
+              onPress={() => Linking.openURL(GITHUB_URL_ISSUES)}
+            />
+            <DetailCard.Divider />
+            {/*
         <SettingsRow
           icon="cafe-outline"
           label="Buy me a coffee"
@@ -326,52 +326,52 @@ export default function SettingsScreen() {
           onPress={() => Linking.openURL(BUY_COFFEE_URL)}
         />
         <Divider />*/}
-          <SettingsRow
-            icon="information-circle-outline"
-            label={t('tabs.settings.version')}
-            sublabel={`Kolandela v${APP_VERSION}`}
-            right={
-              <Text style={{ color: mutedColor, fontSize: 12 }}>v{APP_VERSION}</Text>
-            }
+            <SettingsRow
+              icon="information-circle-outline"
+              label={t('tabs.settings.version')}
+              sublabel={`Kolandela v${APP_VERSION}`}
+              right={
+                <Text style={{ color: mutedColor, fontSize: 12 }}>v{APP_VERSION}</Text>
+              }
+            />
+          </DetailCard.Container>
+
+          {/* ── Danger zone ── */}
+          <SectionLabel label={t('tabs.settings.sectionDanger')} />
+          <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
+            <SettingsRow
+              icon="trash-outline"
+              label={t('tabs.settings.deleteAllData')}
+              sublabel={t('tabs.settings.deleteAllDataSublabel')}
+              onPress={handleDeleteAllData}
+              danger
+            />
+          </DetailCard.Container>
+
+          {/* ── Footer ── */}
+          <Text style={{
+            color: mutedColor, fontSize: 11, textAlign: 'center',
+            marginTop: 32, marginBottom: 8,
+          }}>
+            {t('tabs.settings.footer', { version: APP_VERSION })}
+          </Text>
+
+          <LanguagePicker visible={showLanguagePicker} onClose={() => setShowLanguagePicker(false)} />
+          <CurrencyPicker visible={showCurrencyPicker} onClose={() => setShowCurrencyPicker(false)} />
+          <ThemePicker visible={showThemePicker} onClose={() => setShowThemePicker(false)} />
+          <ExportPicker visible={showExportPicker} onClose={() => setShowExportPicker(false)} onSelect={handleSelectExportFormat} />
+
+          <AlertDialog
+            visible={dialog !== null}
+            onOpenChange={() => setDialog(null)}
+            title={dialog?.title ?? ''}
+            description={dialog?.description}
+            confirmLabel={dialog?.confirmLabel}
+            destructive={dialog?.destructive}
+            onConfirm={dialog?.onConfirm}
           />
-        </DetailCard.Container>
-
-        {/* ── Danger zone ── */}
-        <SectionLabel label={t('tabs.settings.sectionDanger')} />
-        <DetailCard.Container style={{ borderRadius: 18, marginHorizontal: 16, paddingHorizontal: 0 }}>
-          <SettingsRow
-            icon="trash-outline"
-            label={t('tabs.settings.deleteAllData')}
-            sublabel={t('tabs.settings.deleteAllDataSublabel')}
-            onPress={handleDeleteAllData}
-            danger
-          />
-        </DetailCard.Container>
-
-        {/* ── Footer ── */}
-        <Text style={{
-          color: mutedColor, fontSize: 11, textAlign: 'center',
-          marginTop: 32, marginBottom: 8,
-        }}>
-          {t('tabs.settings.footer', { version: APP_VERSION })}
-        </Text>
-
-        <LanguagePicker visible={showLanguagePicker} onClose={() => setShowLanguagePicker(false)} />
-        <CurrencyPicker visible={showCurrencyPicker} onClose={() => setShowCurrencyPicker(false)} />
-        <ThemePicker visible={showThemePicker} onClose={() => setShowThemePicker(false)} />
-        <ExportPicker visible={showExportPicker} onClose={() => setShowExportPicker(false)} onSelect={handleSelectExportFormat} />
-
-        <AlertDialog
-          visible={dialog !== null}
-          onOpenChange={() => setDialog(null)}
-          title={dialog?.title ?? ''}
-          description={dialog?.description}
-          confirmLabel={dialog?.confirmLabel}
-          destructive={dialog?.destructive}
-          onConfirm={dialog?.onConfirm}
-        />
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
     </SwipeDetector>
 
   );

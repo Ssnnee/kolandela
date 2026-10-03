@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useThemeColors, rgba } from '@/components/home/useThemeColors';
+import { useThemeColors, rgba } from '@/src/components/home/useThemeColors';
 import type { Category } from '@/db/schema';
 
 interface CategoryPickerProps {

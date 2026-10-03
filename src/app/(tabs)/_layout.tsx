@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import { TabBar } from '../../components/TabBar';
-import { AddActionSheet } from '../../components/AddActionSheet';
-import { useBottomSheet } from '../_context/BottomSheetContext';
+import { AddActionSheet } from '@/src/components/AddActionSheet';
+import { useBottomSheet } from '@/src/context/BottomSheetContext';
 
 function TabsWithSheet() {
   const { bottomSheetRef } = useBottomSheet();

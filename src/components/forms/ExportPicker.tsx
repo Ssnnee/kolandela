@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity, Modal, Pressable, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useThemeColors, rgba } from '@/components/home/useThemeColors';
-import { useTranslation } from '@/app/_context/LanguageContext';
+import { useThemeColors, rgba } from '@/src/components/home/useThemeColors';
+import { useTranslation } from '@/src/context/LanguageContext';
 
 interface ExportPickerProps {
   visible: boolean;
@@ -35,7 +35,7 @@ export function ExportPicker({ visible, onClose, onSelect }: ExportPickerProps) 
         style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'center', alignItems: 'center' }}
       >
         <Pressable
-          onPress={() => {}}
+          onPress={() => { }}
           style={{ width: 280, backgroundColor: cardBg, borderRadius: 20, borderWidth: 1, borderColor, padding: 8 }}
         >
           <Text style={{ color: textColor, fontSize: 17, fontWeight: '700', textAlign: 'center', paddingTop: 16, paddingBottom: 8 }}>

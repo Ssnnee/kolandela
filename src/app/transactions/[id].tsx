@@ -1,15 +1,15 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
-import { AlertDialog } from '@/components/AlertDialog';
-import { DetailCard } from '@/components/DetailCard';
+import { AlertDialog } from '@/src/components/AlertDialog';
+import { DetailCard } from '@/src/components/DetailCard';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import * as transactionService from '@/services/transactions';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
-import { useTranslation } from '@/app/_context/LanguageContext';
-import { TransactionDetailSkeleton } from '@/components/TransactionDetailSkeleton';
+import { useThemeColors, useCurrency, rgba } from '@/src/components/home/useThemeColors';
+import { useTranslation } from '@/src/context/LanguageContext';
+import { TransactionDetailSkeleton } from '@/src/components/TransactionDetailSkeleton';
 
 const PAYMENT_ICONS: Record<string, string> = {
   BANK: 'card',

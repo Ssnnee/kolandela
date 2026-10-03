@@ -6,10 +6,10 @@ import * as categoryService from '@/services/categories';
 import { useState, useMemo } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useThemeColors, useCurrency } from '@/components/home/useThemeColors';
-import { useTranslation } from '@/app/_context/LanguageContext';
-import { FilterChips } from '@/components/home/FilterChips';
-import { TransactionCard } from '@/components/home/TransactionCard';
+import { useThemeColors, useCurrency } from '@/src/components/home/useThemeColors';
+import { useTranslation } from '@/src/context/LanguageContext';
+import { FilterChips } from '@/src/components/home/FilterChips';
+import { TransactionCard } from '@/src/components/home/TransactionCard';
 
 type TypeFilter = 'ALL' | 'INCOME' | 'EXPENSE';
 type PaymentFilter = 'ALL' | 'CASH' | 'BANK' | 'MOBILE_MONEY' | 'OTHER';

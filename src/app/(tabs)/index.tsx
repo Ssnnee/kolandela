@@ -6,15 +6,15 @@ import * as plannedTransactionService from '@/services/plannedTransactions';
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { useThemeColors } from '@/components/home/useThemeColors';
-import { useTranslation } from '@/app/_context/LanguageContext';
-import { MonthPicker, buildMonthOptions } from '@/components/home/MonthPicker';
-import { SummaryCards } from '@/components/home/SummaryCards';
-import { SpendProgress } from '@/components/home/SpendProgress';
-import { TransactionCard } from '@/components/home/TransactionCard';
-import { PlannedTransactionCard } from '@/components/home/PlannedTransactionCard';
+import { useThemeColors } from '@/src/components/home/useThemeColors';
+import { useTranslation } from '@/src/context/LanguageContext';
+import { MonthPicker, buildMonthOptions } from '@/src/components/home/MonthPicker';
+import { SummaryCards } from '@/src/components/home/SummaryCards';
+import { SpendProgress } from '@/src/components/home/SpendProgress';
+import { TransactionCard } from '@/src/components/home/TransactionCard';
+import { PlannedTransactionCard } from '@/src/components/home/PlannedTransactionCard';
 import { useNavigation } from "expo-router/react-navigation";
-import { SwipeDetector } from '@/components/SwipeDetector';
+import { SwipeDetector } from '@/src/components/SwipeDetector';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 type ListTab = 'transactions' | 'planned';
@@ -123,144 +123,144 @@ export default function Index() {
   return (
     <SwipeDetector onSwipeLeft={handleSwipeLeft} onSwipeRight={handleSwipeRight}>
       <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 120 }}
->
-
-        {/* Header */}
-        <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 16 }}>
-        <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>
-          {t('tabs.home.overview')}
-        </Text>
-        <Text style={{ color: textColor, fontSize: 24, fontWeight: '800', letterSpacing: -0.5 }}>
-          {MONTHS[selectedMonth]} {selectedYear}
-        </Text>
-      </View>
-
-      <MonthPicker
-        options={monthOptions}
-        selectedMonth={selectedMonth}
-        selectedYear={selectedYear}
-        onSelect={setSelectedDate}
-      />
-
-      <SummaryCards
-        income={income}
-        expenses={expenses}
-        remaining={remaining}
-        savingsRate={savingsRate}
-      />
-
-      <SpendProgress
-        income={income}
-        expenses={expenses}
-        planned={plannedExpensesTotal}
-      />
-
-      {/* Recent / Planned section */}
-      <View style={{ paddingHorizontal: 24, marginBottom: 32 }}>
-        {/* Section header */}
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-          <Text style={{ color: textColor, fontSize: 15, fontWeight: '700' }}>
-            {listTab === 'transactions' ? t('tabs.home.recentSection') : t('tabs.home.plannedSection')}
-          </Text>
-          <TouchableOpacity
-            onPress={() =>
-              router.push({
-                pathname: listTab === 'transactions' ? '/transactions' : '/planned-transactions',
-                params: { month: selectedMonth, year: selectedYear },
-              })
-            }>
-            <Text style={{ color: primaryColor, fontSize: 12, fontWeight: '600' }}>{t('tabs.home.seeAll')}</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Tab switcher */}
-        <View 
-          onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
-          style={{ flexDirection: 'row', backgroundColor: tabBg, borderRadius: 14, padding: 4, marginBottom: 16, position: 'relative' }}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 120 }}
         >
-          {containerWidth > 0 && (
-            <Animated.View
-              style={{
-                position: 'absolute',
-                top: 4,
-                bottom: 4,
-                left: 4,
-                width: tabWidth,
-                borderRadius: 11,
-                backgroundColor: cardBg,
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: isDark ? 0.3 : 0.08,
-                shadowRadius: 3,
-                elevation: 2,
-                transform: [{
-                  translateX: animatedValue.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0, tabWidth]
-                  })
-                }]
-              }}
-            />
-          )}
-          {(['transactions', 'planned'] as ListTab[]).map((tab) => {
-            const isActive = listTab === tab;
-            const label = tab === 'transactions'
-              ? t('tabs.home.tabTransactions')
-              : `${t('tabs.home.tabPlanned')}${monthlyPlanned.length > 0 ? ` (${monthlyPlanned.length})` : ''}`;
-            return (
+
+          {/* Header */}
+          <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 16 }}>
+            <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>
+              {t('tabs.home.overview')}
+            </Text>
+            <Text style={{ color: textColor, fontSize: 24, fontWeight: '800', letterSpacing: -0.5 }}>
+              {MONTHS[selectedMonth]} {selectedYear}
+            </Text>
+          </View>
+
+          <MonthPicker
+            options={monthOptions}
+            selectedMonth={selectedMonth}
+            selectedYear={selectedYear}
+            onSelect={setSelectedDate}
+          />
+
+          <SummaryCards
+            income={income}
+            expenses={expenses}
+            remaining={remaining}
+            savingsRate={savingsRate}
+          />
+
+          <SpendProgress
+            income={income}
+            expenses={expenses}
+            planned={plannedExpensesTotal}
+          />
+
+          {/* Recent / Planned section */}
+          <View style={{ paddingHorizontal: 24, marginBottom: 32 }}>
+            {/* Section header */}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <Text style={{ color: textColor, fontSize: 15, fontWeight: '700' }}>
+                {listTab === 'transactions' ? t('tabs.home.recentSection') : t('tabs.home.plannedSection')}
+              </Text>
               <TouchableOpacity
-                key={tab}
-                onPress={() => changeTab(tab)}
-                style={{
-                  flex: 1, paddingVertical: 9, alignItems: 'center', borderRadius: 11,
-                  backgroundColor: 'transparent',
-                }}>
-                <Text style={{ fontSize: 13, fontWeight: isActive ? '700' : '500', color: isActive ? textColor : mutedColor }}>
-                  {label}
-                </Text>
+                onPress={() =>
+                  router.push({
+                    pathname: listTab === 'transactions' ? '/transactions' : '/planned-transactions',
+                    params: { month: selectedMonth, year: selectedYear },
+                  })
+                }>
+                <Text style={{ color: primaryColor, fontSize: 12, fontWeight: '600' }}>{t('tabs.home.seeAll')}</Text>
               </TouchableOpacity>
-            );
-          })}
-        </View>
-
-        {/* Transactions list */}
-        {listTab === 'transactions' && (
-          recentTrans.length === 0 ? (
-            <View style={{ alignItems: 'center', paddingVertical: 40 }}>
-              <Ionicons name="receipt-outline" size={36} color={mutedColor} />
-              <Text style={{ color: mutedColor, fontSize: 13, marginTop: 10 }}>{t('tabs.home.noTransactions')}</Text>
             </View>
-          ) : (
-            recentTrans.map((t) => (
-              <TransactionCard
-                key={t.id}
-                id={t.id}
-                description={t.description}
-                amount={t.amount}
-                type={t.type as 'INCOME' | 'EXPENSE'}
-                transactionDate={t.transactionDate}
-              />
-            ))
-          )
-        )}
 
-        {/* Planned list */}
-        {listTab === 'planned' && (
-          monthlyPlanned.length === 0 ? (
-            <View style={{ alignItems: 'center', paddingVertical: 40 }}>
-              <Ionicons name="calendar-outline" size={36} color={mutedColor} />
-              <Text style={{ color: mutedColor, fontSize: 13, marginTop: 10 }}>{t('tabs.home.noPlanned')}</Text>
+            {/* Tab switcher */}
+            <View
+              onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
+              style={{ flexDirection: 'row', backgroundColor: tabBg, borderRadius: 14, padding: 4, marginBottom: 16, position: 'relative' }}
+            >
+              {containerWidth > 0 && (
+                <Animated.View
+                  style={{
+                    position: 'absolute',
+                    top: 4,
+                    bottom: 4,
+                    left: 4,
+                    width: tabWidth,
+                    borderRadius: 11,
+                    backgroundColor: cardBg,
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: isDark ? 0.3 : 0.08,
+                    shadowRadius: 3,
+                    elevation: 2,
+                    transform: [{
+                      translateX: animatedValue.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, tabWidth]
+                      })
+                    }]
+                  }}
+                />
+              )}
+              {(['transactions', 'planned'] as ListTab[]).map((tab) => {
+                const isActive = listTab === tab;
+                const label = tab === 'transactions'
+                  ? t('tabs.home.tabTransactions')
+                  : `${t('tabs.home.tabPlanned')}${monthlyPlanned.length > 0 ? ` (${monthlyPlanned.length})` : ''}`;
+                return (
+                  <TouchableOpacity
+                    key={tab}
+                    onPress={() => changeTab(tab)}
+                    style={{
+                      flex: 1, paddingVertical: 9, alignItems: 'center', borderRadius: 11,
+                      backgroundColor: 'transparent',
+                    }}>
+                    <Text style={{ fontSize: 13, fontWeight: isActive ? '700' : '500', color: isActive ? textColor : mutedColor }}>
+                      {label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
             </View>
-          ) : (
-            monthlyPlanned.map((p) => <PlannedTransactionCard key={p.id} item={p} />)
-          )
-        )}
-      </View>
-      </ScrollView>
-    </SafeAreaView>
+
+            {/* Transactions list */}
+            {listTab === 'transactions' && (
+              recentTrans.length === 0 ? (
+                <View style={{ alignItems: 'center', paddingVertical: 40 }}>
+                  <Ionicons name="receipt-outline" size={36} color={mutedColor} />
+                  <Text style={{ color: mutedColor, fontSize: 13, marginTop: 10 }}>{t('tabs.home.noTransactions')}</Text>
+                </View>
+              ) : (
+                recentTrans.map((t) => (
+                  <TransactionCard
+                    key={t.id}
+                    id={t.id}
+                    description={t.description}
+                    amount={t.amount}
+                    type={t.type as 'INCOME' | 'EXPENSE'}
+                    transactionDate={t.transactionDate}
+                  />
+                ))
+              )
+            )}
+
+            {/* Planned list */}
+            {listTab === 'planned' && (
+              monthlyPlanned.length === 0 ? (
+                <View style={{ alignItems: 'center', paddingVertical: 40 }}>
+                  <Ionicons name="calendar-outline" size={36} color={mutedColor} />
+                  <Text style={{ color: mutedColor, fontSize: 13, marginTop: 10 }}>{t('tabs.home.noPlanned')}</Text>
+                </View>
+              ) : (
+                monthlyPlanned.map((p) => <PlannedTransactionCard key={p.id} item={p} />)
+              )
+            )}
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     </SwipeDetector>
   );
 }

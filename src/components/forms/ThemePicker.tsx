@@ -1,8 +1,8 @@
 import { Text, TouchableOpacity, Modal, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useThemeColors, rgba } from '@/components/home/useThemeColors';
-import { useTheme } from '@/app/_context/ThemeContext';
-import { useTranslation } from '@/app/_context/LanguageContext';
+import { useThemeColors, rgba } from '@/src/components/home/useThemeColors';
+import { useTheme } from '@/src/context/ThemeContext';
+import { useTranslation } from '@/src/context/LanguageContext';
 
 const THEMES = [
   { key: 'system' as const, tKey: 'global.theme.system', icon: 'settings-outline' as const },
@@ -26,7 +26,7 @@ export function ThemePicker({ visible, onClose }: ThemePickerProps) {
         onPress={onClose}
         style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'center', alignItems: 'center' }}
       >
-        <Pressable onPress={() => {}} style={{ width: 260, backgroundColor: cardBg, borderRadius: 20, borderWidth: 1, borderColor, padding: 8 }}>
+        <Pressable onPress={() => { }} style={{ width: 260, backgroundColor: cardBg, borderRadius: 20, borderWidth: 1, borderColor, padding: 8 }}>
           <Text style={{ color: textColor, fontSize: 17, fontWeight: '700', textAlign: 'center', paddingVertical: 12 }}>
             {t('tabs.settings.selectTheme')}
           </Text>

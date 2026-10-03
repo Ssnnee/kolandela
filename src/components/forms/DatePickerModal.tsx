@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useState, useRef } from 'react';
-import { useThemeColors, rgba } from '@/components/home/useThemeColors';
+import { useThemeColors, rgba } from '@/src/components/home/useThemeColors';
 
 const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -192,7 +192,7 @@ export function DatePickerModal({
     if (!allowPast && y < todayY) return;
     const clampedMonth =
       (!allowFuture && isFutureMonth(y, month)) ? todayM :
-      (!allowPast && isPastMonth(y, month)) ? todayM : month;
+        (!allowPast && isPastMonth(y, month)) ? todayM : month;
     onSelect(new Date(y, clampedMonth, clampDay(y, clampedMonth)));
   };
 

@@ -1,13 +1,13 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
-import { DetailCard } from '@/components/DetailCard';
+import { DetailCard } from '@/src/components/DetailCard';
 import * as categoryService from '@/services/categories';
 import * as transactionService from '@/services/transactions';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useThemeColors, useCurrency } from '@/components/home/useThemeColors';
-import { CategoryDetailSkeleton } from '@/components/CategoryDetailSkeleton';
+import { useThemeColors, useCurrency } from '@/src/components/home/useThemeColors';
+import { CategoryDetailSkeleton } from '@/src/components/CategoryDetailSkeleton';
 
 export default function CategoryDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

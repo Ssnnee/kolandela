@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { useThemeColors } from '@/components/home/useThemeColors';
+import { useThemeColors } from '@/src/components/home/useThemeColors';
 
 interface Option<T> {
   label: string;

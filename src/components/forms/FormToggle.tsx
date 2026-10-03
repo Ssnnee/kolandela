@@ -1,5 +1,5 @@
 import { View, Text, Switch } from 'react-native';
-import { useThemeColors, rgba } from '@/components/home/useThemeColors';
+import { useThemeColors, rgba } from '@/src/components/home/useThemeColors';
 
 interface FormToggleProps {
   label: string;

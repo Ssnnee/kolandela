@@ -1,4 +1,4 @@
-import '../global.css';
+import '../../global.css';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
@@ -6,10 +6,10 @@ import { db } from '@/db';
 import migrations from '@/drizzle/migrations';
 import { useEffect } from 'react';
 import { seedDatabase } from '@/db/seed';
-import ThemeProvider, { useTheme } from './_context/ThemeContext';
-import CurrencyProvider from './_context/CurrencyContext';
-import { LanguageProvider } from './_context/LanguageContext';
-import BottomSheetProvider from './_context/BottomSheetContext';
+import ThemeProvider, { useTheme } from '../context/ThemeContext';
+import CurrencyProvider from '../context/CurrencyContext';
+import { LanguageProvider } from '../context/LanguageContext';
+import BottomSheetProvider from '../context/BottomSheetContext';
 import { View, Text, ActivityIndicator } from 'react-native';
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -47,13 +47,13 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider>
         <LanguageProvider>
-        <CurrencyProvider>
-          <BottomSheetProvider>
-            <MigrationWrapper>
-              <RootNavigator />
-            </MigrationWrapper>
-        </BottomSheetProvider>
-        </CurrencyProvider>
+          <CurrencyProvider>
+            <BottomSheetProvider>
+              <MigrationWrapper>
+                <RootNavigator />
+              </MigrationWrapper>
+            </BottomSheetProvider>
+          </CurrencyProvider>
         </LanguageProvider>
       </ThemeProvider>
     </GestureHandlerRootView>

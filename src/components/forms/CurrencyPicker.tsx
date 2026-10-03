@@ -1,8 +1,8 @@
 import { View, Text, TouchableOpacity, Modal, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useThemeColors, rgba, useCurrency } from '@/components/home/useThemeColors';
-import { useTranslation } from '@/app/_context/LanguageContext';
-import { CURRENCIES } from '@/constants/currency';
+import { useThemeColors, rgba, useCurrency } from '@/src/components/home/useThemeColors';
+import { useTranslation } from '@/src/context/LanguageContext';
+import { CURRENCIES } from '@/src/constants/currency';
 
 interface CurrencyPickerProps {
   visible: boolean;

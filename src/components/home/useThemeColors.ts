@@ -1,5 +1,5 @@
-import { useTheme } from '@/app/_context/ThemeContext';
-import { useCurrencyContext } from '@/app/_context/CurrencyContext';
+import { useTheme } from '@/src/context/ThemeContext';
+import { useCurrencyContext } from '@/src/context/CurrencyContext';
 
 export function rgba(color: string, alpha: number) {
   return color.replace('rgb', 'rgba').replace(')', `, ${alpha})`);

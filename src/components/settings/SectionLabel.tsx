@@ -1,5 +1,5 @@
 import { Text } from 'react-native';
-import { useThemeColors } from '@/components/home/useThemeColors';
+import { useThemeColors } from '@/src/components/home/useThemeColors';
 
 export function SectionLabel({ label }: { label: string }) {
   const { mutedColor } = useThemeColors();

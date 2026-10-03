@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { TouchableOpacity, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useThemeColors } from '@/components/home/useThemeColors';
+import { useThemeColors } from '@/src/components/home/useThemeColors';
 import { DatePickerModal } from './DatePickerModal';
 
 interface DatePickerButtonProps {

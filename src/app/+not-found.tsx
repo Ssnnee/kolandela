@@ -1,8 +1,8 @@
 import { View, Text, TouchableOpacity, Platform } from 'react-native';
 import { router, usePathname } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useThemeColors } from '@/components/home/useThemeColors';
-import { useTranslation } from '@/app/_context/LanguageContext';
+import { useThemeColors } from '@/src/components/home/useThemeColors';
+import { useTranslation } from '@/src/context/LanguageContext';
 
 export default function NotFound() {
   const { textColor, mutedColor, primaryColor, cardBg, borderColor, isDark } = useThemeColors();

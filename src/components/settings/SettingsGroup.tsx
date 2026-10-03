@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { useThemeColors } from '@/components/home/useThemeColors';
+import { useThemeColors } from '@/src/components/home/useThemeColors';
 
 export function SettingsGroup({ children }: { children: React.ReactNode }) {
   const { cardBg, borderColor } = useThemeColors();

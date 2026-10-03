@@ -6,11 +6,11 @@ import * as categoryService from '@/services/categories';
 import { useMemo, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { BarChart, LineChart } from 'react-native-gifted-charts';
-import { useThemeColors, useCurrency, rgba } from '@/components/home/useThemeColors';
-import { useTranslation } from '@/app/_context/LanguageContext';
+import { useThemeColors, useCurrency, rgba } from '@/src/components/home/useThemeColors';
+import { useTranslation } from '@/src/context/LanguageContext';
 import { useNavigation } from "expo-router/react-navigation";
 import { router } from 'expo-router';
-import { SwipeDetector } from '@/components/SwipeDetector';
+import { SwipeDetector } from '@/src/components/SwipeDetector';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -191,256 +191,256 @@ export default function StatsScreen() {
   return (
     <SwipeDetector onSwipeLeft={handleSwipeLeft} onSwipeRight={handleSwipeRight}>
       <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 120 }}
->
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 120 }}
+        >
 
-      {/* ── Header ── */}
-      <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 20 }}>
-        <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>
-          {t('tabs.stats.analysis')}
-        </Text>
-        <Text style={{ color: textColor, fontSize: 24, fontWeight: '800', letterSpacing: -0.5 }}>
-          {t('tabs.stats.title')}
-        </Text>
-      </View>
-
-      {/* ── All-time hero row ── */}
-      <View style={{ paddingHorizontal: 24, marginBottom: 16, gap: 10 }}>
-        {/* Net balance — full width hero */}
-        <View style={{
-          backgroundColor: allTimeNet >= 0 ? (isDark ? 'rgba(0,250,217,0.1)' : 'rgba(0,200,175,0.08)') : 'rgba(255,59,48,0.08)',
-          borderRadius: 20, borderWidth: 1,
-          borderColor: allTimeNet >= 0 ? (isDark ? 'rgba(0,250,217,0.25)' : 'rgba(0,200,175,0.2)') : 'rgba(255,59,48,0.25)',
-          padding: 20,
-        }}>
-          <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 6 }}>
-            {t('tabs.stats.allTimeNetBalance')}
-          </Text>
-          <Text style={{ color: allTimeNet >= 0 ? greenColor : redColor, fontSize: 32, fontWeight: '900', letterSpacing: -1.5 }}>
-            {allTimeNet >= 0 ? '+' : ''}{format(allTimeNet)}
-          </Text>
-          <Text style={{ color: mutedColor, fontSize: 12, marginTop: 6 }}>
-            {t('tabs.stats.savingsAndTotal', { rate: savingsRate, count: allTrans.length })}
-          </Text>
-        </View>
-
-        {/* Income + Expenses side by side */}
-        <View style={{ flexDirection: 'row', gap: 10 }}>
-          <View style={{ flex: 1, backgroundColor: cardBg, borderRadius: 16, borderWidth: 1, borderColor, padding: 16 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-              <View style={{ width: 7, height: 7, borderRadius: 3.5, backgroundColor: violetColor }} />
-              <Text style={{ color: mutedColor, fontSize: 10, fontWeight: '500', textTransform: 'uppercase', letterSpacing: 0.5 }}>{t('tabs.stats.income')}</Text>
-            </View>
-            <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}
-              style={{ color: violetColor, fontSize: 16, fontWeight: '700' }}>
-              {format(allTimeIncome)}
+          {/* ── Header ── */}
+          <View style={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 20 }}>
+            <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>
+              {t('tabs.stats.analysis')}
+            </Text>
+            <Text style={{ color: textColor, fontSize: 24, fontWeight: '800', letterSpacing: -0.5 }}>
+              {t('tabs.stats.title')}
             </Text>
           </View>
-          <View style={{ flex: 1, backgroundColor: cardBg, borderRadius: 16, borderWidth: 1, borderColor, padding: 16 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-              <View style={{ width: 7, height: 7, borderRadius: 3.5, backgroundColor: primaryColor }} />
-              <Text style={{ color: mutedColor, fontSize: 10, fontWeight: '500', textTransform: 'uppercase', letterSpacing: 0.5 }}>{t('tabs.stats.expenses')}</Text>
+
+          {/* ── All-time hero row ── */}
+          <View style={{ paddingHorizontal: 24, marginBottom: 16, gap: 10 }}>
+            {/* Net balance — full width hero */}
+            <View style={{
+              backgroundColor: allTimeNet >= 0 ? (isDark ? 'rgba(0,250,217,0.1)' : 'rgba(0,200,175,0.08)') : 'rgba(255,59,48,0.08)',
+              borderRadius: 20, borderWidth: 1,
+              borderColor: allTimeNet >= 0 ? (isDark ? 'rgba(0,250,217,0.25)' : 'rgba(0,200,175,0.2)') : 'rgba(255,59,48,0.25)',
+              padding: 20,
+            }}>
+              <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 6 }}>
+                {t('tabs.stats.allTimeNetBalance')}
+              </Text>
+              <Text style={{ color: allTimeNet >= 0 ? greenColor : redColor, fontSize: 32, fontWeight: '900', letterSpacing: -1.5 }}>
+                {allTimeNet >= 0 ? '+' : ''}{format(allTimeNet)}
+              </Text>
+              <Text style={{ color: mutedColor, fontSize: 12, marginTop: 6 }}>
+                {t('tabs.stats.savingsAndTotal', { rate: savingsRate, count: allTrans.length })}
+              </Text>
             </View>
-            <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}
-              style={{ color: primaryColor, fontSize: 16, fontWeight: '700' }}>
-              {format(allTimeExpenses)}
-            </Text>
-          </View>
-        </View>
-      </View>
 
-      {/* ── Month Comparison ── */}
-      <View style={{ marginHorizontal: 24, marginBottom: 16, backgroundColor: cardBg, borderRadius: 20, borderWidth: 1, borderColor, padding: 20 }}>
-        <Text style={{ color: textColor, fontSize: 15, fontWeight: '700', marginBottom: 16 }}>
-          {t('tabs.stats.monthComparison')}
-        </Text>
-
-        {/* Column headers */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
-          <View style={{ flex: 1.2 }} />
-          <View style={{ flex: 1, alignItems: 'flex-end' }}>
-            <View style={{ backgroundColor: rgba(primaryColor, 0.1), borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 }}>
-              <Text style={{ color: primaryColor, fontSize: 11, fontWeight: '700' }}>{MONTHS[currentMonth]}</Text>
-            </View>
-          </View>
-          <View style={{ flex: 1, alignItems: 'flex-end' }}>
-            <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500' }}>{MONTHS[prevMonth]}</Text>
-          </View>
-          <View style={{ width: 56, alignItems: 'flex-end' }}>
-            <Text style={{ color: mutedColor, fontSize: 11 }}>Δ</Text>
-          </View>
-        </View>
-
-        {[
-          { label: t('tabs.stats.income'), current: currentIncome, prev: prevIncome, change: incomeChange, isPositiveGood: true },
-          { label: t('tabs.stats.expenses'), current: currentExpenses, prev: prevExpenses, change: expenseChange, isPositiveGood: false },
-          { label: t('tabs.stats.net'), current: currentNet, prev: prevNet, change: netChange, isPositiveGood: true },
-        ].map((row, i) => (
-          <View key={row.label} style={{
-            flexDirection: 'row', alignItems: 'center', paddingVertical: 11,
-            borderTopWidth: i === 0 ? 1 : 1, borderTopColor: borderColor,
-          }}>
-            <Text style={{ color: mutedColor, fontSize: 13, flex: 1.2 }}>{row.label}</Text>
-            <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}
-              style={{ flex: 1, color: textColor, fontSize: 13, fontWeight: '700', textAlign: 'right' }}>
-              {format(row.current)}
-            </Text>
-            <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}
-              style={{ flex: 1, color: mutedColor, fontSize: 12, textAlign: 'right' }}>
-              {format(row.prev)}
-            </Text>
-            <View style={{ width: 56, alignItems: 'flex-end' }}>
-              <DeltaBadge change={row.change} isPositiveGood={row.isPositiveGood} />
-            </View>
-          </View>
-        ))}
-      </View>
-
-      {/* ── Chart ── */}
-      <View style={{ marginHorizontal: 24, marginBottom: 16, backgroundColor: cardBg, borderRadius: 20, borderWidth: 1, borderColor, padding: 20, overflow: 'hidden' }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-          <Text style={{ color: textColor, fontSize: 15, fontWeight: '700' }}>
-            {chartTab === 'bar' ? t('tabs.stats.byWeek', { month: MONTHS[currentMonth] }) : t('tabs.stats.trend12m')}
-          </Text>
-          <View style={{ flexDirection: 'row', backgroundColor: tabBg, borderRadius: 10, padding: 3 }}>
-            {(['line', 'bar'] as ChartTab[]).map((tab) => (
-              <TouchableOpacity
-                key={tab}
-                onPress={() => setChartTab(tab)}
-                style={{ paddingHorizontal: 12, paddingVertical: 5, borderRadius: 8, backgroundColor: chartTab === tab ? primaryColor : 'transparent' }}>
-                <Ionicons
-                  name={tab === 'bar' ? 'bar-chart-outline' : 'trending-up-outline'}
-                  size={14}
-                  color={chartTab === tab ? 'white' : mutedColor}
-                />
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
-        <View style={{ flexDirection: 'row', gap: 16, marginBottom: 16 }}>
-          {[{ label: t('tabs.stats.income'), color: violetColor }, { label: t('tabs.stats.expenses'), color: primaryColor }].map((l) => (
-            <View key={l.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-              <View style={{ width: 8, height: 8, borderRadius: 2, backgroundColor: l.color }} />
-              <Text style={{ color: mutedColor, fontSize: 11 }}>{l.label}</Text>
-            </View>
-          ))}
-        </View>
-
-        {chartTab === 'bar' ? (
-          <BarChart
-            data={barData}
-            width={CHART_WIDTH}
-            height={180}
-            barWidth={18}
-            noOfSections={4}
-            barBorderRadius={5}
-            yAxisThickness={0}
-            xAxisThickness={1}
-            xAxisColor={borderColor}
-            yAxisTextStyle={{ color: mutedColor, fontSize: 10 }}
-            rulesColor={isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}
-            rulesType="solid"
-            isAnimated
-          />
-        ) : (
-          <LineChart
-            data={monthlyData.map((m) => ({ value: m.income, label: m.month, dataPointColor: violetColor }))}
-            data2={monthlyData.map((m) => ({ value: m.expenses, dataPointColor: primaryColor }))}
-            width={CHART_WIDTH}
-            height={180}
-            color1={violetColor}
-            color2={primaryColor}
-            thickness={2}
-            noOfSections={4}
-            yAxisThickness={0}
-            xAxisThickness={1}
-            xAxisColor={borderColor}
-            yAxisTextStyle={{ color: mutedColor, fontSize: 10 }}
-            xAxisLabelTextStyle={{ color: mutedColor, fontSize: 10 }}
-            rulesColor={isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}
-            startFillColor1={violetColor}
-            startFillColor2={primaryColor}
-            endFillColor1="transparent"
-            endFillColor2="transparent"
-            startOpacity={0.15}
-            endOpacity={0}
-            areaChart
-            curved
-            isAnimated
-          />
-        )}
-      </View>
-
-      {/* ── Top spending categories ── */}
-      {topCategories.length > 0 && (
-        <View style={{ marginHorizontal: 24, marginBottom: 16, backgroundColor: cardBg, borderRadius: 20, borderWidth: 1, borderColor, padding: 20 }}>
-          <Text style={{ color: textColor, fontSize: 15, fontWeight: '700', marginBottom: 14 }}>
-            {t('tabs.stats.topExpenseCategories')}
-          </Text>
-          {topCategories.map((cat, i) => (
-            <View key={cat.name} style={{ marginBottom: i < topCategories.length - 1 ? 14 : 0 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-                <View style={{ width: 28, height: 28, borderRadius: 8, backgroundColor: rgba(cat.color, 0.13), alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
-                  <Ionicons name={(cat.icon as any) || 'grid-outline'} size={14} color={cat.color} />
-                </View>
-                <Text style={{ flex: 1, color: textColor, fontSize: 13, fontWeight: '600' }}>{cat.name}</Text>
-                <Text style={{ color: cat.color, fontSize: 13, fontWeight: '700' }}>{format(cat.total)}</Text>
-                <Text style={{ color: mutedColor, fontSize: 11, marginLeft: 8, width: 36, textAlign: 'right' }}>
-                  {topCatTotal > 0 ? Math.round((cat.total / topCatTotal) * 100) : 0}%
-                </Text>
-              </View>
-              <View style={{ height: 4, backgroundColor: isDark ? 'rgb(46,46,58)' : 'rgb(220,220,232)', borderRadius: 100, overflow: 'hidden' }}>
-                <View style={{ height: '100%', width: `${topCatTotal > 0 ? (cat.total / topCatTotal) * 100 : 0}%`, backgroundColor: cat.color, borderRadius: 100 }} />
-              </View>
-            </View>
-          ))}
-        </View>
-      )}
-
-      {/* ── Quick Stats ── */}
-      <View style={{ paddingHorizontal: 24, marginBottom: 8 }}>
-        <Text style={{ color: textColor, fontSize: 15, fontWeight: '700', marginBottom: 12 }}>
-          {t('tabs.stats.quickStats')}
-        </Text>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-          {[
-            { label: t('tabs.stats.avgExpense'), value: avgExpense > 0 ? format(avgExpense) : '—', icon: 'calculator-outline' as const },
-            { label: t('tabs.stats.biggestExpense'), value: biggestExpense > 0 ? format(biggestExpense) : '—', icon: 'arrow-up-circle-outline' as const },
-            { label: t('tabs.stats.savingsRate'), value: `${savingsRate}%`, icon: 'wallet-outline' as const },
-            { label: t('tabs.stats.mostActiveDay'), value: mostActiveDay, icon: 'calendar-outline' as const },
-          ].map((stat) => {
-            const card = (
-              <>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 8 }}>
-                  <Ionicons name={stat.icon} size={13} color={mutedColor} />
-                  <Text style={{ color: mutedColor, fontSize: 11 }}>{stat.label}</Text>
+            {/* Income + Expenses side by side */}
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <View style={{ flex: 1, backgroundColor: cardBg, borderRadius: 16, borderWidth: 1, borderColor, padding: 16 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+                  <View style={{ width: 7, height: 7, borderRadius: 3.5, backgroundColor: violetColor }} />
+                  <Text style={{ color: mutedColor, fontSize: 10, fontWeight: '500', textTransform: 'uppercase', letterSpacing: 0.5 }}>{t('tabs.stats.income')}</Text>
                 </View>
                 <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}
-                  style={{ color: textColor, fontSize: 16, fontWeight: '700' }}>
-                  {stat.value}
+                  style={{ color: violetColor, fontSize: 16, fontWeight: '700' }}>
+                  {format(allTimeIncome)}
                 </Text>
-              </>
-            );
-            const isBiggest = stat.label === t('tabs.stats.biggestExpense') && biggestExpenseTx;
-            return isBiggest ? (
-              <TouchableOpacity key={stat.label} onPress={() => router.push(`/transactions/${biggestExpenseTx!.id}`)} activeOpacity={0.7}
-                style={{ width: '47.5%', backgroundColor: cardBg, borderRadius: 14, borderWidth: 1, borderColor, padding: 14 }}>
-                {card}
-              </TouchableOpacity>
-            ) : (
-              <View key={stat.label} style={{ width: '47.5%', backgroundColor: cardBg, borderRadius: 14, borderWidth: 1, borderColor, padding: 14 }}>
-                {card}
               </View>
-            );
-          })}
-        </View>
-      </View>
+              <View style={{ flex: 1, backgroundColor: cardBg, borderRadius: 16, borderWidth: 1, borderColor, padding: 16 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+                  <View style={{ width: 7, height: 7, borderRadius: 3.5, backgroundColor: primaryColor }} />
+                  <Text style={{ color: mutedColor, fontSize: 10, fontWeight: '500', textTransform: 'uppercase', letterSpacing: 0.5 }}>{t('tabs.stats.expenses')}</Text>
+                </View>
+                <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}
+                  style={{ color: primaryColor, fontSize: 16, fontWeight: '700' }}>
+                  {format(allTimeExpenses)}
+                </Text>
+              </View>
+            </View>
+          </View>
 
-      </ScrollView>
-    </SafeAreaView>
+          {/* ── Month Comparison ── */}
+          <View style={{ marginHorizontal: 24, marginBottom: 16, backgroundColor: cardBg, borderRadius: 20, borderWidth: 1, borderColor, padding: 20 }}>
+            <Text style={{ color: textColor, fontSize: 15, fontWeight: '700', marginBottom: 16 }}>
+              {t('tabs.stats.monthComparison')}
+            </Text>
+
+            {/* Column headers */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
+              <View style={{ flex: 1.2 }} />
+              <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                <View style={{ backgroundColor: rgba(primaryColor, 0.1), borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 }}>
+                  <Text style={{ color: primaryColor, fontSize: 11, fontWeight: '700' }}>{MONTHS[currentMonth]}</Text>
+                </View>
+              </View>
+              <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                <Text style={{ color: mutedColor, fontSize: 11, fontWeight: '500' }}>{MONTHS[prevMonth]}</Text>
+              </View>
+              <View style={{ width: 56, alignItems: 'flex-end' }}>
+                <Text style={{ color: mutedColor, fontSize: 11 }}>Δ</Text>
+              </View>
+            </View>
+
+            {[
+              { label: t('tabs.stats.income'), current: currentIncome, prev: prevIncome, change: incomeChange, isPositiveGood: true },
+              { label: t('tabs.stats.expenses'), current: currentExpenses, prev: prevExpenses, change: expenseChange, isPositiveGood: false },
+              { label: t('tabs.stats.net'), current: currentNet, prev: prevNet, change: netChange, isPositiveGood: true },
+            ].map((row, i) => (
+              <View key={row.label} style={{
+                flexDirection: 'row', alignItems: 'center', paddingVertical: 11,
+                borderTopWidth: i === 0 ? 1 : 1, borderTopColor: borderColor,
+              }}>
+                <Text style={{ color: mutedColor, fontSize: 13, flex: 1.2 }}>{row.label}</Text>
+                <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}
+                  style={{ flex: 1, color: textColor, fontSize: 13, fontWeight: '700', textAlign: 'right' }}>
+                  {format(row.current)}
+                </Text>
+                <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}
+                  style={{ flex: 1, color: mutedColor, fontSize: 12, textAlign: 'right' }}>
+                  {format(row.prev)}
+                </Text>
+                <View style={{ width: 56, alignItems: 'flex-end' }}>
+                  <DeltaBadge change={row.change} isPositiveGood={row.isPositiveGood} />
+                </View>
+              </View>
+            ))}
+          </View>
+
+          {/* ── Chart ── */}
+          <View style={{ marginHorizontal: 24, marginBottom: 16, backgroundColor: cardBg, borderRadius: 20, borderWidth: 1, borderColor, padding: 20, overflow: 'hidden' }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <Text style={{ color: textColor, fontSize: 15, fontWeight: '700' }}>
+                {chartTab === 'bar' ? t('tabs.stats.byWeek', { month: MONTHS[currentMonth] }) : t('tabs.stats.trend12m')}
+              </Text>
+              <View style={{ flexDirection: 'row', backgroundColor: tabBg, borderRadius: 10, padding: 3 }}>
+                {(['line', 'bar'] as ChartTab[]).map((tab) => (
+                  <TouchableOpacity
+                    key={tab}
+                    onPress={() => setChartTab(tab)}
+                    style={{ paddingHorizontal: 12, paddingVertical: 5, borderRadius: 8, backgroundColor: chartTab === tab ? primaryColor : 'transparent' }}>
+                    <Ionicons
+                      name={tab === 'bar' ? 'bar-chart-outline' : 'trending-up-outline'}
+                      size={14}
+                      color={chartTab === tab ? 'white' : mutedColor}
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            <View style={{ flexDirection: 'row', gap: 16, marginBottom: 16 }}>
+              {[{ label: t('tabs.stats.income'), color: violetColor }, { label: t('tabs.stats.expenses'), color: primaryColor }].map((l) => (
+                <View key={l.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <View style={{ width: 8, height: 8, borderRadius: 2, backgroundColor: l.color }} />
+                  <Text style={{ color: mutedColor, fontSize: 11 }}>{l.label}</Text>
+                </View>
+              ))}
+            </View>
+
+            {chartTab === 'bar' ? (
+              <BarChart
+                data={barData}
+                width={CHART_WIDTH}
+                height={180}
+                barWidth={18}
+                noOfSections={4}
+                barBorderRadius={5}
+                yAxisThickness={0}
+                xAxisThickness={1}
+                xAxisColor={borderColor}
+                yAxisTextStyle={{ color: mutedColor, fontSize: 10 }}
+                rulesColor={isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}
+                rulesType="solid"
+                isAnimated
+              />
+            ) : (
+              <LineChart
+                data={monthlyData.map((m) => ({ value: m.income, label: m.month, dataPointColor: violetColor }))}
+                data2={monthlyData.map((m) => ({ value: m.expenses, dataPointColor: primaryColor }))}
+                width={CHART_WIDTH}
+                height={180}
+                color1={violetColor}
+                color2={primaryColor}
+                thickness={2}
+                noOfSections={4}
+                yAxisThickness={0}
+                xAxisThickness={1}
+                xAxisColor={borderColor}
+                yAxisTextStyle={{ color: mutedColor, fontSize: 10 }}
+                xAxisLabelTextStyle={{ color: mutedColor, fontSize: 10 }}
+                rulesColor={isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}
+                startFillColor1={violetColor}
+                startFillColor2={primaryColor}
+                endFillColor1="transparent"
+                endFillColor2="transparent"
+                startOpacity={0.15}
+                endOpacity={0}
+                areaChart
+                curved
+                isAnimated
+              />
+            )}
+          </View>
+
+          {/* ── Top spending categories ── */}
+          {topCategories.length > 0 && (
+            <View style={{ marginHorizontal: 24, marginBottom: 16, backgroundColor: cardBg, borderRadius: 20, borderWidth: 1, borderColor, padding: 20 }}>
+              <Text style={{ color: textColor, fontSize: 15, fontWeight: '700', marginBottom: 14 }}>
+                {t('tabs.stats.topExpenseCategories')}
+              </Text>
+              {topCategories.map((cat, i) => (
+                <View key={cat.name} style={{ marginBottom: i < topCategories.length - 1 ? 14 : 0 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
+                    <View style={{ width: 28, height: 28, borderRadius: 8, backgroundColor: rgba(cat.color, 0.13), alignItems: 'center', justifyContent: 'center', marginRight: 10 }}>
+                      <Ionicons name={(cat.icon as any) || 'grid-outline'} size={14} color={cat.color} />
+                    </View>
+                    <Text style={{ flex: 1, color: textColor, fontSize: 13, fontWeight: '600' }}>{cat.name}</Text>
+                    <Text style={{ color: cat.color, fontSize: 13, fontWeight: '700' }}>{format(cat.total)}</Text>
+                    <Text style={{ color: mutedColor, fontSize: 11, marginLeft: 8, width: 36, textAlign: 'right' }}>
+                      {topCatTotal > 0 ? Math.round((cat.total / topCatTotal) * 100) : 0}%
+                    </Text>
+                  </View>
+                  <View style={{ height: 4, backgroundColor: isDark ? 'rgb(46,46,58)' : 'rgb(220,220,232)', borderRadius: 100, overflow: 'hidden' }}>
+                    <View style={{ height: '100%', width: `${topCatTotal > 0 ? (cat.total / topCatTotal) * 100 : 0}%`, backgroundColor: cat.color, borderRadius: 100 }} />
+                  </View>
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* ── Quick Stats ── */}
+          <View style={{ paddingHorizontal: 24, marginBottom: 8 }}>
+            <Text style={{ color: textColor, fontSize: 15, fontWeight: '700', marginBottom: 12 }}>
+              {t('tabs.stats.quickStats')}
+            </Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+              {[
+                { label: t('tabs.stats.avgExpense'), value: avgExpense > 0 ? format(avgExpense) : '—', icon: 'calculator-outline' as const },
+                { label: t('tabs.stats.biggestExpense'), value: biggestExpense > 0 ? format(biggestExpense) : '—', icon: 'arrow-up-circle-outline' as const },
+                { label: t('tabs.stats.savingsRate'), value: `${savingsRate}%`, icon: 'wallet-outline' as const },
+                { label: t('tabs.stats.mostActiveDay'), value: mostActiveDay, icon: 'calendar-outline' as const },
+              ].map((stat) => {
+                const card = (
+                  <>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 8 }}>
+                      <Ionicons name={stat.icon} size={13} color={mutedColor} />
+                      <Text style={{ color: mutedColor, fontSize: 11 }}>{stat.label}</Text>
+                    </View>
+                    <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}
+                      style={{ color: textColor, fontSize: 16, fontWeight: '700' }}>
+                      {stat.value}
+                    </Text>
+                  </>
+                );
+                const isBiggest = stat.label === t('tabs.stats.biggestExpense') && biggestExpenseTx;
+                return isBiggest ? (
+                  <TouchableOpacity key={stat.label} onPress={() => router.push(`/transactions/${biggestExpenseTx!.id}`)} activeOpacity={0.7}
+                    style={{ width: '47.5%', backgroundColor: cardBg, borderRadius: 14, borderWidth: 1, borderColor, padding: 14 }}>
+                    {card}
+                  </TouchableOpacity>
+                ) : (
+                  <View key={stat.label} style={{ width: '47.5%', backgroundColor: cardBg, borderRadius: 14, borderWidth: 1, borderColor, padding: 14 }}>
+                    {card}
+                  </View>
+                );
+              })}
+            </View>
+          </View>
+
+        </ScrollView>
+      </SafeAreaView>
     </SwipeDetector>
   );
 }

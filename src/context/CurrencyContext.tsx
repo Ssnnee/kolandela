@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getItemAsync, setItemAsync } from 'expo-secure-store';
-import { CURRENCIES, DEFAULT_CURRENCY } from '@/constants/currency';
-import type { Currency } from '@/constants/currency';
+import { CURRENCIES, DEFAULT_CURRENCY } from '@/src/constants/currency';
+import type { Currency } from '@/src/constants/currency';
 
 interface CurrencyContextType {
   currency: Currency;
