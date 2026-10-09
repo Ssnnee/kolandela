@@ -8,7 +8,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { BarChart, LineChart } from 'react-native-gifted-charts';
 import { useThemeColors, useCurrency, rgba } from '@/src/components/home/useThemeColors';
 import { useTranslation } from '@/src/context/LanguageContext';
-import { useNavigation } from "expo-router/react-navigation";
 import { router } from 'expo-router';
 import { SwipeDetector } from '@/src/components/SwipeDetector';
 
@@ -178,18 +177,17 @@ export default function StatsScreen() {
     return result;
   }, [currentMonthTrans, currentMonth, currentYear, primaryColor, violetColor, mutedColor]);
 
-  const navigation = useNavigation<any>();
+  const handleSwipe = () => {
+    if (chartTab === 'line') {
+      setChartTab('bar')
+    } else {
+      setChartTab('line')
+    }
+  }
 
-  const handleSwipeLeft = () => {
-    navigation.navigate('settings');
-  };
-
-  const handleSwipeRight = () => {
-    navigation.navigate('categories');
-  };
 
   return (
-    <SwipeDetector onSwipeLeft={handleSwipeLeft} onSwipeRight={handleSwipeRight}>
+    <SwipeDetector onSwipeLeft={handleSwipe} onSwipeRight={handleSwipe}>
       <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
         <ScrollView
           showsVerticalScrollIndicator={false}

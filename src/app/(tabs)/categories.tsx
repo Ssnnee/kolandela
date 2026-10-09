@@ -17,7 +17,6 @@ import { useThemeColors, useCurrency, rgba } from '@/src/components/home/useThem
 import { useTranslation } from '@/src/context/LanguageContext';
 import { MonthPicker, buildMonthOptions } from '@/src/components/home/MonthPicker';
 import { router } from 'expo-router';
-import { useNavigation } from "expo-router/react-navigation";
 import { SwipeDetector } from '@/src/components/SwipeDetector';
 
 const MONTHS = [
@@ -89,8 +88,6 @@ export default function CategoriesScreen() {
 
   const spentPct = totalIncome > 0 ? Math.round((totalExpenses / totalIncome) * 100) : 0;
 
-  const navigation = useNavigation<any>();
-
   const [containerWidth, setContainerWidth] = useState(0);
   const tabWidth = (containerWidth - 8) / 2;
   const animatedValue = useAnimatedValue(tab === 'INCOME' ? 1 : 0)
@@ -109,24 +106,17 @@ export default function CategoriesScreen() {
     setTab(newTab);
   };
 
-  const handleSwipeLeft = () => {
+  const handleSwipe = () => {
     if (tab === 'EXPENSE') {
-      changeTab('INCOME');
+      changeTab('INCOME')
     } else {
-      navigation.navigate('stats');
+      changeTab('EXPENSE')
     }
   };
 
-  const handleSwipeRight = () => {
-    if (tab === 'INCOME') {
-      changeTab('EXPENSE');
-    } else {
-      navigation.navigate('index');
-    }
-  };
 
   return (
-    <SwipeDetector onSwipeLeft={handleSwipeLeft} onSwipeRight={handleSwipeRight}>
+    <SwipeDetector onSwipeLeft={handleSwipe} onSwipeRight={handleSwipe}>
       <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
         <ScrollView
           showsVerticalScrollIndicator={false}

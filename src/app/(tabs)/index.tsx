@@ -114,22 +114,16 @@ export default function Index() {
     setListTab(newTab);
   };
 
-  const handleSwipeLeft = () => {
+  const handleSwipe = () => {
     if (listTab === 'transactions') {
-      changeTab('planned');
+      changeTab('planned')
     } else {
-      navigation.navigate('categories');
-    }
-  };
-
-  const handleSwipeRight = () => {
-    if (listTab === 'planned') {
-      changeTab('transactions');
+      changeTab('transactions')
     }
   };
 
   return (
-    <SwipeDetector onSwipeLeft={handleSwipeLeft} onSwipeRight={handleSwipeRight}>
+    <SwipeDetector onSwipeLeft={handleSwipe} onSwipeRight={handleSwipe}>
       <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: isDark ? 'rgb(14,14,18)' : 'rgb(245,245,248)' }}>
         <ScrollView
           showsVerticalScrollIndicator={false}
