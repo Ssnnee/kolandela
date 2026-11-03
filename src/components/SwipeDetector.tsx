@@ -14,7 +14,7 @@ export function SwipeDetector({ children, onSwipeLeft, onSwipeRight }: SwipeDete
     .runOnJS(true)
     .onStart(() => {
       if (onSwipeLeft) {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => { });
         onSwipeLeft();
       }
     });
@@ -24,7 +24,7 @@ export function SwipeDetector({ children, onSwipeLeft, onSwipeRight }: SwipeDete
     .runOnJS(true)
     .onStart(() => {
       if (onSwipeRight) {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => { });
         onSwipeRight();
       }
     });
